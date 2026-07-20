@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import authRoutes from "./routes/authRoutes";
 import lectureRoutes from "./routes/lectureRoutes";
+import progressRoutes from "./routes/progressRoutes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 
 // nodemon auto-restarts the server when files under src/ change.
@@ -16,6 +17,7 @@ export function createApp(): Application {
 
   app.use("/api/auth", authRoutes);
   app.use("/api/lectures", lectureRoutes);
+  app.use("/api/progress", progressRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

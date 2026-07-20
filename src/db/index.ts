@@ -9,6 +9,8 @@ import { initLessonOption, LessonOption } from "./models/LessonOption";
 import { initLessonChoice, LessonChoice } from "./models/LessonChoice";
 import { initLessonConcept, LessonConcept } from "./models/LessonConcept";
 import { initLessonStandard, LessonStandard } from "./models/LessonStandard";
+import { initModuleProgress, ModuleProgress } from "./models/ModuleProgress";
+import { initLessonProgress, LessonProgress } from "./models/LessonProgress";
 
 export const sequelize = new Sequelize(
   config.database.name,
@@ -38,6 +40,8 @@ initLessonOption(sequelize);
 initLessonChoice(sequelize);
 initLessonConcept(sequelize);
 initLessonStandard(sequelize);
+initModuleProgress(sequelize);
+initLessonProgress(sequelize);
 
 // Lecture ↔ Lesson
 Lecture.hasMany(Lesson, {
@@ -91,4 +95,36 @@ Standard.belongsToMany(Lesson, {
   as: "lessons",
 });
 
-export { User, Lecture, Lesson, Concept, Standard, LessonOption, LessonChoice, LessonConcept, LessonStandard };
+// User ↔ ModuleProgress
+User.hasMany(ModuleProgress, {
+  foreignKey: "userId",
+  as: "moduleProgress",
+  onDelete: "CASCADE",
+});
+ModuleProgress.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+// Lecture ↔ ModuleProgress
+Lecture.hasMany(ModuleProgress, {
+  foreignKey: "lectureId",
+  as: "moduleProgress",
+  onDelete: "CASCADE",
+});
+ModuleProgress.belongsTo(Lecture, { foreignKey: "lectureId", as: "lecture" });
+
+// User ↔ LessonProgress
+User.hasMany(LessonProgress, {
+  foreignKey: "userId",
+  as: "lessonProgress",
+  onDelete: "CASCADE",
+});
+LessonProgress.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+// Lesson ↔ LessonProgress
+Lesson.hasMany(LessonProgress, {
+  foreignKey: "lessonId",
+  as: "lessonProgress",
+  onDelete: "CASCADE",
+});
+LessonProgress.belongsTo(Lesson, { foreignKey: "lessonId", as: "lesson" });
+
+export { User, Lecture, Lesson, Concept, Standard, LessonOption, LessonChoice, LessonConcept, LessonStandard, ModuleProgress, LessonProgress };
