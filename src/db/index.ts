@@ -3,6 +3,12 @@ import config from "../config/config";
 import { initUser, User } from "./models/User";
 import { initLecture, Lecture } from "./models/Lecture";
 import { initLesson, Lesson } from "./models/Lesson";
+import { initConcept, Concept } from "./models/Concept";
+import { initStandard, Standard } from "./models/Standard";
+import { initLessonOption, LessonOption } from "./models/LessonOption";
+import { initLessonChoice, LessonChoice } from "./models/LessonChoice";
+import { initLessonConcept, LessonConcept } from "./models/LessonConcept";
+import { initLessonStandard, LessonStandard } from "./models/LessonStandard";
 
 export const sequelize = new Sequelize(
   config.database.name,
@@ -26,8 +32,14 @@ export const sequelize = new Sequelize(
 initUser(sequelize);
 initLecture(sequelize);
 initLesson(sequelize);
+initConcept(sequelize);
+initStandard(sequelize);
+initLessonOption(sequelize);
+initLessonChoice(sequelize);
+initLessonConcept(sequelize);
+initLessonStandard(sequelize);
 
-// Relationships
+// Lecture ↔ Lesson
 Lecture.hasMany(Lesson, {
   foreignKey: "lectureId",
   as: "lessons",
@@ -35,4 +47,48 @@ Lecture.hasMany(Lesson, {
 });
 Lesson.belongsTo(Lecture, { foreignKey: "lectureId", as: "lecture" });
 
-export { User, Lecture, Lesson };
+// Lesson ↔ LessonOption
+Lesson.hasMany(LessonOption, {
+  foreignKey: "lessonId",
+  as: "options",
+  onDelete: "CASCADE",
+});
+LessonOption.belongsTo(Lesson, { foreignKey: "lessonId", as: "lesson" });
+
+// Lesson ↔ LessonChoice
+Lesson.hasMany(LessonChoice, {
+  foreignKey: "lessonId",
+  as: "choices",
+  onDelete: "CASCADE",
+});
+LessonChoice.belongsTo(Lesson, { foreignKey: "lessonId", as: "lesson" });
+
+// Lesson ↔ Concept (many-to-many via lesson_concepts)
+Lesson.belongsToMany(Concept, {
+  through: LessonConcept,
+  foreignKey: "lessonId",
+  otherKey: "conceptId",
+  as: "concepts",
+});
+Concept.belongsToMany(Lesson, {
+  through: LessonConcept,
+  foreignKey: "conceptId",
+  otherKey: "lessonId",
+  as: "lessons",
+});
+
+// Lesson ↔ Standard (many-to-many via lesson_standards)
+Lesson.belongsToMany(Standard, {
+  through: LessonStandard,
+  foreignKey: "lessonId",
+  otherKey: "standardId",
+  as: "standards",
+});
+Standard.belongsToMany(Lesson, {
+  through: LessonStandard,
+  foreignKey: "standardId",
+  otherKey: "lessonId",
+  as: "lessons",
+});
+
+export { User, Lecture, Lesson, Concept, Standard, LessonOption, LessonChoice, LessonConcept, LessonStandard };
