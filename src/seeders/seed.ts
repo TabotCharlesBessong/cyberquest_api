@@ -9,6 +9,9 @@ import {
   LessonChoice,
   LessonConcept,
   LessonStandard,
+  ModuleProgress,
+  LessonProgress,
+  User,
 } from "../db";
 import { SEED_LECTURES } from "./curriculumData";
 
@@ -87,10 +90,13 @@ async function seed(): Promise<void> {
     await LessonChoice.destroy({ where: {}, truncate: true, cascade: true });
     await LessonConcept.destroy({ where: {}, truncate: true, cascade: true });
     await LessonStandard.destroy({ where: {}, truncate: true, cascade: true });
+    await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
+    await LessonProgress.destroy({ where: {}, truncate: true, cascade: true });
     await Concept.destroy({ where: {}, truncate: true, cascade: true });
     await Standard.destroy({ where: {}, truncate: true, cascade: true });
     await Lesson.destroy({ where: {}, truncate: true, cascade: true });
     await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+    await User.destroy({ where: {}, truncate: true, cascade: true });
 
     const conceptCache = new Map<string, string>();
     const standardCache = new Map<string, string>();
@@ -202,6 +208,22 @@ async function seed(): Promise<void> {
 
       console.log(`[seed] Seeded lecture: ${lecture.title}`);
     }
+
+    await User.create({
+      name: "Demo User",
+      email: "demo@cyberquest.app",
+      password: "demo123",
+      age: 10,
+      ageGroup: "B",
+      avatar: "🦊",
+      xp: 0,
+      level: 1,
+      streak: 0,
+      hearts: 5,
+      gems: 0,
+      onboarded: true,
+      isVerified: true,
+    });
 
     console.log("[seed] Done 🎉");
   } catch (err) {
