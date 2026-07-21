@@ -1,11 +1,7 @@
 import { Sequelize } from "sequelize";
 import config from "../config/config";
+import logger from "../utils/logger";
 
-/**
- * Connects to the PostgreSQL *maintenance* database (`postgres`) using Sequelize
- * and creates the target application database if it does not already exist. This
- * lets the app bootstrap a fresh environment from just the connection credentials.
- */
 export async function ensureDatabase(): Promise<void> {
   const admin = new Sequelize(
     "postgres",
@@ -27,9 +23,9 @@ export async function ensureDatabase(): Promise<void> {
 
     if (Array.isArray(rows) && rows.length === 0) {
       await admin.query(`CREATE DATABASE "${config.database.name}"`);
-      console.log(`[db] Created database "${config.database.name}"`);
+      logger.info(`Database created: ${config.database.name}`, { component: "db" });
     } else {
-      console.log(`[db] Database "${config.database.name}" already exists`);
+      logger.info(`Database already exists: ${config.database.name}`, { component: "db" });
     }
   } finally {
     await admin.close();

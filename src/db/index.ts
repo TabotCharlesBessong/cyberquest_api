@@ -11,6 +11,7 @@ import { initLessonConcept, LessonConcept } from "./models/LessonConcept";
 import { initLessonStandard, LessonStandard } from "./models/LessonStandard";
 import { initModuleProgress, ModuleProgress } from "./models/ModuleProgress";
 import { initLessonProgress, LessonProgress } from "./models/LessonProgress";
+import logger from "../utils/logger";
 
 export const sequelize = new Sequelize(
   config.database.name,
@@ -22,7 +23,7 @@ export const sequelize = new Sequelize(
     dialect: "postgres",
     logging:
       config.env === "development"
-        ? (msg) => console.log(`[sequelize] ${msg}`)
+        ? (msg) => logger.debug(`[sequelize] ${msg}`, { component: "sequelize" })
         : false,
     define: {
       underscored: false,
