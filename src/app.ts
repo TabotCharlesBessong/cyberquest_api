@@ -5,10 +5,31 @@ import progressRoutes from "./routes/progressRoutes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 import { specs } from "./config/swagger";
 import swaggerUi from "swagger-ui-express";
+import cors from "cors";
 
-// nodemon auto-restarts the server when files under src/ change.
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:8081",
+  "http://localhost:19006",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:8081",
+  "http://127.0.0.1:19006",
+  "http://127.0.0.1:5173",
+];
+
 export function createApp(): Application {
   const app = express();
+
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    credentials: true,
+  }));
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
