@@ -5,6 +5,7 @@ import { User } from "../db/models/User";
 import { Op } from "sequelize";
 import { notFound } from "../utils/apiError";
 import logger from "../utils/logger";
+import { traceProgressFlow } from "../utils/debugTrace";
 
 const XP_PER_CORRECT = 10;
 const XP_PER_WRONG = 5;
@@ -29,6 +30,17 @@ export class ProgressService {
       const effectiveCorrect = Math.max(0, Math.min(correctCount ?? Math.round(score / 100), effectiveTotal));
       const wrongCount = effectiveTotal - effectiveCorrect;
       const xpEarned = Math.max(0, effectiveCorrect * XP_PER_CORRECT - wrongCount * XP_PER_WRONG);
+
+      traceProgressFlow("submit_start", {
+        userId,
+        lessonId,
+        lectureId: lecture.id,
+        lectureTitle: lecture.title,
+        score,
+        correctCount: effectiveCorrect,
+        total: effectiveTotal,
+        xpEarned,
+      });
 
       logger.info("Lesson progress submitted", {
         component: "ProgressService",
@@ -116,6 +128,15 @@ export class ProgressService {
         else if (mp.score! >= 70) mp.stars = 2;
         else mp.stars = 1;
 
+        traceProgressFlow("module_completed", {
+          moduleId: mp.id,
+          lectureId: lecture.id,
+          lectureTitle: lecture.title,
+          completedLessons: completedCount,
+          totalLessons: allLessons,
+          status: mp.status,
+        });
+
         logger.info("Module completed", {
           component: "ProgressService",
           moduleId: mp.id,
@@ -126,6 +147,15 @@ export class ProgressService {
         });
       } else {
         mp.status = "in_progress";
+
+        traceProgressFlow("module_in_progress", {
+          moduleId: mp.id,
+          lectureId: lecture.id,
+          lectureTitle: lecture.title,
+          completedLessons: completedCount,
+          totalLessons: allLessons,
+          status: mp.status,
+        });
       }
 
       await mp.save();
@@ -137,6 +167,15 @@ export class ProgressService {
         await user.save();
       }
 
+      traceProgressFlow("submit_complete", {
+        userId,
+        moduleId: mp.id,
+        lectureId: lecture.id,
+        status: mp.status,
+        xpEarned,
+        newLevel: user?.level ?? 1,
+      });
+
       return {
         lessonProgress: lp,
         moduleProgress: mp,
@@ -144,6 +183,12 @@ export class ProgressService {
         newLevel: user?.level ?? 1,
       };
     } catch (error) {
+      traceProgressFlow("submit_error", {
+        userId,
+        lessonId,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+
       logger.error("Failed to submit lesson progress", {
         component: "ProgressService",
         error: error instanceof Error ? error.message : "Unknown error",
