@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/apiError";
+import logger from "../utils/logger";
 
 export function notFoundHandler(
   _req: Request,
@@ -8,7 +9,6 @@ export function notFoundHandler(
   res.status(404).json({ success: false, message: "Route not found" });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(
   err: Error,
   _req: Request,
@@ -16,6 +16,10 @@ export function errorHandler(
   _next: NextFunction
 ): void {
   if (err instanceof ApiError) {
+    logger.warn(`API Error: ${err.message}`, {
+      component: "errorHandler",
+      statusCode: err.statusCode,
+    });
     res.status(err.statusCode).json({
       success: false,
       message: err.message,
@@ -23,7 +27,11 @@ export function errorHandler(
     return;
   }
 
-  console.error("[error]", err);
+  logger.error("Internal server error", {
+    component: "errorHandler",
+    error: err.message,
+    stack: err.stack,
+  });
   res.status(500).json({
     success: false,
     message: "Internal server error",

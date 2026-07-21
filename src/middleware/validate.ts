@@ -21,7 +21,7 @@ export function validateBody(schema: Schema) {
 export function validateParams(schema: Schema) {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
-      req.params = schema.parse(req.params) as Request["params"];
+      schema.parse(req.params);
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {
@@ -35,7 +35,7 @@ export function validateParams(schema: Schema) {
 export function validateQuery(schema: Schema) {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
-      req.query = schema.parse(req.query) as Request["query"];
+      schema.parse(req.query);
       next();
     } catch (err) {
       if (err instanceof z.ZodError) {

@@ -14,6 +14,7 @@ import {
   User,
 } from "../db";
 import { SEED_LECTURES } from "./curriculumData";
+import logger from "../utils/logger";
 
 const CONCEPT_DESCRIPTIONS: Record<string, string> = {
   internet_awareness: "Understanding the internet as a global network with both safe and unsafe areas",
@@ -80,12 +81,11 @@ const STANDARD_DESCRIPTIONS: Record<string, string> = {
 async function seed(): Promise<void> {
   try {
     await sequelize.authenticate();
-    console.log("[seed] Connected to PostgreSQL");
+    logger.info("Connected to PostgreSQL", { component: "seed" });
 
     await sequelize.sync({ alter: true });
-    console.log("[seed] Models synchronized");
+    logger.info("Models synchronized", { component: "seed" });
 
-    // Reset existing data
     await LessonOption.destroy({ where: {}, truncate: true, cascade: true });
     await LessonChoice.destroy({ where: {}, truncate: true, cascade: true });
     await LessonConcept.destroy({ where: {}, truncate: true, cascade: true });
@@ -139,12 +139,10 @@ async function seed(): Promise<void> {
         })
       );
 
-      // Populate normalized tables
       for (let i = 0; i < lecture.lessons.length; i++) {
         const lesson = lecture.lessons[i];
         const lessonId = createdLessons[i].id;
 
-        // Options
         if (lesson.options) {
           const optionRecords = lesson.options.map((text, pos) => ({
             lessonId,
@@ -154,7 +152,6 @@ async function seed(): Promise<void> {
           await LessonOption.bulkCreate(optionRecords as any);
         }
 
-        // Choices
         if (lesson.choices) {
           const choiceRecords = lesson.choices.map((c, pos) => ({
             lessonId,
@@ -167,7 +164,6 @@ async function seed(): Promise<void> {
           await LessonChoice.bulkCreate(choiceRecords as any);
         }
 
-        // Concepts
         if (lesson.conceptKeys) {
           for (const code of lesson.conceptKeys) {
             let conceptId = conceptCache.get(code);
@@ -186,7 +182,6 @@ async function seed(): Promise<void> {
           }
         }
 
-        // Standards
         if (lesson.connexusStandards) {
           for (const code of lesson.connexusStandards) {
             let standardId = standardCache.get(code);
@@ -206,7 +201,11 @@ async function seed(): Promise<void> {
         }
       }
 
-      console.log(`[seed] Seeded lecture: ${lecture.title}`);
+      logger.info("Seeded lecture", {
+        component: "seed",
+        lectureTitle: lecture.title,
+        lessonCount: createdLessons.length,
+      });
     }
 
     await User.create({
@@ -225,9 +224,12 @@ async function seed(): Promise<void> {
       isVerified: true,
     });
 
-    console.log("[seed] Done 🎉");
+    logger.info("Seed completed successfully", { component: "seed" });
   } catch (err) {
-    console.error("[seed] Failed:", err);
+    logger.error("Seed failed", {
+      component: "seed",
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
     process.exit(1);
   } finally {
     await sequelize.close();

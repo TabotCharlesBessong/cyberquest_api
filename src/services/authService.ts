@@ -36,16 +36,13 @@ export class AuthService {
     };
   }
 
-  static async verifyEmail(input: { email: string; code: string }) {
-    const user = await User.findOne({ where: { email: input.email } });
-    if (!user || !user.verificationCode) {
-      throw badRequest("No verification pending for this email");
+  static async verifyEmail(input: { code: string }) {
+    const user = await User.findOne({ where: { verificationCode: String(input.code).toUpperCase() } });
+    if (!user) {
+      throw badRequest("Invalid verification code");
     }
     if (user.verificationCodeExpires && user.verificationCodeExpires < new Date()) {
       throw badRequest("Verification code has expired. Request a new one.");
-    }
-    if (user.verificationCode !== String(input.code).toUpperCase()) {
-      throw badRequest("Invalid verification code");
     }
 
     user.isVerified = true;

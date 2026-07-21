@@ -9,7 +9,6 @@ export const signupSchema = z.object({
 });
 
 export const verifyEmailSchema = z.object({
-  email: z.string().email("A valid email is required"),
   code: z.string().length(6, "Code must be 6 characters"),
 });
 
@@ -49,6 +48,8 @@ export const lessonIdParamSchema = z.object({
 export const progressSubmitSchema = z.object({
   lessonId: z.string().uuid("Valid lesson ID is required"),
   score: z.coerce.number().min(0).max(100),
+  correctCount: z.coerce.number().int().min(0).optional(),
+  total: z.coerce.number().int().min(1).optional(),
   answers: z.array(z.any()).optional(),
 });
 

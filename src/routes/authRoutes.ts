@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { signup, verifyEmail, resendVerification, login, forgotPassword, resetPassword, me } from "../controllers/authController";
 import { validateBody } from "../middleware/validate";
+import { authMiddleware } from "../middleware/auth";
 import { signupSchema, verifyEmailSchema, resendVerificationSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "../validation/schemas";
 
 const router = Router();
@@ -57,12 +58,8 @@ router.post("/signup", validateBody(signupSchema), signup);
  *           schema:
  *             type: object
  *             required:
- *               - email
  *               - code
  *             properties:
- *               email:
- *                 type: string
- *                 format: email
  *               code:
  *                 type: string
  *                 length: 6
@@ -215,6 +212,6 @@ router.post("/reset-password", validateBody(resetPasswordSchema), resetPassword)
  *       401:
  *         description: Not authenticated
  */
-router.get("/me", me);
+router.get("/me", authMiddleware, me);
 
 export default router;

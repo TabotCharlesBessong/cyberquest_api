@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { AuthService } from "../services/authService";
 import { AuthedRequest } from "../middleware/auth";
 import { asyncHandler } from "../middleware/asyncHandler";
@@ -6,7 +6,7 @@ import { ApiError, forbidden, unauthorized } from "../utils/apiError";
 import { signToken } from "../utils/token";
 import { sanitizeUser } from "../db/models/User";
 
-export const signup = asyncHandler(async (req: AuthedRequest, res: Response) => {
+export const signup = asyncHandler(async (req: Request, res: Response) => {
   const result = await AuthService.signup(req.body);
   res.status(201).json({
     success: true,
@@ -16,7 +16,7 @@ export const signup = asyncHandler(async (req: AuthedRequest, res: Response) => 
 });
 
 export const verifyEmail = asyncHandler(
-  async (req: AuthedRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     const result = await AuthService.verifyEmail(req.body);
     res.status(200).json({
       success: true,
@@ -30,13 +30,13 @@ export const verifyEmail = asyncHandler(
 );
 
 export const resendVerification = asyncHandler(
-  async (req: AuthedRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     const result = await AuthService.resendVerification(req.body.email);
     res.status(200).json(result);
   }
 );
 
-export const login = asyncHandler(async (req: AuthedRequest, res: Response) => {
+export const login = asyncHandler(async (req: Request, res: Response) => {
   const result = await AuthService.login(req.body);
   res.status(200).json({
     success: true,
@@ -46,14 +46,14 @@ export const login = asyncHandler(async (req: AuthedRequest, res: Response) => {
 });
 
 export const forgotPassword = asyncHandler(
-  async (req: AuthedRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     const result = await AuthService.forgotPassword(req.body.email);
     res.status(200).json(result);
   }
 );
 
 export const resetPassword = asyncHandler(
-  async (req: AuthedRequest, res: Response) => {
+  async (req: Request, res: Response) => {
     const result = await AuthService.resetPassword(req.body);
     res.status(200).json(result);
   }
