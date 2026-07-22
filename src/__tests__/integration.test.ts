@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { createApp } from '../app';
-import { sequelize, User, Lecture, Lesson, ModuleProgress, LessonProgress } from '../db';
+import { sequelize, User, Lecture, Lesson, ModuleProgress, LessonProgress, Badge, Quest, ShopItem, UserBadge, UserQuest, UserInventory, DailyActivity } from '../db';
 
 const app = createApp();
 
@@ -15,6 +15,17 @@ describe('API Integration', () => {
 
   describe('Auth API', () => {
     beforeEach(async () => {
+      await DailyActivity.destroy({ where: {}, truncate: true, cascade: true });
+      await UserInventory.destroy({ where: {}, truncate: true, cascade: true });
+      await UserQuest.destroy({ where: {}, truncate: true, cascade: true });
+      await UserBadge.destroy({ where: {}, truncate: true, cascade: true });
+      await LessonProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await Lesson.destroy({ where: {}, truncate: true, cascade: true });
+      await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+      await ShopItem.destroy({ where: {}, truncate: true, cascade: true });
+      await Quest.destroy({ where: {}, truncate: true, cascade: true });
+      await Badge.destroy({ where: {}, truncate: true, cascade: true });
       await User.destroy({ where: {}, truncate: true, cascade: true });
     });
 
@@ -134,9 +145,18 @@ describe('API Integration', () => {
     let lectureId: string;
 
     beforeEach(async () => {
-      await User.destroy({ where: {}, truncate: true, cascade: true });
-      await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+      await DailyActivity.destroy({ where: {}, truncate: true, cascade: true });
+      await UserInventory.destroy({ where: {}, truncate: true, cascade: true });
+      await UserQuest.destroy({ where: {}, truncate: true, cascade: true });
+      await UserBadge.destroy({ where: {}, truncate: true, cascade: true });
+      await LessonProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
       await Lesson.destroy({ where: {}, truncate: true, cascade: true });
+      await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+      await ShopItem.destroy({ where: {}, truncate: true, cascade: true });
+      await Quest.destroy({ where: {}, truncate: true, cascade: true });
+      await Badge.destroy({ where: {}, truncate: true, cascade: true });
+      await User.destroy({ where: {}, truncate: true, cascade: true });
 
       const user = await User.create({
         name: 'Test User',
@@ -235,11 +255,18 @@ describe('API Integration', () => {
     let lessonId: string;
 
     beforeEach(async () => {
-      await User.destroy({ where: {}, truncate: true, cascade: true });
-      await Lecture.destroy({ where: {}, truncate: true, cascade: true });
-      await Lesson.destroy({ where: {}, truncate: true, cascade: true });
-      await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await DailyActivity.destroy({ where: {}, truncate: true, cascade: true });
+      await UserInventory.destroy({ where: {}, truncate: true, cascade: true });
+      await UserQuest.destroy({ where: {}, truncate: true, cascade: true });
+      await UserBadge.destroy({ where: {}, truncate: true, cascade: true });
       await LessonProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await Lesson.destroy({ where: {}, truncate: true, cascade: true });
+      await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+      await ShopItem.destroy({ where: {}, truncate: true, cascade: true });
+      await Quest.destroy({ where: {}, truncate: true, cascade: true });
+      await Badge.destroy({ where: {}, truncate: true, cascade: true });
+      await User.destroy({ where: {}, truncate: true, cascade: true });
 
       const user = await User.create({
         name: 'Test User',
