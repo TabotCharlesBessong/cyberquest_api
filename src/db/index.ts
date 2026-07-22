@@ -11,6 +11,13 @@ import { initLessonConcept, LessonConcept } from "./models/LessonConcept";
 import { initLessonStandard, LessonStandard } from "./models/LessonStandard";
 import { initModuleProgress, ModuleProgress } from "./models/ModuleProgress";
 import { initLessonProgress, LessonProgress } from "./models/LessonProgress";
+import { initBadge, Badge } from "./models/Badge";
+import { initUserBadge, associateUserBadge, UserBadge } from "./models/UserBadge";
+import { initQuest, Quest } from "./models/Quest";
+import { initUserQuest, associateUserQuest, UserQuest } from "./models/UserQuest";
+import { initShopItem, ShopItem } from "./models/ShopItem";
+import { initUserInventory, associateUserInventory, UserInventory } from "./models/UserInventory";
+import { initDailyActivity, associateDailyActivity, DailyActivity } from "./models/DailyActivity";
 import logger from "../utils/logger";
 
 export const sequelize = new Sequelize(
@@ -43,6 +50,13 @@ initLessonConcept(sequelize);
 initLessonStandard(sequelize);
 initModuleProgress(sequelize);
 initLessonProgress(sequelize);
+initBadge(sequelize);
+initUserBadge(sequelize);
+initQuest(sequelize);
+initUserQuest(sequelize);
+initShopItem(sequelize);
+initUserInventory(sequelize);
+initDailyActivity(sequelize);
 
 // Lecture ↔ Lesson
 Lecture.hasMany(Lesson, {
@@ -128,4 +142,36 @@ Lesson.hasMany(LessonProgress, {
 });
 LessonProgress.belongsTo(Lesson, { foreignKey: "lessonId", as: "lesson" });
 
-export { User, Lecture, Lesson, Concept, Standard, LessonOption, LessonChoice, LessonConcept, LessonStandard, ModuleProgress, LessonProgress };
+// User ↔ UserBadge ↔ Badge
+associateUserBadge();
+
+// User ↔ UserQuest ↔ Quest
+associateUserQuest();
+
+// User ↔ UserInventory ↔ ShopItem
+associateUserInventory();
+
+// User ↔ DailyActivity
+associateDailyActivity();
+
+export {
+  User,
+  Lecture,
+  Lesson,
+  Concept,
+  Standard,
+  LessonOption,
+  LessonChoice,
+  LessonConcept,
+  LessonStandard,
+  ModuleProgress,
+  LessonProgress,
+  Badge,
+  UserBadge,
+  Quest,
+  UserQuest,
+  ShopItem,
+  UserInventory,
+  DailyActivity,
+};
+
