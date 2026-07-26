@@ -4,6 +4,10 @@ import lectureRoutes from "./routes/lectureRoutes";
 import progressRoutes from "./routes/progressRoutes";
 import gamificationRoutes from "./routes/gamificationRoutes";
 import shopRoutes from "./routes/shopRoutes";
+import leaderboardRoutes from "./routes/leaderboardRoutes";
+import leagueRoutes from "./routes/leagueRoutes";
+import classroomRoutes from "./routes/classroomRoutes";
+import eventRoutes from "./routes/eventRoutes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
 import { specs } from "./config/swagger";
 import swaggerUi from "swagger-ui-express";
@@ -50,6 +54,10 @@ export function createApp(): Application {
   app.use("/api/progress", progressRoutes);
   app.use("/api/gamification", gamificationRoutes);
   app.use("/api/shop", shopRoutes);
+  app.use("/api/leaderboard", leaderboardRoutes);
+  app.use("/api/leagues", leagueRoutes);
+  app.use("/api/classroom", classroomRoutes);
+  app.use("/api/events", eventRoutes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

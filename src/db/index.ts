@@ -18,6 +18,13 @@ import { initUserQuest, associateUserQuest, UserQuest } from "./models/UserQuest
 import { initShopItem, ShopItem } from "./models/ShopItem";
 import { initUserInventory, associateUserInventory, UserInventory } from "./models/UserInventory";
 import { initDailyActivity, associateDailyActivity, DailyActivity } from "./models/DailyActivity";
+import { initLeaderboardEntry, associateLeaderboardEntry, LeaderboardEntry } from "./models/LeaderboardEntry";
+import { initLeague, associateLeague, League } from "./models/League";
+import { initLeagueMembership, associateLeagueMembership, LeagueMembership } from "./models/LeagueMembership";
+import { initClassroom, associateClassroom, Classroom } from "./models/Classroom";
+import { initClassroomRound, associateClassroomRound, ClassroomRound } from "./models/ClassroomRound";
+import { initClassroomParticipant, associateClassroomParticipant, ClassroomParticipant } from "./models/ClassroomParticipant";
+import { initEvent, Event } from "./models/Event";
 import logger from "../utils/logger";
 
 export const sequelize = new Sequelize(
@@ -57,6 +64,13 @@ initUserQuest(sequelize);
 initShopItem(sequelize);
 initUserInventory(sequelize);
 initDailyActivity(sequelize);
+initLeaderboardEntry(sequelize);
+initLeague(sequelize);
+initLeagueMembership(sequelize);
+initClassroom(sequelize);
+initClassroomRound(sequelize);
+initClassroomParticipant(sequelize);
+initEvent(sequelize);
 
 // Lecture ↔ Lesson
 Lecture.hasMany(Lesson, {
@@ -154,6 +168,37 @@ associateUserInventory();
 // User ↔ DailyActivity
 associateDailyActivity();
 
+// Leaderboard
+LeaderboardEntry.belongsTo(User, { foreignKey: "userId", as: "user" });
+User.hasMany(LeaderboardEntry, { foreignKey: "userId", as: "leaderboardEntries" });
+
+// Leagues
+League.hasMany(LeagueMembership, {
+  foreignKey: "leagueId",
+  as: "memberships",
+  onDelete: "CASCADE",
+});
+LeagueMembership.belongsTo(League, { foreignKey: "leagueId", as: "league" });
+LeagueMembership.belongsTo(User, { foreignKey: "userId", as: "user" });
+User.hasMany(LeagueMembership, { foreignKey: "userId", as: "leagueMemberships" });
+
+// Classrooms
+Classroom.belongsTo(User, { foreignKey: "teacherId", as: "teacher" });
+User.hasMany(Classroom, { foreignKey: "teacherId", as: "classrooms" });
+Classroom.hasMany(ClassroomRound, {
+  foreignKey: "classroomId",
+  as: "rounds",
+  onDelete: "CASCADE",
+});
+ClassroomRound.belongsTo(Classroom, { foreignKey: "classroomId", as: "classroom" });
+ClassroomRound.hasMany(ClassroomParticipant, {
+  foreignKey: "roundId",
+  as: "participants",
+  onDelete: "CASCADE",
+});
+ClassroomParticipant.belongsTo(ClassroomRound, { foreignKey: "roundId", as: "round" });
+ClassroomParticipant.belongsTo(User, { foreignKey: "userId", as: "user" });
+
 export {
   User,
   Lecture,
@@ -173,5 +218,12 @@ export {
   ShopItem,
   UserInventory,
   DailyActivity,
+  LeaderboardEntry,
+  League,
+  LeagueMembership,
+  Classroom,
+  ClassroomRound,
+  ClassroomParticipant,
+  Event,
 };
 
