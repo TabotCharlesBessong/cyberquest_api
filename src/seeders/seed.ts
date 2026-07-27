@@ -297,7 +297,7 @@ async function seed(): Promise<void> {
     await sequelize.authenticate();
     logger.info("Connected to PostgreSQL", { component: "seed" });
 
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
     logger.info("Models synchronized", { component: "seed" });
 
     const conceptCache = new Map<string, string>();
