@@ -297,7 +297,7 @@ async function seed(): Promise<void> {
     await sequelize.authenticate();
     logger.info("Connected to PostgreSQL", { component: "seed" });
 
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     logger.info("Models synchronized", { component: "seed" });
 
     const conceptCache = new Map<string, string>();
@@ -318,6 +318,13 @@ async function seed(): Promise<void> {
           ageGroup: section.ageGroup as "A" | "B",
         },
       });
+      await createdSection.update({
+        title: section.title,
+        subtitle: section.description,
+        icon: section.icon,
+        color: section.color,
+        ageGroup: section.ageGroup as "A" | "B",
+      });
 
       for (const unit of section.units) {
         const [createdUnit] = await Unit.findOrCreate({
@@ -331,6 +338,12 @@ async function seed(): Promise<void> {
             order: 0,
             ageGroup: unit.ageGroup as "A" | "B",
           },
+        });
+        await createdUnit.update({
+          title: unit.title,
+          description: unit.description,
+          icon: unit.icon,
+          ageGroup: unit.ageGroup as "A" | "B",
         });
 
         for (const lesson of unit.lessons) {
@@ -348,9 +361,15 @@ async function seed(): Promise<void> {
               difficulty: lesson.difficulty,
             },
           });
+          await createdLesson.update({
+            title: lesson.title,
+            notes: lesson.notes,
+            ageGroup: lesson.ageGroup as "A" | "B",
+            difficulty: lesson.difficulty,
+          });
 
           for (const q of lesson.questions) {
-            await Question.findOrCreate({
+            const [question] = await Question.findOrCreate({
               where: { slug: q.id },
               defaults: {
                 lessonId: createdLesson.id,
@@ -362,6 +381,14 @@ async function seed(): Promise<void> {
                 difficulty: q.difficulty,
                 xpReward: q.xpReward,
               },
+            });
+            await question.update({
+              question: q.question,
+              options: q.options,
+              correctIndex: q.correctIndex,
+              explanation: q.explanation,
+              difficulty: q.difficulty,
+              xpReward: q.xpReward,
             });
           }
         }

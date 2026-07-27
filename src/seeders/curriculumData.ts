@@ -55317,5 +55317,3 @@ export const CURRICULUM: CurriculumData = {
 
   ]
 };
-
-export const SEED_LECTURES: any[] = [];
