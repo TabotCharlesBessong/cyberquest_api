@@ -1,4 +1,4 @@
-import { Lecture, Lesson, LessonOption, LessonChoice, Concept, Standard } from "../db";
+import { Lecture, Lesson, LessonOption, LessonChoice, Concept, Standard, Question } from "../db";
 import { AgeGroup } from "../db/models/Lesson";
 
 export class LectureService {
@@ -14,6 +14,7 @@ export class LectureService {
             { model: LessonChoice, as: "choices", order: [["position", "ASC"]] },
             { model: Concept, as: "concepts" },
             { model: Standard, as: "standards" },
+            { model: Question, as: "questions", order: [["difficulty", "ASC"]] },
           ],
         },
       ],
@@ -53,6 +54,18 @@ export class LectureService {
               }));
           }
 
+          if (lesson.questions?.length) {
+            lPlain.questions = lesson.questions.map((q: any) => ({
+              id: q.slug || q.id,
+              question: q.question,
+              options: q.options,
+              correctIndex: q.correctIndex,
+              explanation: q.explanation,
+              difficulty: q.difficulty,
+              xpReward: q.xpReward,
+            }));
+          }
+
           if (lesson.concepts?.length) {
             lPlain.conceptKeys = lesson.concepts.map((c: any) => c.code);
           }
@@ -80,6 +93,7 @@ export class LectureService {
             { model: LessonChoice, as: "choices", order: [["position", "ASC"]] },
             { model: Concept, as: "concepts" },
             { model: Standard, as: "standards" },
+            { model: Question, as: "questions", order: [["difficulty", "ASC"]] },
           ],
         },
       ],
@@ -117,6 +131,18 @@ export class LectureService {
               consequence: c.consequence,
               xpDelta: c.xpDelta,
             }));
+        }
+
+        if (lesson.questions?.length) {
+          lPlain.questions = lesson.questions.map((q: any) => ({
+            id: q.slug || q.id,
+            question: q.question,
+            options: q.options,
+            correctIndex: q.correctIndex,
+            explanation: q.explanation,
+            difficulty: q.difficulty,
+            xpReward: q.xpReward,
+          }));
         }
 
         if (lesson.concepts?.length) {
