@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import { sequelize } from "../db";
 import { LeaderboardEntry, User } from "../db";
 import { notFound } from "../utils/apiError";
+import { EventService } from "./eventService";
 import logger from "../utils/logger";
 
 export class LeaderboardService {
@@ -47,6 +48,7 @@ export class LeaderboardService {
 
   static async recomputeLeaderboard(scope: "class" | "school" | "global", school?: string) {
     const seasonId = this.getCurrentSeason();
+    const multiplier = await EventService.getActiveMultiplier();
 
     await LeaderboardEntry.destroy({
       where: { scope, seasonId },
@@ -61,14 +63,14 @@ export class LeaderboardService {
       userId: user.id,
       scope,
       seasonId,
-      score: user.xp,
+      score: Math.round(user.xp * multiplier),
     }));
 
     if (rows.length > 0) {
       await LeaderboardEntry.bulkCreate(rows);
     }
 
-    logger.info("Leaderboard recomputed", { scope, seasonId, count: rows.length });
+    logger.info("Leaderboard recomputed", { scope, seasonId, count: rows.length, multiplier });
     return rows.length;
   }
 }

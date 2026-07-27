@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import { sequelize } from "../db";
 import { League, LeagueMembership, User } from "../db";
 import { notFound } from "../utils/apiError";
+import { EventService } from "./eventService";
 import logger from "../utils/logger";
 
 const TIERS = ["bronze", "silver", "gold", "diamond"] as const;
@@ -48,7 +49,7 @@ export class LeagueService {
 
     const seasonId = this.getCurrentSeason();
     const membership: any = await LeagueMembership.findOne({
-      where: { userId, leagueId: { [Op.ne]: "" } },
+      where: { userId },
       include: [
         {
           model: League,
@@ -63,6 +64,7 @@ export class LeagueService {
   }
 
   static async getLeagueStandings(leagueId: string) {
+    const multiplier = await EventService.getActiveMultiplier();
     const members = await LeagueMembership.findAll({
       where: { leagueId },
       include: [
@@ -81,7 +83,7 @@ export class LeagueService {
         userId: m.userId,
         name: user?.name || "Unknown",
         avatar: user?.avatar || "🦸",
-        xp: m.xp,
+        xp: Math.round(m.xp * multiplier),
         rank: index + 1,
         promoted: m.promoted,
         demoted: m.demoted,
@@ -127,6 +129,7 @@ export class LeagueService {
 
   static async weeklyPromoteDemote() {
     const seasonId = this.getCurrentSeason();
+    const multiplier = await EventService.getActiveMultiplier();
     const leagues = await League.findAll({ where: { seasonId } });
 
     for (const league of leagues) {
@@ -139,55 +142,48 @@ export class LeagueService {
       const total = members.length;
       if (total === 0) continue;
 
+      const ranked = members
+        .map((m: any) => ({ ...m, adjustedXp: Math.round((m.user as { xp: number }).xp * multiplier) }))
+        .sort((a: any, b: any) => b.adjustedXp - a.adjustedXp);
+
       const promoteCount = Math.max(1, Math.floor(total * 0.2));
       const demoteCount = Math.max(1, Math.floor(total * 0.2));
       const tierIndex = TIERS.indexOf(league.tier as Tier);
-      const nextTier = tierIndex > 0 ? TIERS[tierIndex - 1] : null;
-      const prevTier = tierIndex < TIERS.length - 1 ? TIERS[tierIndex + 1] : null;
+      const nextTier = tierIndex < TIERS.length - 1 ? TIERS[tierIndex + 1] : null;
+      const prevTier = tierIndex > 0 ? TIERS[tierIndex - 1] : null;
 
-      const promotions: Promise<unknown>[] = [];
-      const demotions: Promise<unknown>[] = [];
+      const updates: Promise<unknown>[] = [];
 
       for (let i = 0; i < total; i++) {
-        const m = members[i] as any;
+        const rankedMember = ranked[i];
+        const originalMember = members[i];
+        let promoted = false;
+        let demoted = false;
+        let changeNote: string | undefined;
+
         if (i < promoteCount && nextTier) {
-          m.promoted = true;
-          m.changeNote = `Promoted to ${nextTier}`;
-          promotions.push(
-            LeagueMembership.upsert({
-              leagueId: (await this.ensureLeague(nextTier, seasonId)).id,
-              userId: m.userId,
-              xp: (m.user as { xp: number }).xp,
-              rank: 0,
-              promoted: true,
-              demoted: false,
-              changeNote: m.changeNote,
-            })
-          );
+          promoted = true;
+          changeNote = `Promoted to ${nextTier}`;
         } else if (i >= total - demoteCount && prevTier) {
-          m.demoted = true;
-          m.changeNote = `Demoted to ${prevTier}`;
-          demotions.push(
-            LeagueMembership.upsert({
-              leagueId: (await this.ensureLeague(prevTier, seasonId)).id,
-              userId: m.userId,
-              xp: (m.user as { xp: number }).xp,
-              rank: 0,
-              promoted: false,
-              demoted: true,
-              changeNote: m.changeNote,
-            })
-          );
-        } else {
-          m.promoted = false;
-          m.demoted = false;
-          m.changeNote = undefined as any;
+          demoted = true;
+          changeNote = `Demoted to ${prevTier}`;
         }
-        await m.save();
+
+        updates.push(
+          LeagueMembership.upsert({
+            leagueId: originalMember.leagueId,
+            userId: originalMember.userId,
+            xp: originalMember.xp,
+            rank: i + 1,
+            promoted,
+            demoted,
+            changeNote,
+          })
+        );
       }
 
-      await Promise.all([...promotions, ...demotions]);
-      logger.info("Weekly promote/demote complete", { leagueId: league.id, tier: league.tier });
+      await Promise.all(updates);
+      logger.info("Weekly promote/demote complete", { leagueId: league.id, tier: league.tier, multiplier });
     }
   }
 }
