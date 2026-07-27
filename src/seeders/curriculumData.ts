@@ -1900,3 +1900,556 @@ export const SEED_LECTURES: SeedLecture[] = [
   },
 ];
 
+// ─────────────────────────────────────────────────────────
+// NEW CURRICULUM STRUCTURE (Phase 4)
+// Sections → Units → Lessons → Notes → Questions
+// ─────────────────────────────────────────────────────────
+
+export interface CurriculumQuestion {
+  id: string;
+  lessonId: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+  difficulty: 1 | 2 | 3 | 4 | 5;
+  xpReward: number;
+}
+
+export interface CurriculumLesson {
+  id: string;
+  unitId: string;
+  title: string;
+  notes: string;
+  order: number;
+  ageGroup: "A" | "B";
+  difficulty: 1 | 2 | 3 | 4 | 5;
+  questions: CurriculumQuestion[];
+}
+
+export interface CurriculumUnit {
+  id: string;
+  sectionId: string;
+  title: string;
+  description: string;
+  icon: string;
+  order: number;
+  ageGroup: "A" | "B";
+  lessons: CurriculumLesson[];
+}
+
+export interface CurriculumSection {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  color: string;
+  order: number;
+  ageGroup: "A" | "B";
+  units: CurriculumUnit[];
+}
+
+export interface CurriculumData {
+  sections: CurriculumSection[];
+}
+
+function generateOptions(correct: string, wrongs: string[]): string[] {
+  const all = [correct, ...wrongs];
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [all[i], all[j]] = [all[j], all[i]];
+  }
+  return all;
+}
+
+function q(lessonId: string, id: string, question: string, correct: string, wrongs: string[], explanation: string, difficulty: 1 | 2 | 3 | 4 | 5 = 1, xpReward: number = 10): CurriculumQuestion {
+  return {
+    id: `${lessonId}-${id}`,
+    lessonId,
+    question,
+    options: generateOptions(correct, wrongs),
+    correctIndex: 0,
+    explanation,
+    difficulty,
+    xpReward,
+  };
+}
+
+function lesson(unitId: string, id: string, title: string, notes: string, ageGroup: "A" | "B", difficulty: 1 | 2 | 3 | 4 | 5, questions: CurriculumQuestion[]): CurriculumLesson {
+  return { id: `${unitId}-${id}`, unitId, title, notes, order: 0, ageGroup, difficulty, questions };
+}
+
+function unit(sectionId: string, id: string, title: string, description: string, icon: string, ageGroup: "A" | "B", lessons: CurriculumLesson[]): CurriculumUnit {
+  return { id: `${sectionId}-${id}`, sectionId, title, description, icon, order: 0, ageGroup, lessons };
+}
+
+function section(id: string, title: string, description: string, icon: string, color: string, ageGroup: "A" | "B", units: CurriculumUnit[]): CurriculumSection {
+  return { id, title, description, icon, color, order: 0, ageGroup, units };
+}
+
+export const CURRICULUM: CurriculumData = {
+  sections: [
+    // ─────────────────────────────────────────────────────────
+    // GROUP B — Ages 8–12
+    // ─────────────────────────────────────────────────────────
+    section("gb-cybersafe-world", "CyberSafe World", "Understand the digital world.", "🌍", "#4D96FF", "B", [
+      unit("gb-cybersafe-world", "how-internet-works", "How the Internet Works", "Learn what happens when you go online.", "🔌", "B", [
+        lesson("gb-cybersafe-world-how-internet-works", "l1", "The Internet and You", "When you open a website, your device sends a request to a server. The server sends the website back. This all happens in seconds.", "B", 1, [
+          q("gb-cybersafe-world-how-internet-works-l1", "q1", "What happens when you open a website?", "Your device asks a server for the website", ["The website jumps into your screen", "Nothing happens"], "Your device sends a request to a server.", 2, 10),
+          q("gb-cybersafe-world-how-internet-works-l1", "q2", "How fast does a website load?", "In seconds", ["In hours", "In days"], "Websites load very quickly.", 2, 10),
+          q("gb-cybersafe-world-how-internet-works-l1", "q3", "What is a server?", "A powerful computer that stores websites", ["A type of phone", "A game console"], "Servers store and send website data.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-how-internet-works", "l2", "IP Addresses and DNS", "Every device has an IP address, like a home address for your computer. DNS translates website names to IP addresses.", "B", 2, [
+          q("gb-cybersafe-world-how-internet-works-l2", "q1", "An IP address is like:", "A home address for your computer", ["A password", "A username"], "IP addresses identify devices on the internet.", 3, 10),
+          q("gb-cybersafe-world-how-internet-works-l2", "q2", "What does DNS do?", "Translates website names to IP addresses", ["Blocks websites", "Creates passwords"], "DNS helps your device find websites by name.", 3, 10),
+        ]),
+      ]),
+
+      unit("gb-cybersafe-world", "data-privacy", "Data and Privacy", "What is data and why does it matter?", "📊", "B", [
+        lesson("gb-cybersafe-world-data-privacy", "l1", "What is Personal Data?", "Personal data is any information about you: name, email, photos, location, school. Companies collect this data and must protect it.", "B", 1, [
+          q("gb-cybersafe-world-data-privacy-l1", "q1", "Which of these is personal data?", "Your email address", ["A public news article", "A weather report"], "Email address is personal data.", 2, 10),
+          q("gb-cybersafe-world-data-privacy-l1", "q2", "Why do companies collect data?", "To improve their services", ["To give it away freely", "To delete it all"], "Companies use data to improve services.", 3, 10),
+          q("gb-cybersafe-world-data-privacy-l1", "q3", "Who is responsible for protecting your data?", "Both you and the companies", ["Only you", "Only the company"], "Both users and companies share responsibility.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-data-privacy", "l2", "Data Brokers and Tracking", "Data brokers collect info from many websites and sell it. They can build a detailed profile of you without your knowledge.", "B", 2, [
+          q("gb-cybersafe-world-data-privacy-l2", "q1", "What do data brokers do?", "Collect and sell personal information", ["Give free cookies", "Fix computers"], "Data brokers sell personal information.", 3, 10),
+          q("gb-cybersafe-world-data-privacy-l2", "q2", "How can you limit tracking?", "Use privacy settings and ad blockers", ["Share more info", "Click every ad"], "Privacy settings and ad blockers help limit tracking.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-cybersafe-world", "digital-footprint", "Digital Footprint", "Your online actions leave a permanent trail.", "👣", "B", [
+        lesson("gb-cybersafe-world-digital-footprint", "l1", "Digital Footprint Basics", "You post a photo on a public account. Three weeks later, a stranger screenshots it and uses it in a fake profile. Why does this happen?", "B", 2, [
+          q("gb-cybersafe-world-digital-footprint-l1", "q1", "Why can a screenshot of your photo be used later?", "Once something is online, it can be copied and shared beyond your control", ["The app deleted your photo", "Your phone was hacked"], "Digital footprints are permanent.", 2, 10),
+          q("gb-cybersafe-world-digital-footprint-l1", "q2", "What is a digital footprint?", "The trail of data you leave online", ["Your physical shoe size", "A type of virus", "A social media app"], "Everything you post creates a digital footprint.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-digital-footprint", "l2", "The Stranger Test", "Before sharing anything online, ask: 'Would I say this to a stranger in real life?' If the answer is no, do not post it.", "B", 3, [
+          q("gb-cybersafe-world-digital-footprint-l2", "q1", "The stranger test means:", "Would I say this to a stranger in real life?", ["Ask a stranger for advice", "Test your password strength", "Count your online friends"], "The stranger test is a simple filter for oversharing.", 3, 10),
+          q("gb-cybersafe-world-digital-footprint-l2", "q2", "If you would not say it to a stranger, should you post it?", "No", ["Yes, if it is funny", "Only if no one is watching", "It depends"], "If you would not say it to a stranger, do not post it.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-cybersafe-world", "online-identity", "Online Identity", "Your online identity is yours to shape.", "👤", "B", [
+        lesson("gb-cybersafe-world-online-identity", "l1", "Avatar Creation", "Your online identity is yours to shape. Choose wisely — your avatar represents you in the CyberSafe World and reminds you that your digital self matters.", "B", 1, [
+          q("gb-cybersafe-world-online-identity-l1", "q1", "Your avatar represents:", "Your digital self", ["Your real face", "Your password", "Your location"], "Your avatar is your online identity.", 2, 10),
+          q("gb-cybersafe-world-online-identity-l1", "q2", "Why does your digital self matter?", "It shapes how others see you online", ["It is not real so it does not matter", "Only adults have digital identities"], "Your online identity matters.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-online-identity", "l2", "PII Classification", "You are signing up for a new game. It asks for your full name, birthdate, and home address. Which combination should you give?", "B", 3, [
+          q("gb-cybersafe-world-online-identity-l2", "q1", "What should you share when signing up for a game?", "Only what is required", ["All of it", "Make up a fake name and real address"], "Share only required information.", 3, 10),
+          q("gb-cybersafe-world-online-identity-l2", "q2", "When should you share your home address?", "Never without a parent approving", ["Always for delivery", "Only with online friends"], "Never share your address without parental approval.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-bully-blocker", "The Bully Blocker", "Stand up to cyberbullying.", "🛡️", "#FF7A59", "B", [
+      unit("gb-bully-blocker", "recognition", "Cyberbullying Recognition", "Identify signs of cyberbullying.", "💬", "B", [
+        lesson("gb-bully-blocker-recognition", "l1", "The Invisible Bully", "Someone types something cruel and hits send. In a second, someone else feels small. The worst part? The bully might be a stranger, a 'friend', or completely anonymous. Cyberbullying is real, it is common, and it is not your fault.", "B", 1, [
+          q("gb-bully-blocker-recognition-l1", "q1", "Cyberbullying is:", "Being mean online", ["Playing a game", "Sharing a photo"], "Being mean online is cyberbullying.", 2, 10),
+          q("gb-bully-blocker-recognition-l1", "q2", "Who can be a cyberbully?", "A stranger, friend, or anonymous person", ["Only strangers", "Only people you know"], "Bullies can be anyone online.", 3, 10),
+        ]),
+        lesson("gb-bully-blocker-recognition", "l2", "Bystander Choice", "You see a classmate being bullied in a group chat. What do you do?", "B", 3, [
+          q("gb-bully-blocker-recognition-l2", "q1", "You see cyberbullying. Best action?", "Privately message the victim, report the bully, and tell a teacher", ["Join in to avoid being targeted", "Ignore it — not my problem"], "Bystanders have power to help.", 3, 10),
+          q("gb-bully-blocker-recognition-l2", "q2", "Reporting is:", "Protecting yourself and others", ["Tattling", "Making it worse"], "Reporting is not tattling — it is protecting.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-bully-blocker", "response", "Response and Evidence", "How to respond and document cyberbullying.", "📸", "B", [
+        lesson("gb-bully-blocker-response", "l1", "Evidence and Report", "Screenshots are evidence. Most platforms have a 'Report' button. Reporting is not tattling — it is protecting yourself and others.", "B", 3, [
+          q("gb-bully-blocker-response-l1", "q1", "What is evidence of cyberbullying?", "A screenshot", ["A rumor", "A deleted message"], "Screenshots preserve proof.", 3, 10),
+          q("gb-bully-blocker-response-l1", "q2", "Why report cyberbullying?", "To protect yourself and others", ["To get the bully in trouble", "To show off"], "Reporting stops the bully and protects others.", 4, 10),
+        ]),
+        lesson("gb-bully-blocker-response", "l2", "Platform Response", "You are being cyberbullied in a game chat. The bully is anonymous. What is your best sequence of actions?", "B", 4, [
+          q("gb-bully-blocker-response-l2", "q1", "Best sequence?", "Screenshot, block, report, tell an adult", ["Reply with insults, then block", "Delete the game"], "Evidence + block + report + adult is the strongest response.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-phishing-fisher", "The Phishing Fisher", "Catch the scams!", "🎣", "#2BC48A", "B", [
+      unit("gb-phishing-fisher", "url-forensics", "URL Forensics", "Evaluate URLs for legitimacy.", "🔍", "B", [
+        lesson("gb-phishing-fisher-url-forensics", "l1", "URL Forensics", "You receive a link that looks like your school login. The real school site is your-school.org. Which URL is suspicious?", "B", 2, [
+          q("gb-phishing-fisher-url-forensics-l1", "q1", "Which URL is suspicious?", "your-school.secure-login.xyz", ["your-school.org/login", "google.com"], "The domain is wrong.", 3, 10),
+          q("gb-phishing-fisher-url-forensics-l1", "q2", "Always check the:", "Real domain before clicking", ["Emoji used", "Time it was sent"], "Check the real domain.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-phishing-fisher", "sender-spoofing", "Sender Spoofing", "Scammers can make an email look like it comes from anyone.", "🎭", "B", [
+        lesson("gb-phishing-fisher-sender-spoofing", "l1", "Sender Spoofing", "Scammers can make an email look like it comes from anyone. 'From: teacher@school.com' does not mean it is actually from your teacher. Always check the real email address.", "B", 3, [
+          q("gb-phishing-fisher-sender-spoofing-l1", "q1", "Never trust the:", "'From' name alone", ["Subject line", "Email length"], "Check the real address.", 3, 10),
+          q("gb-phishing-fisher-sender-spoofing-l1", "q2", "A fake sender email might look like:", "teacher@school.com but actually be different", ["A real school address", "A known teacher name"], "Display names can be spoofed.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-phishing-fisher", "urgency-trap", "Urgency Trap", "Pressure tactics in scams.", "⏰", "B", [
+        lesson("gb-phishing-fisher-urgency-trap", "l1", "Urgency Trap", "A message says 'Your account will be deleted in 1 hour unless you act now.' It asks for your password. What combination of tactics is this?", "B", 4, [
+          q("gb-phishing-fisher-urgency-trap-l1", "q1", "This combines:", "Urgency + authority spoofing + credential harvesting", ["A normal update", "A helpful reminder"], "Three red flags at once.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-password-castle", "Password Castle", "Build strong passwords to protect your castle.", "🏰", "#F59E0B", "B", [
+      unit("gb-password-castle", "strength", "Password Strength", "Creating and managing secure passwords.", "🔑", "B", [
+        lesson("gb-password-castle-strength", "l1", "Password Strength", "A strong password is long, uses uppercase, lowercase, numbers, and symbols. Avoid birthdays, pet names, or common words.", "B", 1, [
+          q("gb-password-castle-strength-l1", "q1", "What makes a password strong?", "Length and character variety", ["Short and simple", "Only letters"], "Strong passwords are long and complex.", 2, 10),
+          q("gb-password-castle-strength-l1", "q2", "Which is a weak password?", "password123", ["K9#mP2$vL", "Tr0ub4dor&3"], "password123 is common and easy to guess.", 3, 10),
+        ]),
+        lesson("gb-password-castle-strength", "l2", "Password Managers", "Password managers store all your passwords in one encrypted place. You only need to remember one master password.", "B", 2, [
+          q("gb-password-castle-strength-l2", "q1", "What is a password manager?", "A tool that stores passwords securely", ["A notebook", "A friend"], "Password managers securely store passwords.", 3, 10),
+          q("gb-password-castle-strength-l2", "q2", "How many passwords should you remember?", "One master password", ["All of them", "Half of them"], "You only need the master password.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-privacy-shield", "Privacy Shield", "Protect your personal information.", "🛡️", "#22C55E", "B", [
+      unit("gb-privacy-shield", "wifi-safety", "Public Wi-Fi Safety", "Risks of public networks and how to stay safe.", "📶", "B", [
+        lesson("gb-privacy-shield-wifi-safety", "l1", "Public Wi-Fi Risks", "Public Wi-Fi at cafes or airports is convenient but risky. Hackers can intercept data on open networks.", "B", 2, [
+          q("gb-privacy-shield-wifi-safety-l1", "q1", "Why is public Wi-Fi risky?", "Hackers can intercept your data", ["It is always fast", "It is free"], "Open networks can be intercepted.", 3, 10),
+          q("gb-privacy-shield-wifi-safety-l1", "q2", "What should you avoid on public Wi-Fi?", "Online banking", ["Checking weather", "Reading news"], "Avoid sensitive activities.", 3, 10),
+        ]),
+        lesson("gb-privacy-shield-wifi-safety", "l2", "Staying Safe on Public Wi-Fi", "Use a VPN, stick to HTTPS sites, and avoid logging into accounts with sensitive info on public networks.", "B", 3, [
+          q("gb-privacy-shield-wifi-safety-l2", "q1", "What does VPN stand for?", "Virtual Private Network", ["Very Private Network", "Virtual Public Network"], "VPN creates a secure tunnel.", 4, 10),
+          q("gb-privacy-shield-wifi-safety-l2", "q2", "What does HTTPS mean?", "Secure connection to a website", ["A type of virus", "A fast internet"], "HTTPS means the connection is encrypted.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-privacy-shield", "scam-recognition", "Scam Recognition", "Spotting scams in games, social media, and messages.", "🚨", "B", [
+        lesson("gb-privacy-shield-scam-recognition", "l1", "Gaming Scams", "Scammers offer free skins, coins, or boosts in exchange for your account info. Never share login details for in-game items.", "B", 2, [
+          q("gb-privacy-shield-scam-recognition-l1", "q1", "A scam offers free game skins for:", "Your account password", ["Your real name", "Your favorite color"], "Never share login details.", 2, 10),
+          q("gb-privacy-shield-scam-recognition-l1", "q2", "If a deal seems too good to be true, it probably is:", "True", ["False", "Maybe"], "If it seems too good to be true, it is likely a scam.", 3, 10),
+        ]),
+        lesson("gb-privacy-shield-scam-recognition", "l2", "Social Media Scams", "Fake giveaways, fake accounts, and phishing links are common on social media. Verify before you click or share.", "B", 3, [
+          q("gb-privacy-shield-scam-recognition-l2", "q1", "A social media giveaway might be a scam if:", "It asks for your password", ["It is from your favorite celebrity", "It has many likes"], "Giveaways should never ask for passwords.", 3, 10),
+          q("gb-privacy-shield-scam-recognition-l2", "q2", "What should you do before clicking a social media link?", "Check the URL and sender", ["Click it first", "Share it with friends"], "Check URL and sender before clicking.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-privacy-shield", "social-engineering", "Social Engineering", "How attackers manipulate people.", "🎭", "B", [
+        lesson("gb-privacy-shield-social-engineering", "l1", "Manipulation Tactics", "Social engineers use urgency, authority, and curiosity to trick you. They might pretend to be IT, a boss, or a friend in trouble.", "B", 2, [
+          q("gb-privacy-shield-social-engineering-l1", "q1", "Social engineering is:", "Manipulating people to reveal info", ["Building software", "Teaching social studies"], "It is psychological manipulation.", 3, 10),
+          q("gb-privacy-shield-social-engineering-l1", "q2", "A scammer pretends to be IT support. This is:", "Social engineering", ["A normal IT ticket", "A security test"], "Pretending to be someone else is social engineering.", 3, 10),
+        ]),
+        lesson("gb-privacy-shield-social-engineering", "l2", "Preventing Social Engineering", "Verify identities independently. Never share passwords or sensitive info based on pressure. When in doubt, call the person directly.", "B", 3, [
+          q("gb-privacy-shield-social-engineering-l2", "q1", "How do you verify a suspicious request?", "Contact the person through a known channel", ["Do what they ask immediately", "Ignore it completely"], "Verify independently.", 4, 10),
+          q("gb-privacy-shield-social-engineering-l2", "q2", "What is a common pressure tactic?", "Urgency: 'Do this now!'", ["Polite request", "Friendly greeting"], "Urgency is a common manipulation tactic.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("ga-cybersafe-world", "CyberSafe World", "Your adventure begins.", "🌍", "#4D96FF", "A", [
+      unit("ga-cybersafe-world", "internet-basics", "Internet Basics", "The internet connects devices all over the world.", "🌐", "A", [
+        lesson("ga-cybersafe-world-internet-basics", "l1", "The Internet is Everywhere", "The internet connects phones, tablets, and computers. People use it to learn, play, and talk to friends. But remember: not everyone on the internet is who they say they are.", "A", 1, [
+          q("ga-cybersafe-world-internet-basics-l1", "q1", "What connects computers all over the world?", "The internet", ["A TV", "A book", "A phone"], "The internet is the network that connects computers globally.", 1, 10),
+          q("ga-cybersafe-world-internet-basics-l1", "q2", "Which device can use the internet?", "A tablet", ["A pencil", "A chair", "A shoe"], "Tablets can connect to the internet.", 1, 10),
+          q("ga-cybersafe-world-internet-basics-l1", "q3", "Is everyone on the internet who they say they are?", "No", ["Yes", "Maybe", "Always"], "People online might pretend to be someone else.", 2, 10),
+        ]),
+        lesson("ga-cybersafe-world-internet-basics", "l2", "Good and Bad Things Online", "The internet has fun games, videos, and learning sites. But it can also have scary or mean things. Ask an adult if you see something that makes you uncomfortable.", "A", 1, [
+          q("ga-cybersafe-world-internet-basics-l2", "q1", "What should you do if you see something scary online?", "Tell a trusted adult", ["Close it and forget it", "Share it with friends", "Keep it secret"], "Tell a trusted adult right away.", 1, 10),
+          q("ga-cybersafe-world-internet-basics-l2", "q2", "Which of these is GOOD to do online?", "Learn a new game from a teacher", ["Talk to strangers", "Share your password", "Click unknown links"], "Learning from a teacher is safe.", 1, 10),
+          q("ga-cybersafe-world-internet-basics-l2", "q3", "If a website asks for your home address, what do you do?", "Close the website and tell an adult", ["Type it in", "Ask a friend", "Ignore it"], "Never share personal info without adult permission.", 2, 10),
+        ]),
+      ]),
+
+      unit("ga-cybersafe-world", "personal-info", "Personal Information", "Your name, address, and school are private.", "🔒", "A", [
+        lesson("ga-cybersafe-world-personal-info", "l1", "My Personal Information", "Your name, address, phone number, and school are personal information. These are private. You should only share them with people your parents trust.", "A", 1, [
+          q("ga-cybersafe-world-personal-info-l1", "q1", "Which of these is personal information?", "Your home address", ["A cat video", "A math game", "A cartoon"], "Your home address is personal and private.", 1, 10),
+          q("ga-cybersafe-world-personal-info-l1", "q2", "Who should you share your name with online?", "Only people your parents trust", ["Everyone", "Strangers", "No one ever"], "Only share with trusted people your parents approve.", 1, 10),
+          q("ga-cybersafe-world-personal-info-l1", "q3", "A website asks for your school name. What do you do?", "Ask a parent first", ["Type it immediately", "Make up a name", "Close the computer"], "Always ask a parent before sharing school info.", 2, 10),
+        ]),
+        lesson("ga-cybersafe-world-personal-info", "l2", "Keeping Info Private", "Imagine your personal information is a treasure chest. Only you and your parents have the key. Never give the key to strangers online.", "A", 2, [
+          q("ga-cybersafe-world-personal-info-l2", "q1", "Your personal info is like:", "A treasure chest with a key", ["A toy everyone can play with", "A book in a library", "A free candy"], "Personal info is private, like a locked treasure chest.", 2, 10),
+          q("ga-cybersafe-world-personal-info-l2", "q2", "If someone online asks for your photo, what do you do?", "Tell a parent", ["Send it right away", "Send a fake photo", "Ask them for theirs first"], "Always ask a parent before sending photos.", 2, 10),
+        ]),
+      ]),
+
+      unit("ga-cybersafe-world", "safe-people", "Safe People Online", "How to recognize safe people and avoid strangers.", "👫", "A", [
+        lesson("ga-cybersafe-world-safe-people", "l1", "Friends vs Strangers", "Online friends you know in real life are safe. Strangers are people you have never met. Never meet an online stranger without your parents.", "A", 1, [
+          q("ga-cybersafe-world-safe-people-l1", "q1", "Who is safe online?", "Someone your parents know", ["A random person messaging you", "A username you don't recognize", "A stranger"], "People your parents know are safe.", 1, 10),
+          q("ga-cybersafe-world-safe-people-l1", "q2", "Can you meet an online stranger alone?", "No, never", ["Yes, if they are nice", "Yes, with a friend", "Only if they give gifts"], "Never meet strangers without parents.", 2, 10),
+        ]),
+        lesson("ga-cybersafe-world-safe-people", "l2", "Grown-ups Who Help", "Police, teachers, and parents are helpers. If someone online makes you feel sad or scared, tell a grown-up right away.", "A", 2, [
+          q("ga-cybersafe-world-safe-people-l2", "q1", "Who can you tell if someone online makes you scared?", "A parent or teacher", ["Keep it secret", "Tell another kid", "Tell the stranger"], "Tell a trusted grown-up.", 1, 10),
+          q("ga-cybersafe-world-safe-people-l2", "q2", "A stranger offers you a gift online. What do you do?", "Tell a parent", ["Accept it", "Ask for more", "Keep it secret"], "Never accept gifts from strangers online without parents.", 2, 10),
+        ]),
+      ]),
+
+      unit("ga-cybersafe-world", "passwords", "Password Basics", "Learn what passwords are and how to keep them secret.", "🔑", "A", [
+        lesson("ga-cybersafe-world-passwords", "l1", "What is a Password?", "A password is like a secret key to your account. Only you should know it. Never share it with friends or strangers.", "A", 1, [
+          q("ga-cybersafe-world-passwords-l1", "q1", "A password is like:", "A secret key", ["A public sign", "A toy", "A snack"], "A password is a secret key only you should know.", 1, 10),
+          q("ga-cybersafe-world-passwords-l1", "q2", "Who should know your password?", "Only you", ["Your best friend", "Your teacher", "Everyone"], "Only you should know your password.", 1, 10),
+          q("ga-cybersafe-world-passwords-l1", "q3", "If a friend asks for your password, what do you do?", "Say no and tell a parent", ["Share it", "Change it later", "Give them a fake one"], "Never share your password with anyone.", 2, 10),
+        ]),
+        lesson("ga-cybersafe-world-passwords", "l2", "Strong Secrets", "A strong password has letters, numbers, and symbols. The stronger the password, the safer your account.", "A", 2, [
+          q("ga-cybersafe-world-passwords-l2", "q1", "Which password is stronger?", "K9#mP2", ["123456", "password", "cat"], "Strong passwords have letters, numbers, and symbols.", 2, 10),
+          q("ga-cybersafe-world-passwords-l2", "q2", "What makes a password strong?", "Mix of letters, numbers, and symbols", ["Only letters", "Your name", "Short words"], "Mix of different characters makes it strong.", 2, 10),
+        ]),
+      ]),
+    ]),
+
+    section("ga-bully-blocker", "The Bully Blocker", "Stand up to cyberbullying.", "🛡️", "#FF7A59", "A", [
+      unit("ga-bully-blocker", "understanding", "Understanding Cyberbullying", "What is cyberbullying and how to stop it.", "💬", "A", [
+        lesson("ga-bully-blocker-understanding", "l1", "What is Cyberbullying?", "Cyberbullying is when someone uses the internet to be mean to another person. It is not okay. Tell an adult if you see it.", "A", 2, [
+          q("ga-bully-blocker-understanding-l1", "q1", "Cyberbullying is:", "Being mean online", ["Playing a game", "Sharing a photo", "Saying hello"], "Being mean online is cyberbullying.", 2, 10),
+          q("ga-bully-blocker-understanding-l1", "q2", "What should you do if you see cyberbullying?", "Tell an adult", ["Join in", "Ignore it", "Share it"], "Tell an adult immediately.", 2, 10),
+        ]),
+        lesson("ga-bully-blocker-understanding", "l2", "Block and Tell", "When someone is mean to you online, the first thing to do is block them. Then tell a trusted adult — a parent, teacher, or Captain Cyber! Blocking stops the message. Telling stops the problem.", "A", 3, [
+          q("ga-bully-blocker-understanding-l2", "q1", "What is the first thing to do when someone is mean online?", "Block them", ["Reply with a mean message", "Cry", "Tell all your friends"], "Blocking stops the bully from contacting you.", 2, 10),
+          q("ga-bully-blocker-understanding-l2", "q2", "After blocking, what should you do?", "Tell a trusted adult", ["Keep it secret", "Delete the app", "Forget about it"], "Telling an adult helps stop the problem.", 3, 10),
+        ]),
+      ]),
+
+      unit("ga-bully-blocker", "bystander", "Bystander Intervention", "How to help when someone else is being bullied.", "🤝", "A", [
+        lesson("ga-bully-blocker-bystander", "l1", "Be a Buddy", "If you see a friend being bullied online, support them. Tell them to block the bully and then tell an adult together. A true defender does not watch from the sidelines.", "A", 3, [
+          q("ga-bully-blocker-bystander-l1", "q1", "If you see a friend being bullied, what should you do?", "Support them and tell an adult together", ["Watch and do nothing", "Join the bully", "Tell everyone at school"], "Supporting friends is the right thing to do.", 2, 10),
+          q("ga-bully-blocker-bystander-l1", "q2", "A true defender:", "Helps their friends", ["Watches from the sidelines", "Joins the bully", "Ignores the problem"], "True defenders take action.", 2, 10),
+        ]),
+        lesson("ga-bully-blocker-bystander", "l2", "What Would You Do?", "You see a classmate being bullied in a game chat. They have not told anyone. What is the best action?", "A", 4, [
+          q("ga-bully-blocker-bystander-l2", "q1", "You see cyberbullying. What is the best action?", "Tell them privately to block and report, then tell an adult together", ["Join the chat and defend them publicly", "Ignore it — not my business"], "Privately supporting the victim and getting an adult involved is safest.", 3, 10),
+          q("ga-bully-blocker-bystander-l2", "q2", "Should you publicly shame the bully?", "No, block and report instead", ["Yes, that teaches them a lesson", "Only if they are really mean", "It depends on the situation"], "Blocking and reporting is safer than public fights.", 3, 10),
+        ]),
+      ]),
+
+      unit("ga-bully-blocker", "kindness", "Kindness Online", "Treat others nicely on the internet.", "💬", "A", [
+        lesson("ga-bully-blocker-kindness", "l1", "Being Kind Online", "Just like in real life, we should be kind online. Say nice things, help friends, and don't write mean messages.", "A", 1, [
+          q("ga-bully-blocker-kindness-l1", "q1", "What should you do online?", "Be kind and nice", ["Be mean to others", "Ignore everyone", "Only talk to strangers"], "Be kind online just like in real life.", 1, 10),
+          q("ga-bully-blocker-kindness-l1", "q2", "If someone is mean to you online, what do you do?", "Tell a trusted adult", ["Be mean back", "Keep it secret", "Tell everyone at school"], "Tell a trusted adult.", 1, 10),
+        ]),
+        lesson("ga-bully-blocker-kindness", "l2", "The Power of Words", "Words can hurt or help. A nice comment can make someone's day. A mean comment can hurt their feelings. Choose kind words.", "A", 2, [
+          q("ga-bully-blocker-kindness-l2", "q1", "A nice comment can:", "Make someone happy", ["Hurt someone", "Break a computer", "Delete a game"], "Nice comments make people feel good.", 1, 10),
+          q("ga-bully-blocker-kindness-l2", "q2", "If you see someone being bullied online, what do you do?", "Tell an adult and be kind to the person", ["Join in", "Ignore it", "Post about it"], "Tell an adult and be supportive.", 2, 10),
+        ]),
+      ]),
+    ]),
+
+    section("ga-phishing-fisher", "The Phishing Fisher", "Catch the scams!", "🎣", "#2BC48A", "A", [
+      unit("ga-phishing-fisher", "what-is-phishing", "What is Phishing?", "Recognize fake messages and tricks.", "🎣", "A", [
+        lesson("ga-phishing-fisher-what-is-phishing", "l1", "Too Good to Be True?", "Captain Cyber got a message: 'You won a free tablet!' He did not even enter a competition. Someone was trying to trick him. This is called phishing — when someone uses bait to get your personal information.", "A", 1, [
+          q("ga-phishing-fisher-what-is-phishing-l1", "q1", "What is phishing?", "Tricking you to get your info", ["A type of fishing", "A security tool", "A game"], "Phishing uses bait to steal information.", 2, 10),
+          q("ga-phishing-fisher-what-is-phishing-l1", "q2", "If a message says you won a prize but you did not enter, what is it?", "Probably a scam", ["A real prize", "A surprise gift", "A game reward"], "Unexpected prizes are often scams.", 2, 10),
+        ]),
+        lesson("ga-phishing-fisher-what-is-phishing", "l2", "Click or Ask?", "You get a message: 'Click here to win a free tablet!' You did not enter any competition. What do you do?", "A", 2, [
+          q("ga-phishing-fisher-what-is-phishing-l2", "q1", "A message says you won a free tablet. What do you do?", "Ask a grown-up first", ["Click right away", "Share with friends"], "Free prize messages are often scams.", 2, 10),
+          q("ga-phishing-fisher-what-is-phishing-l2", "q2", "Phishing tries to get:", "Your personal information", ["Your favorite color", "Your game score", "Your pet's name"], "Phishing steals personal information.", 3, 10),
+        ]),
+      ]),
+
+      unit("ga-phishing-fisher", "strange-links", "Strange Links", "Weird links are like suspicious doors.", "🔗", "A", [
+        lesson("ga-phishing-fisher-strange-links", "l1", "Strange Links", "Weird links are like suspicious doors. You would not open a door to a stranger — do not click a link from one either. Look for the little lock icon and web address that makes sense.", "A", 2, [
+          q("ga-phishing-fisher-strange-links-l1", "q1", "A strange link is like:", "A suspicious door", ["A fun game", "A safe website", "A gift"], "Strange links can be dangerous.", 2, 10),
+          q("ga-phishing-fisher-strange-links-l1", "q2", "What should you look for in a safe link?", "A lock icon and a known address", ["A picture of a cat", "The word 'free'", "Lots of pop-ups"], "Lock icons and known addresses are safer.", 3, 10),
+        ]),
+        lesson("ga-phishing-fisher-strange-links", "l2", "Pop-ups and Scams", "Pop-ups appear suddenly. Some say you won a prize. These are often tricks. Close them and tell an adult.", "A", 2, [
+          q("ga-phishing-fisher-strange-links-l2", "q1", "What should you do with a pop-up?", "Close it and tell an adult", ["Click it immediately", "Download whatever it offers"], "Pop-ups can be tricks.", 2, 10),
+          q("ga-phishing-fisher-strange-links-l2", "q2", "A pop-up says you won a prize. What do you do?", "Tell a parent", ["Click to claim", "Enter your info"], "Prize pop-ups are often scams.", 2, 10),
+        ]),
+      ]),
+
+      unit("ga-phishing-fisher", "catch-or-throw", "Catch or Throw Back", "Spot safe messages and throw back dangerous ones.", "🎣", "A", [
+        lesson("ga-phishing-fisher-catch-or-throw", "l1", "Catch or Throw Back?", "Which message looks safest? Your school website or a weird link that says 'win now'?", "A", 3, [
+          q("ga-phishing-fisher-catch-or-throw-l1", "q1", "Which link is safest?", "your-school-website.org", ["cool-free-prize.click", "win-now-now.biz"], "Strange links are traps.", 2, 10),
+          q("ga-phishing-fisher-catch-or-throw-l1", "q2", "A message from a stranger says you won a prize. What do you do?", "Throw it back — tell an adult", ["Catch it — click now", "Share it with friends"], "Unexpected prizes are scams.", 3, 10),
+        ]),
+      ]),
+    ]),
+
+    section("ga-password-castle", "Password Castle", "Build strong passwords to protect your castle.", "🏰", "#F59E0B", "A", [
+      unit("ga-password-castle", "strength", "Password Strength", "What makes a password strong.", "🔑", "A", [
+        lesson("ga-password-castle-strength", "l1", "What Makes a Password Strong?", "A strong password is long, uses uppercase, lowercase, numbers, and symbols. Avoid birthdays, pet names, or common words.", "A", 1, [
+          q("ga-password-castle-strength-l1", "q1", "What makes a password strong?", "Length and character variety", ["Short and simple", "Only letters", "Your name"], "Strong passwords are long and complex.", 2, 10),
+          q("ga-password-castle-strength-l1", "q2", "Which is a weak password?", "password123", ["K9#mP2$vL", "Tr0ub4dor&3"], "password123 is common and easy to guess.", 3, 10),
+        ]),
+        lesson("ga-password-castle-strength", "l2", "Strong Secrets", "A strong password has letters, numbers, and symbols. The stronger the password, the safer your account.", "A", 2, [
+          q("ga-password-castle-strength-l2", "q1", "Which password is stronger?", "K9#mP2", ["123456", "password", "cat"], "Strong passwords have letters, numbers, and symbols.", 2, 10),
+          q("ga-password-castle-strength-l2", "q2", "What makes a password strong?", "Mix of letters, numbers, and symbols", ["Only letters", "Your name", "Short words"], "Mix of different characters makes it strong.", 2, 10),
+        ]),
+      ]),
+
+      unit("ga-password-castle", "safe-keepers", "Keeping Passwords Safe", "How to store and manage passwords.", "🔐", "A", [
+        lesson("ga-password-castle-safe-keepers", "l1", "Password Managers", "Password managers store all your passwords in one encrypted place. You only need to remember one master password.", "A", 2, [
+          q("ga-password-castle-safe-keepers-l1", "q1", "What is a password manager?", "A tool that stores passwords securely", ["A notebook", "A friend who remembers passwords", "A type of virus"], "Password managers securely store passwords.", 3, 10),
+          q("ga-password-castle-safe-keepers-l1", "q2", "How many passwords should you remember if you use a manager?", "One master password", ["All of them", "None, you can forget them all"], "You only need the master password.", 4, 10),
+        ]),
+        lesson("ga-password-castle-safe-keepers", "l2", "Password Hygiene", "Never share your password. Change it if someone else finds out. Use different passwords for different accounts.", "A", 3, [
+          q("ga-password-castle-safe-keepers-l2", "q1", "If someone finds out your password, what should you do?", "Change it immediately", ["Keep using it", "Share it with more people"], "Change compromised passwords right away.", 3, 10),
+          q("ga-password-castle-safe-keepers-l2", "q2", "Should you use the same password for every account?", "No, use different passwords", ["Yes, it is easier", "Only for games"], "Different passwords keep accounts safer.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("ga-privacy-shield", "Privacy Shield", "Protect your personal information.", "🛡️", "#22C55E", "A", [
+      unit("ga-privacy-shield", "settings", "Privacy Settings", "How to keep your accounts private.", "🔐", "A", [
+        lesson("ga-privacy-shield-settings", "l1", "What are Privacy Settings?", "Privacy settings are controls that keep your information safe. Set them to private with help from your parents.", "A", 2, [
+          q("ga-privacy-shield-settings-l1", "q1", "Privacy settings help:", "Keep your info safe", ["Make games faster", "Add more friends"], "Privacy settings protect your information.", 2, 10),
+          q("ga-privacy-shield-settings-l1", "q2", "Who should help you set privacy settings?", "Your parents", ["A stranger", "Your pet"], "Parents should help with privacy settings.", 2, 10),
+        ]),
+        lesson("ga-privacy-shield-settings", "l2", "Checking Your Settings", "Check your privacy settings every few months. Make sure your account is on private so only people you know can see you.", "A", 3, [
+          q("ga-privacy-shield-settings-l2", "q1", "How often should you check privacy settings?", "Every few months", ["Never", "Every day"], "Check regularly to stay safe.", 2, 10),
+          q("ga-privacy-shield-settings-l2", "q2", "What setting is safest?", "Private", ["Public", "Everyone"], "Private is the safest setting.", 3, 10),
+        ]),
+      ]),
+
+      unit("ga-privacy-shield", "safe-websites", "Safe Websites", "How to know if a website is safe.", "🌐", "A", [
+        lesson("ga-privacy-shield-safe-websites", "l1", "Website Safety Signs", "Safe websites have a lock icon and no spelling mistakes. If a website looks weird, close it and ask an adult.", "A", 1, [
+          q("ga-privacy-shield-safe-websites-l1", "q1", "What shows a website is safe?", "A lock icon", ["A clown icon", "A pizza icon"], "The lock icon shows safety.", 1, 10),
+          q("ga-privacy-shield-safe-websites-l1", "q2", "What if a website has spelling mistakes?", "Close it and tell an adult", ["Keep using it", "Sign up anyway"], "Spelling mistakes can mean a site is unsafe.", 2, 10),
+        ]),
+        lesson("ga-privacy-shield-safe-websites", "l2", "Downloading Safely", "Only download apps and games with your parents' permission. Some downloads can hide viruses.", "A", 2, [
+          q("ga-privacy-shield-safe-websites-l2", "q1", "Before downloading, you should:", "Ask a parent", ["Download anything", "Only download games"], "Always ask before downloading.", 1, 10),
+          q("ga-privacy-shield-safe-websites-l2", "q2", "What can some downloads hide?", "Viruses", ["Candy", "Toys"], "Some downloads can contain viruses.", 2, 10),
+        ]),
+      ]),
+
+      unit("ga-privacy-shield", "device-security", "Device Security", "Keeping your devices safe.", "📱", "A", [
+        lesson("ga-privacy-shield-device-security", "l1", "Locking Your Device", "Always lock your phone or tablet with a password or fingerprint. This keeps strangers from seeing your info if you lose it.", "A", 1, [
+          q("ga-privacy-shield-device-security-l1", "q1", "Why should you lock your device?", "To keep strangers from seeing your info", ["To make it look cool", "To save battery"], "Locking protects your information.", 1, 10),
+          q("ga-privacy-shield-device-security-l1", "q2", "How can you lock a device?", "Password or fingerprint", ["By throwing it", "By hiding it"], "Passwords and fingerprints lock devices.", 1, 10),
+        ]),
+        lesson("ga-privacy-shield-device-security", "l2", "Lost Devices", "If you lose your device, tell an adult immediately. They can help you find it and make sure no one uses your info.", "A", 2, [
+          q("ga-privacy-shield-device-security-l2", "q1", "If you lose your device, what do you do?", "Tell an adult immediately", ["Keep it secret", "Buy a new one"], "Tell an adult right away.", 1, 10),
+          q("ga-privacy-shield-device-security-l2", "q2", "Why is a lost device dangerous?", "Someone might see your personal info", ["It might get lonely", "It might get bored"], "Lost devices can expose your info.", 2, 10),
+        ]),
+      ]),
+    ]),
+
+    // ─────────────────────────────────────────────────────────
+    // GROUP B — Ages 8–12
+    // ─────────────────────────────────────────────────────────
+    section("gb-cybersafe-world", "CyberSafe World", "Understand the digital world.", "🌍", "#4D96FF", "B", [
+      unit("gb-cybersafe-world", "how-internet-works", "How the Internet Works", "Learn what happens when you go online.", "🔌", "B", [
+        lesson("gb-cybersafe-world-how-internet-works", "l1", "The Internet and You", "When you open a website, your device sends a request to a server. The server sends the website back. This all happens in seconds.", "B", 1, [
+          q("gb-cybersafe-world-how-internet-works-l1", "q1", "What happens when you open a website?", "Your device asks a server for the website", ["The website jumps into your screen", "Nothing happens"], "Your device sends a request to a server.", 2, 10),
+          q("gb-cybersafe-world-how-internet-works-l1", "q2", "How fast does a website load?", "In seconds", ["In hours", "In days"], "Websites load very quickly.", 2, 10),
+          q("gb-cybersafe-world-how-internet-works-l1", "q3", "What is a server?", "A powerful computer that stores websites", ["A type of phone", "A game console"], "Servers store and send website data.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-how-internet-works", "l2", "IP Addresses and DNS", "Every device has an IP address, like a home address for your computer. DNS translates website names to IP addresses.", "B", 2, [
+          q("gb-cybersafe-world-how-internet-works-l2", "q1", "An IP address is like:", "A home address for your computer", ["A password", "A username"], "IP addresses identify devices on the internet.", 3, 10),
+          q("gb-cybersafe-world-how-internet-works-l2", "q2", "What does DNS do?", "Translates website names to IP addresses", ["Blocks websites", "Creates passwords"], "DNS helps your device find websites by name.", 3, 10),
+        ]),
+      ]),
+
+      unit("gb-cybersafe-world", "data-privacy", "Data and Privacy", "What is data and why does it matter?", "📊", "B", [
+        lesson("gb-cybersafe-world-data-privacy", "l1", "What is Personal Data?", "Personal data is any information about you: name, email, photos, location, school. Companies collect this data and must protect it.", "B", 1, [
+          q("gb-cybersafe-world-data-privacy-l1", "q1", "Which of these is personal data?", "Your email address", ["A public news article", "A weather report"], "Email address is personal data.", 2, 10),
+          q("gb-cybersafe-world-data-privacy-l1", "q2", "Why do companies collect data?", "To improve their services", ["To give it away freely", "To delete it all"], "Companies use data to improve services.", 3, 10),
+          q("gb-cybersafe-world-data-privacy-l1", "q3", "Who is responsible for protecting your data?", "Both you and the companies", ["Only you", "Only the company"], "Both users and companies share responsibility.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-data-privacy", "l2", "Data Brokers and Tracking", "Data brokers collect info from many websites and sell it. They can build a detailed profile of you without your knowledge.", "B", 2, [
+          q("gb-cybersafe-world-data-privacy-l2", "q1", "What do data brokers do?", "Collect and sell personal information", ["Give free cookies", "Fix computers"], "Data brokers sell personal information.", 3, 10),
+          q("gb-cybersafe-world-data-privacy-l2", "q2", "How can you limit tracking?", "Use privacy settings and ad blockers", ["Share more info", "Click every ad"], "Privacy settings and ad blockers help limit tracking.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-cybersafe-world", "digital-footprint", "Digital Footprint", "Your online actions leave a permanent trail.", "👣", "B", [
+        lesson("gb-cybersafe-world-digital-footprint", "l1", "Digital Footprint Basics", "You post a photo on a public account. Three weeks later, a stranger screenshots it and uses it in a fake profile. Why does this happen?", "B", 2, [
+          q("gb-cybersafe-world-digital-footprint-l1", "q1", "Why can a screenshot of your photo be used later?", "Once something is online, it can be copied and shared beyond your control", ["The app deleted your photo", "Your phone was hacked"], "Digital footprints are permanent.", 2, 10),
+          q("gb-cybersafe-world-digital-footprint-l1", "q2", "What is a digital footprint?", "The trail of data you leave online", ["Your physical shoe size", "A type of virus", "A social media app"], "Everything you post creates a digital footprint.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-digital-footprint", "l2", "The Stranger Test", "Before sharing anything online, ask: 'Would I say this to a stranger in real life?' If the answer is no, do not post it.", "B", 3, [
+          q("gb-cybersafe-world-digital-footprint-l2", "q1", "The stranger test means:", "Would I say this to a stranger in real life?", ["Ask a stranger for advice", "Test your password strength", "Count your online friends"], "The stranger test is a simple filter for oversharing.", 3, 10),
+          q("gb-cybersafe-world-digital-footprint-l2", "q2", "If you would not say it to a stranger, should you post it?", "No", ["Yes, if it is funny", "Only if no one is watching", "It depends"], "If you would not say it to a stranger, do not post it.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-cybersafe-world", "online-identity", "Online Identity", "Your online identity is yours to shape.", "👤", "B", [
+        lesson("gb-cybersafe-world-online-identity", "l1", "Avatar Creation", "Your online identity is yours to shape. Choose wisely — your avatar represents you in the CyberSafe World and reminds you that your digital self matters.", "B", 1, [
+          q("gb-cybersafe-world-online-identity-l1", "q1", "Your avatar represents:", "Your digital self", ["Your real face", "Your password", "Your location"], "Your avatar is your online identity.", 2, 10),
+          q("gb-cybersafe-world-online-identity-l1", "q2", "Why does your digital self matter?", "It shapes how others see you online", ["It is not real so it does not matter", "Only adults have digital identities"], "Your online identity matters.", 3, 10),
+        ]),
+        lesson("gb-cybersafe-world-online-identity", "l2", "PII Classification", "You are signing up for a new game. It asks for your full name, birthdate, and home address. Which combination should you give?", "B", 3, [
+          q("gb-cybersafe-world-online-identity-l2", "q1", "What should you share when signing up for a game?", "Only what is required", ["All of it", "Make up a fake name and real address"], "Share only required information.", 3, 10),
+          q("gb-cybersafe-world-online-identity-l2", "q2", "When should you share your home address?", "Never without a parent approving", ["Always for delivery", "Only with online friends"], "Never share your address without parental approval.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-bully-blocker", "The Bully Blocker", "Stand up to cyberbullying.", "🛡️", "#FF7A59", "B", [
+      unit("gb-bully-blocker", "recognition", "Cyberbullying Recognition", "Identify signs of cyberbullying.", "💬", "B", [
+        lesson("gb-bully-blocker-recognition", "l1", "The Invisible Bully", "Someone types something cruel and hits send. In a second, someone else feels small. The worst part? The bully might be a stranger, a 'friend', or completely anonymous. Cyberbullying is real, it is common, and it is not your fault.", "B", 1, [
+          q("gb-bully-blocker-recognition-l1", "q1", "Cyberbullying is:", "Being mean online", ["Playing a game", "Sharing a photo"], "Being mean online is cyberbullying.", 2, 10),
+          q("gb-bully-blocker-recognition-l1", "q2", "Who can be a cyberbully?", "A stranger, friend, or anonymous person", ["Only strangers", "Only people you know"], "Bullies can be anyone online.", 3, 10),
+        ]),
+        lesson("gb-bully-blocker-recognition", "l2", "Bystander Choice", "You see a classmate being bullied in a group chat. What do you do?", "B", 3, [
+          q("gb-bully-blocker-recognition-l2", "q1", "You see cyberbullying. Best action?", "Privately message the victim, report the bully, and tell a teacher", ["Join in to avoid being targeted", "Ignore it — not my problem"], "Bystanders have power to help.", 3, 10),
+          q("gb-bully-blocker-recognition-l2", "q2", "Reporting is:", "Protecting yourself and others", ["Tattling", "Making it worse"], "Reporting is not tattling — it is protecting.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-bully-blocker", "response", "Response and Evidence", "How to respond and document cyberbullying.", "📸", "B", [
+        lesson("gb-bully-blocker-response", "l1", "Evidence and Report", "Screenshots are evidence. Most platforms have a 'Report' button. Reporting is not tattling — it is protecting yourself and others.", "B", 3, [
+          q("gb-bully-blocker-response-l1", "q1", "What is evidence of cyberbullying?", "A screenshot", ["A rumor", "A deleted message"], "Screenshots preserve proof.", 3, 10),
+          q("gb-bully-blocker-response-l1", "q2", "Why report cyberbullying?", "To protect yourself and others", ["To get the bully in trouble", "To show off"], "Reporting stops the bully and protects others.", 4, 10),
+        ]),
+        lesson("gb-bully-blocker-response", "l2", "Platform Response", "You are being cyberbullied in a game chat. The bully is anonymous. What is your best sequence of actions?", "B", 4, [
+          q("gb-bully-blocker-response-l2", "q1", "Best sequence?", "Screenshot, block, report, tell an adult", ["Reply with insults, then block", "Delete the game"], "Evidence + block + report + adult is the strongest response.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-phishing-fisher", "The Phishing Fisher", "Catch the scams!", "🎣", "#2BC48A", "B", [
+      unit("gb-phishing-fisher", "url-forensics", "URL Forensics", "Evaluate URLs for legitimacy.", "🔍", "B", [
+        lesson("gb-phishing-fisher-url-forensics", "l1", "URL Forensics", "You receive a link that looks like your school login. The real school site is your-school.org. Which URL is suspicious?", "B", 2, [
+          q("gb-phishing-fisher-url-forensics-l1", "q1", "Which URL is suspicious?", "your-school.secure-login.xyz", ["your-school.org/login", "google.com"], "The domain is wrong.", 3, 10),
+          q("gb-phishing-fisher-url-forensics-l1", "q2", "Always check the:", "Real domain before clicking", ["Emoji used", "Time it was sent"], "Check the real domain.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-phishing-fisher", "sender-spoofing", "Sender Spoofing", "Scammers can make an email look like it comes from anyone.", "🎭", "B", [
+        lesson("gb-phishing-fisher-sender-spoofing", "l1", "Sender Spoofing", "Scammers can make an email look like it comes from anyone. 'From: teacher@school.com' does not mean it is actually from your teacher. Always check the real email address.", "B", 3, [
+          q("gb-phishing-fisher-sender-spoofing-l1", "q1", "Never trust the:", "'From' name alone", ["Subject line", "Email length"], "Check the real address.", 3, 10),
+          q("gb-phishing-fisher-sender-spoofing-l1", "q2", "A fake sender email might look like:", "teacher@school.com but actually be different", ["A real school address", "A known teacher name"], "Display names can be spoofed.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-phishing-fisher", "urgency-trap", "Urgency Trap", "Pressure tactics in scams.", "⏰", "B", [
+        lesson("gb-phishing-fisher-urgency-trap", "l1", "Urgency Trap", "A message says 'Your account will be deleted in 1 hour unless you act now.' It asks for your password. What combination of tactics is this?", "B", 4, [
+          q("gb-phishing-fisher-urgency-trap-l1", "q1", "This combines:", "Urgency + authority spoofing + credential harvesting", ["A normal update", "A helpful reminder"], "Three red flags at once.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-password-castle", "Password Castle", "Build strong passwords to protect your castle.", "🏰", "#F59E0B", "B", [
+      unit("gb-password-castle", "strength", "Password Strength", "Creating and managing secure passwords.", "🔑", "B", [
+        lesson("gb-password-castle-strength", "l1", "Password Strength", "A strong password is long, uses uppercase, lowercase, numbers, and symbols. Avoid birthdays, pet names, or common words.", "B", 1, [
+          q("gb-password-castle-strength-l1", "q1", "What makes a password strong?", "Length and character variety", ["Short and simple", "Only letters"], "Strong passwords are long and complex.", 2, 10),
+          q("gb-password-castle-strength-l1", "q2", "Which is a weak password?", "password123", ["K9#mP2$vL", "Tr0ub4dor&3"], "password123 is common and easy to guess.", 3, 10),
+        ]),
+        lesson("gb-password-castle-strength", "l2", "Password Managers", "Password managers store all your passwords in one encrypted place. You only need to remember one master password.", "B", 2, [
+          q("gb-password-castle-strength-l2", "q1", "What is a password manager?", "A tool that stores passwords securely", ["A notebook", "A friend"], "Password managers securely store passwords.", 3, 10),
+          q("gb-password-castle-strength-l2", "q2", "How many passwords should you remember?", "One master password", ["All of them", "Half of them"], "You only need the master password.", 4, 10),
+        ]),
+      ]),
+    ]),
+
+    section("gb-privacy-shield", "Privacy Shield", "Protect your personal information.", "🛡️", "#22C55E", "B", [
+      unit("gb-privacy-shield", "wifi-safety", "Public Wi-Fi Safety", "Risks of public networks and how to stay safe.", "📶", "B", [
+        lesson("gb-privacy-shield-wifi-safety", "l1", "Public Wi-Fi Risks", "Public Wi-Fi at cafes or airports is convenient but risky. Hackers can intercept data on open networks.", "B", 2, [
+          q("gb-privacy-shield-wifi-safety-l1", "q1", "Why is public Wi-Fi risky?", "Hackers can intercept your data", ["It is always fast", "It is free"], "Open networks can be intercepted.", 3, 10),
+          q("gb-privacy-shield-wifi-safety-l1", "q2", "What should you avoid on public Wi-Fi?", "Online banking", ["Checking weather", "Reading news"], "Avoid sensitive activities.", 3, 10),
+        ]),
+        lesson("gb-privacy-shield-wifi-safety", "l2", "Staying Safe on Public Wi-Fi", "Use a VPN, stick to HTTPS sites, and avoid logging into accounts with sensitive info on public networks.", "B", 3, [
+          q("gb-privacy-shield-wifi-safety-l2", "q1", "What does VPN stand for?", "Virtual Private Network", ["Very Private Network", "Virtual Public Network"], "VPN creates a secure tunnel.", 4, 10),
+          q("gb-privacy-shield-wifi-safety-l2", "q2", "What does HTTPS mean?", "Secure connection to a website", ["A type of virus", "A fast internet"], "HTTPS means the connection is encrypted.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-privacy-shield", "scam-recognition", "Scam Recognition", "Spotting scams in games, social media, and messages.", "🚨", "B", [
+        lesson("gb-privacy-shield-scam-recognition", "l1", "Gaming Scams", "Scammers offer free skins, coins, or boosts in exchange for your account info. Never share login details for in-game items.", "B", 2, [
+          q("gb-privacy-shield-scam-recognition-l1", "q1", "A scam offers free game skins for:", "Your account password", ["Your real name", "Your favorite color"], "Never share login details.", 2, 10),
+          q("gb-privacy-shield-scam-recognition-l1", "q2", "If a deal seems too good to be true, it probably is:", "True", ["False", "Maybe"], "If it seems too good to be true, it is likely a scam.", 3, 10),
+        ]),
+        lesson("gb-privacy-shield-scam-recognition", "l2", "Social Media Scams", "Fake giveaways, fake accounts, and phishing links are common on social media. Verify before you click or share.", "B", 3, [
+          q("gb-privacy-shield-scam-recognition-l2", "q1", "A social media giveaway might be a scam if:", "It asks for your password", ["It is from your favorite celebrity", "It has many likes"], "Giveaways should never ask for passwords.", 3, 10),
+          q("gb-privacy-shield-scam-recognition-l2", "q2", "What should you do before clicking a social media link?", "Check the URL and sender", ["Click it first", "Share it with friends"], "Check URL and sender before clicking.", 4, 10),
+        ]),
+      ]),
+
+      unit("gb-privacy-shield", "social-engineering", "Social Engineering", "How attackers manipulate people.", "🎭", "B", [
+        lesson("gb-privacy-shield-social-engineering", "l1", "Manipulation Tactics", "Social engineers use urgency, authority, and curiosity to trick you. They might pretend to be IT, a boss, or a friend in trouble.", "B", 2, [
+          q("gb-privacy-shield-social-engineering-l1", "q1", "Social engineering is:", "Manipulating people to reveal info", ["Building software", "Teaching social studies"], "It is psychological manipulation.", 3, 10),
+          q("gb-privacy-shield-social-engineering-l1", "q2", "A scammer pretends to be IT support. This is:", "Social engineering", ["A normal IT ticket", "A security test"], "Pretending to be someone else is social engineering.", 3, 10),
+        ]),
+        lesson("gb-privacy-shield-social-engineering", "l2", "Preventing Social Engineering", "Verify identities independently. Never share passwords or sensitive info based on pressure. When in doubt, call the person directly.", "B", 3, [
+          q("gb-privacy-shield-social-engineering-l2", "q1", "How do you verify a suspicious request?", "Contact the person through a known channel", ["Do what they ask immediately", "Ignore it completely"], "Verify independently.", 4, 10),
+          q("gb-privacy-shield-social-engineering-l2", "q2", "What is a common pressure tactic?", "Urgency: 'Do this now!'", ["Polite request", "Friendly greeting"], "Urgency is a common manipulation tactic.", 4, 10),
+        ]),
+      ]),
+    ]),
+  ],
+};
