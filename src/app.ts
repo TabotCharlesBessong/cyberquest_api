@@ -2,6 +2,11 @@ import express, { Application } from "express";
 import authRoutes from "./routes/authRoutes";
 import lectureRoutes from "./routes/lectureRoutes";
 import curriculumRoutes from "./routes/curriculumRoutes";
+import adminCurriculumRoutes from "./routes/adminCurriculumRoutes";
+import adminUnitRoutes from "./routes/adminUnitRoutes";
+import adminLessonRoutes from "./routes/adminLessonRoutes";
+import adminQuestionRoutes from "./routes/adminQuestionRoutes";
+import adminImportExportRoutes from "./routes/adminImportExportRoutes";
 import progressRoutes from "./routes/progressRoutes";
 import gamificationRoutes from "./routes/gamificationRoutes";
 import shopRoutes from "./routes/shopRoutes";
@@ -16,11 +21,13 @@ import cors from "cors";
 
 const allowedOrigins = [
   "http://localhost:3000",
+  "http://localhost:3001",
   "http://localhost:4000",
   "http://localhost:8081",
   "http://localhost:8082",
   "http://localhost:19006",
   "http://127.0.0.1:3000",
+  "http://127.0.0.1:3001",
   "http://127.0.0.1:4000",
   "http://127.0.0.1:8081",
   "http://127.0.0.1:19006",
@@ -53,6 +60,11 @@ export function createApp(): Application {
   app.use("/api/auth", authRoutes);
   app.use("/api/lectures", lectureRoutes);
   app.use("/api/curriculum", curriculumRoutes);
+  app.use("/api/admin/curriculum", adminCurriculumRoutes);
+  app.use("/api/admin/units", adminUnitRoutes);
+  app.use("/api/admin/lessons", adminLessonRoutes);
+  app.use("/api/admin/questions", adminQuestionRoutes);
+  app.use("/api/admin/import-export", adminImportExportRoutes);
   app.use("/api/progress", progressRoutes);
   app.use("/api/gamification", gamificationRoutes);
   app.use("/api/shop", shopRoutes);
