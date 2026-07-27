@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import authRoutes from "./routes/authRoutes";
 import lectureRoutes from "./routes/lectureRoutes";
+import curriculumRoutes from "./routes/curriculumRoutes";
 import progressRoutes from "./routes/progressRoutes";
 import gamificationRoutes from "./routes/gamificationRoutes";
 import shopRoutes from "./routes/shopRoutes";
@@ -51,6 +52,7 @@ export function createApp(): Application {
 
   app.use("/api/auth", authRoutes);
   app.use("/api/lectures", lectureRoutes);
+  app.use("/api/curriculum", curriculumRoutes);
   app.use("/api/progress", progressRoutes);
   app.use("/api/gamification", gamificationRoutes);
   app.use("/api/shop", shopRoutes);
