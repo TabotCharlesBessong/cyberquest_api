@@ -27,6 +27,7 @@ import { initClassroom, associateClassroom, Classroom } from "./models/Classroom
 import { initClassroomRound, associateClassroomRound, ClassroomRound } from "./models/ClassroomRound";
 import { initClassroomParticipant, associateClassroomParticipant, ClassroomParticipant } from "./models/ClassroomParticipant";
 import { initEvent, Event } from "./models/Event";
+import { initParentalControl, associateParentalControl, ParentalControl } from "./models/ParentalControl";
 import logger from "../utils/logger";
 
 export const sequelize = new Sequelize(
@@ -75,6 +76,7 @@ initClassroom(sequelize);
 initClassroomRound(sequelize);
 initClassroomParticipant(sequelize);
 initEvent(sequelize);
+initParentalControl(sequelize);
 
 // Lecture ↔ Lesson
 Lecture.hasMany(Lesson, {
@@ -196,6 +198,9 @@ associateUserInventory();
 // User ↔ DailyActivity
 associateDailyActivity();
 
+// Parental controls
+associateParentalControl();
+
 // Leaderboard
 LeaderboardEntry.belongsTo(User, { foreignKey: "userId", as: "user" });
 User.hasMany(LeaderboardEntry, { foreignKey: "userId", as: "leaderboardEntries" });
@@ -255,5 +260,6 @@ export {
   ClassroomRound,
   ClassroomParticipant,
   Event,
+  ParentalControl,
 };
 
