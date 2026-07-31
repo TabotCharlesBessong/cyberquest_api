@@ -31,6 +31,7 @@ export class User extends Model<
   declare hearts: CreationOptional<number>;
   declare gems: CreationOptional<number>;
   declare ageGroup: CreationOptional<"A" | "B">;
+  declare role: CreationOptional<"user" | "admin">;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -122,6 +123,11 @@ export function initUser(sequelize: Sequelize): void {
       ageGroup: {
         type: DataTypes.ENUM("A", "B"),
         allowNull: true,
+      },
+      role: {
+        type: DataTypes.ENUM("user", "admin"),
+        allowNull: false,
+        defaultValue: "user",
       },
       createdAt: {
         type: DataTypes.DATE,

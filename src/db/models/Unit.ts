@@ -5,33 +5,38 @@ import {
   CreationOptional,
   InferAttributes,
   InferCreationAttributes,
+  ForeignKey,
 } from "sequelize";
 
-export class Lecture extends Model<
-  InferAttributes<Lecture>,
-  InferCreationAttributes<Lecture>
+export class Unit extends Model<
+  InferAttributes<Unit>,
+  InferCreationAttributes<Unit>
 > {
   declare id: CreationOptional<string>;
+  declare sectionId: ForeignKey<string>;
   declare slug: string;
   declare title: string;
-  declare subtitle: string;
+  declare description: string;
   declare icon: string;
-  declare color: string;
-  declare badge: string;
-  declare badgeName: string;
-  declare order: CreationOptional<number>;
-  declare ageGroup: CreationOptional<"A" | "B">;
+  declare order: number;
+  declare ageGroup: "A" | "B";
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-export function initLecture(sequelize: Sequelize): void {
-  Lecture.init(
+export function initUnit(sequelize: Sequelize): void {
+  Unit.init(
     {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
+      },
+      sectionId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: { model: "lectures", key: "id" },
+        onDelete: "CASCADE",
       },
       slug: {
         type: DataTypes.STRING,
@@ -42,7 +47,7 @@ export function initLecture(sequelize: Sequelize): void {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      subtitle: {
+      description: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "",
@@ -50,22 +55,7 @@ export function initLecture(sequelize: Sequelize): void {
       icon: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "📘",
-      },
-      color: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "#4D96FF",
-      },
-      badge: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "⭐",
-      },
-      badgeName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "",
+        defaultValue: "📚",
       },
       order: {
         type: DataTypes.INTEGER,
@@ -74,7 +64,7 @@ export function initLecture(sequelize: Sequelize): void {
       },
       ageGroup: {
         type: DataTypes.ENUM("A", "B"),
-        allowNull: true,
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -87,7 +77,7 @@ export function initLecture(sequelize: Sequelize): void {
     },
     {
       sequelize,
-      tableName: "lectures",
+      tableName: "units",
     }
   );
 }

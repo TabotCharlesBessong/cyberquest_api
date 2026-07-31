@@ -3,6 +3,8 @@ import {
   sequelize,
   Lecture,
   Lesson,
+  Unit,
+  Question,
   Concept,
   Standard,
   LessonOption,
@@ -16,7 +18,7 @@ import {
   Quest,
   ShopItem,
 } from "../db";
-import { SEED_LECTURES } from "./curriculumData";
+import { CURRICULUM } from "./curriculumData";
 import logger from "../utils/logger";
 
 const CONCEPT_DESCRIPTIONS: Record<string, string> = {
@@ -298,149 +300,151 @@ async function seed(): Promise<void> {
     await sequelize.sync({ alter: true });
     logger.info("Models synchronized", { component: "seed" });
 
-    await LessonOption.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonChoice.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonConcept.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonStandard.destroy({ where: {}, truncate: true, cascade: true });
-    await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonProgress.destroy({ where: {}, truncate: true, cascade: true });
-    await Concept.destroy({ where: {}, truncate: true, cascade: true });
-    await Standard.destroy({ where: {}, truncate: true, cascade: true });
-    await Lesson.destroy({ where: {}, truncate: true, cascade: true });
-    await Lecture.destroy({ where: {}, truncate: true, cascade: true });
-    await User.destroy({ where: {}, truncate: true, cascade: true });
-    await Badge.destroy({ where: {}, truncate: true, cascade: true });
-    await Quest.destroy({ where: {}, truncate: true, cascade: true });
-    await ShopItem.destroy({ where: {}, truncate: true, cascade: true });
-
     const conceptCache = new Map<string, string>();
     const standardCache = new Map<string, string>();
 
-    for (const lecture of SEED_LECTURES) {
-      const createdLecture = await Lecture.create({
-        slug: lecture.slug,
-        title: lecture.title,
-        subtitle: lecture.subtitle,
-        icon: lecture.icon,
-        color: lecture.color,
-        badge: lecture.badge,
-        badgeName: lecture.badgeName,
-        order: lecture.order,
+    for (const section of CURRICULUM.sections) {
+      const [createdSection] = await Lecture.findOrCreate({
+        where: { slug: section.id },
+        defaults: {
+          slug: section.id,
+          title: section.title,
+          subtitle: section.description,
+          icon: section.icon,
+          color: section.color,
+          badge: "⭐",
+          badgeName: "Module",
+          order: 0,
+          ageGroup: section.ageGroup as "A" | "B",
+        },
+      });
+      await createdSection.update({
+        title: section.title,
+        subtitle: section.description,
+        icon: section.icon,
+        color: section.color,
+        ageGroup: section.ageGroup as "A" | "B",
       });
 
-      const createdLessons = await Lesson.bulkCreate(
-        lecture.lessons.map((lesson, index) => {
-          const data: Record<string, unknown> = {
-            lectureId: createdLecture.id,
-            stepId: lesson.stepId,
-            type: lesson.type,
+      for (const unit of section.units) {
+        const [createdUnit] = await Unit.findOrCreate({
+          where: { slug: unit.id },
+          defaults: {
+            sectionId: createdSection.id,
+            slug: unit.id,
+            title: unit.title,
+            description: unit.description,
+            icon: unit.icon,
+            order: 0,
+            ageGroup: unit.ageGroup as "A" | "B",
+          },
+        });
+        await createdUnit.update({
+          title: unit.title,
+          description: unit.description,
+          icon: unit.icon,
+          ageGroup: unit.ageGroup as "A" | "B",
+        });
+
+        for (const lesson of unit.lessons) {
+          const [createdLesson] = await Lesson.findOrCreate({
+            where: { stepId: lesson.id },
+            defaults: {
+              unitId: createdUnit.id,
+              lectureId: createdSection.id,
+              stepId: lesson.id,
+              type: "quiz",
+              title: lesson.title,
+              notes: lesson.notes,
+              order: lesson.order,
+              ageGroup: lesson.ageGroup as "A" | "B",
+              difficulty: lesson.difficulty,
+            },
+          });
+          await createdLesson.update({
             title: lesson.title,
-            order: index + 1,
-          };
-          if (lesson.text !== undefined) data.text = lesson.text;
-          if (lesson.question !== undefined) data.question = lesson.question;
-          if (lesson.answer !== undefined) data.answer = lesson.answer;
-          if (lesson.explanation !== undefined) data.explanation = lesson.explanation;
-          if (lesson.icon !== undefined) data.icon = lesson.icon;
-          if (lesson.mascot !== undefined) data.mascot = lesson.mascot;
-          if (lesson.speech !== undefined) data.speech = lesson.speech;
-          if (lesson.ageGroup !== undefined) data.ageGroup = lesson.ageGroup;
-          if (lesson.depthLevel !== undefined) data.depthLevel = lesson.depthLevel;
-          if (lesson.learningObjectives !== undefined) data.learningObjectives = lesson.learningObjectives;
-          if (lesson.successCriteria !== undefined) data.successCriteria = lesson.successCriteria;
-          if (lesson.activityType !== undefined) data.activityType = lesson.activityType;
-          if (lesson.materials !== undefined) data.materials = lesson.materials;
-          return data as any;
-        })
-      );
+            notes: lesson.notes,
+            ageGroup: lesson.ageGroup as "A" | "B",
+            difficulty: lesson.difficulty,
+          });
 
-      for (let i = 0; i < lecture.lessons.length; i++) {
-        const lesson = lecture.lessons[i];
-        const lessonId = createdLessons[i].id;
-
-        if (lesson.options) {
-          const optionRecords = lesson.options.map((text, pos) => ({
-            lessonId,
-            position: pos,
-            text,
-          }));
-          await LessonOption.bulkCreate(optionRecords as any);
-        }
-
-        if (lesson.choices) {
-          const choiceRecords = lesson.choices.map((c, pos) => ({
-            lessonId,
-            position: pos,
-            text: c.text,
-            feedback: c.feedback,
-            consequence: c.consequence,
-            xpDelta: c.xpDelta ?? null,
-          }));
-          await LessonChoice.bulkCreate(choiceRecords as any);
-        }
-
-        if (lesson.conceptKeys) {
-          for (const code of lesson.conceptKeys) {
-            let conceptId = conceptCache.get(code);
-            if (!conceptId) {
-              const description = CONCEPT_DESCRIPTIONS[code] || null;
-              const concept = await Concept.findOrCreate({
-                where: { code },
-                defaults: { code, description },
-              });
-              conceptId = concept[0].id;
-              conceptCache.set(code, conceptId);
-            }
-            await LessonConcept.findOrCreate({
-              where: { lessonId, conceptId: conceptId as string },
+          for (const q of lesson.questions) {
+            const [question] = await Question.findOrCreate({
+              where: { slug: q.id },
+              defaults: {
+                lessonId: createdLesson.id,
+                slug: q.id,
+                question: q.question,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                explanation: q.explanation,
+                difficulty: q.difficulty,
+                xpReward: q.xpReward,
+              },
+            });
+            await question.update({
+              question: q.question,
+              options: q.options,
+              correctIndex: q.correctIndex,
+              explanation: q.explanation,
+              difficulty: q.difficulty,
+              xpReward: q.xpReward,
             });
           }
         }
 
-        if (lesson.connexusStandards) {
-          for (const code of lesson.connexusStandards) {
-            let standardId = standardCache.get(code);
-            if (!standardId) {
-              const description = STANDARD_DESCRIPTIONS[code] || null;
-              const standard = await Standard.findOrCreate({
-                where: { code },
-                defaults: { code, description },
-              });
-              standardId = standard[0].id;
-              standardCache.set(code, standardId);
-            }
-            await LessonStandard.findOrCreate({
-              where: { lessonId, standardId: standardId as string },
-            });
-          }
-        }
+        logger.info("Seeded unit", {
+          component: "seed",
+          unitTitle: unit.title,
+          lessonCount: unit.lessons.length,
+        });
       }
 
-      logger.info("Seeded lecture", {
+      logger.info("Seeded section", {
         component: "seed",
-        lectureTitle: lecture.title,
-        lessonCount: createdLessons.length,
+        sectionTitle: section.title,
+        unitCount: section.units.length,
       });
     }
 
-    await Badge.bulkCreate(SEED_BADGES);
-    await Quest.bulkCreate(SEED_QUESTS);
-    await ShopItem.bulkCreate(SEED_SHOP_ITEMS);
+    for (const badge of SEED_BADGES) {
+      await Badge.findOrCreate({
+        where: { key: badge.key },
+        defaults: badge,
+      });
+    }
 
-    await User.create({
-      name: "Demo User",
-      email: "demo@cyberquest.app",
-      password: "demo123",
-      age: 10,
-      ageGroup: "B",
-      avatar: "🦊",
-      xp: 0,
-      level: 1,
-      streak: 0,
-      hearts: 5,
-      gems: 100,
-      onboarded: true,
-      isVerified: true,
+    for (const quest of SEED_QUESTS) {
+      await Quest.findOrCreate({
+        where: { key: quest.key },
+        defaults: quest,
+      });
+    }
+
+    for (const item of SEED_SHOP_ITEMS) {
+      await ShopItem.findOrCreate({
+        where: { key: item.key },
+        defaults: item,
+      });
+    }
+
+    const [demoUser] = await User.findOrCreate({
+      where: { email: "demo@cyberquest.app" },
+      defaults: {
+        name: "Demo User",
+        email: "demo@cyberquest.app",
+        password: "demo123",
+        age: 10,
+        ageGroup: "B",
+        avatar: "🦊",
+        xp: 0,
+        level: 1,
+        streak: 0,
+        hearts: 5,
+        gems: 100,
+        onboarded: true,
+        isVerified: true,
+      },
     });
 
     logger.info("Seed completed successfully", { component: "seed" });
