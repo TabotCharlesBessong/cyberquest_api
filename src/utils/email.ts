@@ -1,5 +1,6 @@
 import nodemailer, { Transporter } from "nodemailer";
 import config from "../config/config";
+import logger from "./logger";
 
 const isConfigured = Boolean(config.email.host && config.email.user);
 
@@ -23,10 +24,10 @@ interface MailOptions {
 
 async function sendMail({ to, subject, html }: MailOptions): Promise<void> {
   if (!transporter) {
-    console.warn(
-      `[email] SMTP not configured - skipping send to ${to}. ` +
-        `Set EMAIL_HOST/EMAIL_USER/EMAIL_PASS in .env to enable.`
-    );
+    logger.warn("SMTP not configured - skipping email send", {
+      component: "email",
+      subject,
+    });
     return;
   }
   try {
@@ -36,8 +37,16 @@ async function sendMail({ to, subject, html }: MailOptions): Promise<void> {
       subject,
       html,
     });
+    logger.info("Email sent successfully", {
+      component: "email",
+      subject,
+    });
   } catch (err) {
-    console.error(`[email] Failed to send mail to ${to}:`, err);
+    logger.error("Failed to send email", {
+      component: "email",
+      subject,
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
   }
 }
 
