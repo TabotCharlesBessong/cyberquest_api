@@ -17,7 +17,8 @@ export class Lesson extends Model<
   InferCreationAttributes<Lesson>
 > {
   declare id: CreationOptional<string>;
-  declare lectureId: ForeignKey<string>;
+  declare lectureId: ForeignKey<string> | null;
+  declare unitId: ForeignKey<string> | null;
   declare stepId: string;
   declare type: LessonType;
   declare title: string;
@@ -28,14 +29,10 @@ export class Lesson extends Model<
   declare icon: string | null;
   declare mascot: string | null;
   declare speech: string | null;
+  declare notes: string | null;
+  declare order: number;
   declare ageGroup: CreationOptional<AgeGroup>;
-  declare stepCategory: CreationOptional<LessonCategory>;
-  declare depthLevel: CreationOptional<number>;
-  declare learningObjectives: CreationOptional<string[]>;
-  declare successCriteria: CreationOptional<string[]>;
-  declare activityType: CreationOptional<string>;
-  declare materials: CreationOptional<string[]>;
-  declare order: CreationOptional<number>;
+  declare difficulty: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -50,9 +47,15 @@ export function initLesson(sequelize: Sequelize): void {
       },
       lectureId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: { model: "lectures", key: "id" },
-        onDelete: "CASCADE",
+        onDelete: "SET NULL",
+      },
+      unitId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: { model: "units", key: "id" },
+        onDelete: "SET NULL",
       },
       stepId: {
         type: DataTypes.STRING,
@@ -95,41 +98,24 @@ export function initLesson(sequelize: Sequelize): void {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      ageGroup: {
-        type: DataTypes.ENUM("A", "B", "ALL"),
-        allowNull: false,
-        defaultValue: "B",
-      },
-      stepCategory: {
-        type: DataTypes.ENUM("intro", "core", "review", "bridge", "capstone"),
-        allowNull: false,
-        defaultValue: "core",
-      },
-      depthLevel: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        validate: { min: 1, max: 6 },
-      },
-      learningObjectives: {
-        type: DataTypes.JSONB,
-        allowNull: true,
-      },
-      successCriteria: {
-        type: DataTypes.JSONB,
-        allowNull: true,
-      },
-      activityType: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      materials: {
-        type: DataTypes.JSONB,
+      notes: {
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       order: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+      },
+      ageGroup: {
+        type: DataTypes.ENUM("A", "B", "ALL"),
+        allowNull: false,
+        defaultValue: "B",
+      },
+      difficulty: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        validate: { min: 1, max: 5 },
       },
       createdAt: {
         type: DataTypes.DATE,

@@ -3,14 +3,23 @@ import {
   sequelize,
   Lecture,
   Lesson,
+  Unit,
+  Question,
   Concept,
   Standard,
   LessonOption,
   LessonChoice,
   LessonConcept,
   LessonStandard,
+  ModuleProgress,
+  LessonProgress,
+  User,
+  Badge,
+  Quest,
+  ShopItem,
 } from "../db";
-import { SEED_LECTURES } from "./curriculumData";
+import { CURRICULUM } from "./curriculumData";
+import logger from "../utils/logger";
 
 const CONCEPT_DESCRIPTIONS: Record<string, string> = {
   internet_awareness: "Understanding the internet as a global network with both safe and unsafe areas",
@@ -74,138 +83,376 @@ const STANDARD_DESCRIPTIONS: Record<string, string> = {
   "ISTE 1.3.d": "Students build knowledge by actively exploring real-world issues and problems",
 };
 
+const SEED_BADGES = [
+  {
+    key: "first_lesson",
+    name: "First Steps",
+    description: "Complete your first lesson",
+    icon: "👣",
+    rarity: "common" as const,
+    criteria: "complete_first_lesson",
+    xpReward: 10,
+    gemsReward: 5,
+    isActive: true,
+  },
+  {
+    key: "module_master",
+    name: "Module Master",
+    description: "Complete any module",
+    icon: "🏆",
+    rarity: "rare" as const,
+    criteria: "complete_one_module",
+    xpReward: 50,
+    gemsReward: 25,
+    isActive: true,
+  },
+  {
+    key: "streak_3",
+    name: "On Fire",
+    description: "Maintain a 3-day streak",
+    icon: "🔥",
+    rarity: "common" as const,
+    criteria: "streak_3_days",
+    xpReward: 20,
+    gemsReward: 10,
+    isActive: true,
+  },
+  {
+    key: "streak_7",
+    name: "Unstoppable",
+    description: "Maintain a 7-day streak",
+    icon: "⚡",
+    rarity: "rare" as const,
+    criteria: "streak_7_days",
+    xpReward: 100,
+    gemsReward: 50,
+    isActive: true,
+  },
+  {
+    key: "level_5",
+    name: "Rising Star",
+    description: "Reach level 5",
+    icon: "⭐",
+    rarity: "rare" as const,
+    criteria: "reach_level_5",
+    xpReward: 50,
+    gemsReward: 25,
+    isActive: true,
+  },
+  {
+    key: "xp_500",
+    name: "XP Collector",
+    description: "Earn 500 total XP",
+    icon: "💎",
+    rarity: "epic" as const,
+    criteria: "earn_500_xp",
+    xpReward: 100,
+    gemsReward: 50,
+    isActive: true,
+  },
+  {
+    key: "perfect_quiz",
+    name: "Perfect Score",
+    description: "Score 100% on a quiz",
+    icon: "🎯",
+    rarity: "rare" as const,
+    criteria: "perfect_quiz_score",
+    xpReward: 30,
+    gemsReward: 15,
+    isActive: true,
+  },
+  {
+    key: "explorer",
+    name: "Explorer",
+    description: "Complete the first module",
+    icon: "🗺️",
+    rarity: "common" as const,
+    criteria: "complete_first_module",
+    xpReward: 25,
+    gemsReward: 10,
+    isActive: true,
+  },
+];
+
+const SEED_QUESTS = [
+  {
+    key: "complete_1_lesson",
+    type: "daily" as const,
+    title: "First Lesson",
+    description: "Complete 1 lesson today",
+    target: 1,
+    xpReward: 15,
+    gemsReward: 5,
+    isActive: true,
+  },
+  {
+    key: "complete_3_lessons",
+    type: "daily" as const,
+    title: "Lesson Marathon",
+    description: "Complete 3 lessons today",
+    target: 3,
+    xpReward: 45,
+    gemsReward: 15,
+    isActive: true,
+  },
+  {
+    key: "win_2_quizzes",
+    type: "daily" as const,
+    title: "Quiz Master",
+    description: "Pass 2 quizzes today",
+    target: 2,
+    xpReward: 30,
+    gemsReward: 10,
+    isActive: true,
+  },
+  {
+    key: "earn_50_xp",
+    type: "daily" as const,
+    title: "XP Grinder",
+    description: "Earn 50 XP today",
+    target: 50,
+    xpReward: 20,
+    gemsReward: 8,
+    isActive: true,
+  },
+];
+
+const SEED_SHOP_ITEMS = [
+  {
+    key: "hero_cape",
+    name: "Hero Cape",
+    description: "A shiny cape for your avatar",
+    type: "avatar" as const,
+    cost: 50,
+    costType: "gems" as const,
+    effect: "🦸",
+    icon: "🦸",
+    rarity: "rare" as const,
+    isActive: true,
+  },
+  {
+    key: "wizard_hat",
+    name: "Wizard Hat",
+    description: "A magical wizard hat",
+    type: "avatar" as const,
+    cost: 75,
+    costType: "gems" as const,
+    effect: "🧙",
+    icon: "🧙",
+    rarity: "epic" as const,
+    isActive: true,
+  },
+  {
+    key: "glowing_wings",
+    name: "Glowing Wings",
+    description: "Sparkling fairy wings",
+    type: "avatar" as const,
+    cost: 100,
+    costType: "gems" as const,
+    effect: "🧚",
+    icon: "🧚",
+    rarity: "legendary" as const,
+    isActive: true,
+  },
+  {
+    key: "rockstar_guitar",
+    name: "Rockstar Guitar",
+    description: "Shred on a cool guitar",
+    type: "avatar" as const,
+    cost: 120,
+    costType: "gems" as const,
+    effect: "🎸",
+    icon: "🎸",
+    rarity: "legendary" as const,
+    isActive: true,
+  },
+  {
+    key: "heart_refill",
+    name: "Heart Refill",
+    description: "Restore 5 hearts",
+    type: "consumable" as const,
+    cost: 20,
+    costType: "gems" as const,
+    effect: '{"hearts": 5}',
+    icon: "❤️",
+    rarity: "common" as const,
+    isActive: true,
+  },
+  {
+    key: "xp_boost",
+    name: "XP Boost",
+    description: "Double XP for next lesson",
+    type: "powerup" as const,
+    cost: 30,
+    costType: "gems" as const,
+    effect: '{"xpMultiplier": 2}',
+    icon: "🚀",
+    rarity: "rare" as const,
+    isActive: true,
+  },
+];
+
 async function seed(): Promise<void> {
   try {
     await sequelize.authenticate();
-    console.log("[seed] Connected to PostgreSQL");
+    logger.info("Connected to PostgreSQL", { component: "seed" });
 
     await sequelize.sync({ alter: true });
-    console.log("[seed] Models synchronized");
-
-    // Reset existing data
-    await LessonOption.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonChoice.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonConcept.destroy({ where: {}, truncate: true, cascade: true });
-    await LessonStandard.destroy({ where: {}, truncate: true, cascade: true });
-    await Concept.destroy({ where: {}, truncate: true, cascade: true });
-    await Standard.destroy({ where: {}, truncate: true, cascade: true });
-    await Lesson.destroy({ where: {}, truncate: true, cascade: true });
-    await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+    logger.info("Models synchronized", { component: "seed" });
 
     const conceptCache = new Map<string, string>();
     const standardCache = new Map<string, string>();
 
-    for (const lecture of SEED_LECTURES) {
-      const createdLecture = await Lecture.create({
-        slug: lecture.slug,
-        title: lecture.title,
-        subtitle: lecture.subtitle,
-        icon: lecture.icon,
-        color: lecture.color,
-        badge: lecture.badge,
-        badgeName: lecture.badgeName,
-        order: lecture.order,
+    for (const section of CURRICULUM.sections) {
+      const [createdSection] = await Lecture.findOrCreate({
+        where: { slug: section.id },
+        defaults: {
+          slug: section.id,
+          title: section.title,
+          subtitle: section.description,
+          icon: section.icon,
+          color: section.color,
+          badge: "⭐",
+          badgeName: "Module",
+          order: 0,
+          ageGroup: section.ageGroup as "A" | "B",
+        },
+      });
+      await createdSection.update({
+        title: section.title,
+        subtitle: section.description,
+        icon: section.icon,
+        color: section.color,
+        ageGroup: section.ageGroup as "A" | "B",
       });
 
-      const createdLessons = await Lesson.bulkCreate(
-        lecture.lessons.map((lesson, index) => {
-          const data: Record<string, unknown> = {
-            lectureId: createdLecture.id,
-            stepId: lesson.stepId,
-            type: lesson.type,
+      for (const unit of section.units) {
+        const [createdUnit] = await Unit.findOrCreate({
+          where: { slug: unit.id },
+          defaults: {
+            sectionId: createdSection.id,
+            slug: unit.id,
+            title: unit.title,
+            description: unit.description,
+            icon: unit.icon,
+            order: 0,
+            ageGroup: unit.ageGroup as "A" | "B",
+          },
+        });
+        await createdUnit.update({
+          title: unit.title,
+          description: unit.description,
+          icon: unit.icon,
+          ageGroup: unit.ageGroup as "A" | "B",
+        });
+
+        for (const lesson of unit.lessons) {
+          const [createdLesson] = await Lesson.findOrCreate({
+            where: { stepId: lesson.id },
+            defaults: {
+              unitId: createdUnit.id,
+              lectureId: createdSection.id,
+              stepId: lesson.id,
+              type: "quiz",
+              title: lesson.title,
+              notes: lesson.notes,
+              order: lesson.order,
+              ageGroup: lesson.ageGroup as "A" | "B",
+              difficulty: lesson.difficulty,
+            },
+          });
+          await createdLesson.update({
             title: lesson.title,
-            order: index + 1,
-          };
-          if (lesson.text !== undefined) data.text = lesson.text;
-          if (lesson.question !== undefined) data.question = lesson.question;
-          if (lesson.answer !== undefined) data.answer = lesson.answer;
-          if (lesson.explanation !== undefined) data.explanation = lesson.explanation;
-          if (lesson.icon !== undefined) data.icon = lesson.icon;
-          if (lesson.mascot !== undefined) data.mascot = lesson.mascot;
-          if (lesson.speech !== undefined) data.speech = lesson.speech;
-          if (lesson.ageGroup !== undefined) data.ageGroup = lesson.ageGroup;
-          if (lesson.depthLevel !== undefined) data.depthLevel = lesson.depthLevel;
-          if (lesson.learningObjectives !== undefined) data.learningObjectives = lesson.learningObjectives;
-          if (lesson.successCriteria !== undefined) data.successCriteria = lesson.successCriteria;
-          if (lesson.activityType !== undefined) data.activityType = lesson.activityType;
-          if (lesson.materials !== undefined) data.materials = lesson.materials;
-          return data as any;
-        })
-      );
+            notes: lesson.notes,
+            ageGroup: lesson.ageGroup as "A" | "B",
+            difficulty: lesson.difficulty,
+          });
 
-      // Populate normalized tables
-      for (let i = 0; i < lecture.lessons.length; i++) {
-        const lesson = lecture.lessons[i];
-        const lessonId = createdLessons[i].id;
-
-        // Options
-        if (lesson.options) {
-          const optionRecords = lesson.options.map((text, pos) => ({
-            lessonId,
-            position: pos,
-            text,
-          }));
-          await LessonOption.bulkCreate(optionRecords as any);
-        }
-
-        // Choices
-        if (lesson.choices) {
-          const choiceRecords = lesson.choices.map((c, pos) => ({
-            lessonId,
-            position: pos,
-            text: c.text,
-            feedback: c.feedback,
-            consequence: c.consequence,
-            xpDelta: c.xpDelta ?? null,
-          }));
-          await LessonChoice.bulkCreate(choiceRecords as any);
-        }
-
-        // Concepts
-        if (lesson.conceptKeys) {
-          for (const code of lesson.conceptKeys) {
-            let conceptId = conceptCache.get(code);
-            if (!conceptId) {
-              const description = CONCEPT_DESCRIPTIONS[code] || null;
-              const concept = await Concept.findOrCreate({
-                where: { code },
-                defaults: { code, description },
-              });
-              conceptId = concept[0].id;
-              conceptCache.set(code, conceptId);
-            }
-            await LessonConcept.findOrCreate({
-              where: { lessonId, conceptId: conceptId as string },
+          for (const q of lesson.questions) {
+            const [question] = await Question.findOrCreate({
+              where: { slug: q.id },
+              defaults: {
+                lessonId: createdLesson.id,
+                slug: q.id,
+                question: q.question,
+                options: q.options,
+                correctIndex: q.correctIndex,
+                explanation: q.explanation,
+                difficulty: q.difficulty,
+                xpReward: q.xpReward,
+              },
+            });
+            await question.update({
+              question: q.question,
+              options: q.options,
+              correctIndex: q.correctIndex,
+              explanation: q.explanation,
+              difficulty: q.difficulty,
+              xpReward: q.xpReward,
             });
           }
         }
 
-        // Standards
-        if (lesson.connexusStandards) {
-          for (const code of lesson.connexusStandards) {
-            let standardId = standardCache.get(code);
-            if (!standardId) {
-              const description = STANDARD_DESCRIPTIONS[code] || null;
-              const standard = await Standard.findOrCreate({
-                where: { code },
-                defaults: { code, description },
-              });
-              standardId = standard[0].id;
-              standardCache.set(code, standardId);
-            }
-            await LessonStandard.findOrCreate({
-              where: { lessonId, standardId: standardId as string },
-            });
-          }
-        }
+        logger.info("Seeded unit", {
+          component: "seed",
+          unitTitle: unit.title,
+          lessonCount: unit.lessons.length,
+        });
       }
 
-      console.log(`[seed] Seeded lecture: ${lecture.title}`);
+      logger.info("Seeded section", {
+        component: "seed",
+        sectionTitle: section.title,
+        unitCount: section.units.length,
+      });
     }
 
-    console.log("[seed] Done 🎉");
+    for (const badge of SEED_BADGES) {
+      await Badge.findOrCreate({
+        where: { key: badge.key },
+        defaults: badge,
+      });
+    }
+
+    for (const quest of SEED_QUESTS) {
+      await Quest.findOrCreate({
+        where: { key: quest.key },
+        defaults: quest,
+      });
+    }
+
+    for (const item of SEED_SHOP_ITEMS) {
+      await ShopItem.findOrCreate({
+        where: { key: item.key },
+        defaults: item,
+      });
+    }
+
+    const [demoUser] = await User.findOrCreate({
+      where: { email: "demo@cyberquest.app" },
+      defaults: {
+        name: "Demo User",
+        email: "demo@cyberquest.app",
+        password: "demo123",
+        age: 10,
+        ageGroup: "B",
+        avatar: "🦊",
+        xp: 0,
+        level: 1,
+        streak: 0,
+        hearts: 5,
+        gems: 100,
+        onboarded: true,
+        isVerified: true,
+      },
+    });
+
+    logger.info("Seed completed successfully", { component: "seed" });
   } catch (err) {
-    console.error("[seed] Failed:", err);
+    logger.error("Seed failed", {
+      component: "seed",
+      error: err instanceof Error ? err.message : "Unknown error",
+    });
     process.exit(1);
   } finally {
     await sequelize.close();
