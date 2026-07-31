@@ -49,13 +49,15 @@ export function initLesson(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: true,
         references: { model: "lectures", key: "id" },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       unitId: {
         type: DataTypes.UUID,
         allowNull: true,
         references: { model: "units", key: "id" },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       stepId: {
         type: DataTypes.STRING,

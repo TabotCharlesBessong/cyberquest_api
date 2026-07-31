@@ -43,6 +43,7 @@ export function initLessonProgress(sequelize: Sequelize): void {
         allowNull: false,
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       attempts: {
         type: DataTypes.INTEGER,
