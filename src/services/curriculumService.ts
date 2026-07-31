@@ -32,6 +32,10 @@ export class CurriculumService {
         units = units.filter((u: any) => u.ageGroup === ageGroup || u.ageGroup === "ALL");
       }
 
+      if (units.length === 0) {
+        return null;
+      }
+
       return {
         ...plain,
         units: units.map((unit: any) => {
@@ -64,7 +68,7 @@ export class CurriculumService {
           };
         }),
       };
-    });
+    }).filter((s: any) => s !== null);
   }
 
   static async getSectionBySlug(slug: string, ageGroup?: AgeGroup) {
@@ -96,6 +100,10 @@ export class CurriculumService {
 
     if (ageGroup) {
       units = units.filter((u: any) => u.ageGroup === ageGroup || u.ageGroup === "ALL");
+    }
+
+    if (units.length === 0) {
+      return null;
     }
 
     return {
