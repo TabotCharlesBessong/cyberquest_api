@@ -1,30 +1,19 @@
 import { Response } from "express";
-import { Lecture } from "../db/models/Lecture";
-import { Lesson } from "../db/models/Lesson";
+import { LectureService } from "../services/lectureService";
 import { AuthedRequest } from "../middleware/auth";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { notFound } from "../utils/apiError";
 
-// GET /api/lectures
 export const getAllLectures = asyncHandler(
-  async (_req: AuthedRequest, res: Response) => {
-    const lectures = await Lecture.findAll({
-      include: [{ model: Lesson, as: "lessons", order: [["order", "ASC"]] }],
-      order: [["order", "ASC"]],
-    });
-
+  async (req: AuthedRequest, res: Response) => {
+    const lectures = await LectureService.getAllLectures(req.query.ageGroup as any);
     res.status(200).json({ success: true, data: { lectures } });
   }
 );
 
-// GET /api/lectures/:slug
 export const getLectureBySlug = asyncHandler(
   async (req: AuthedRequest, res: Response) => {
-    const lecture = await Lecture.findOne({
-      where: { slug: req.params.slug },
-      include: [{ model: Lesson, as: "lessons", order: [["order", "ASC"]] }],
-    });
-
+    const lecture = await LectureService.getLectureBySlug(req.params.slug as string, req.query.ageGroup as any);
     if (!lecture) throw notFound("Lecture not found");
 
     res.status(200).json({ success: true, data: { lecture } });

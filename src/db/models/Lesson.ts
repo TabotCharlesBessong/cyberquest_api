@@ -8,26 +8,31 @@ import {
   ForeignKey,
 } from "sequelize";
 
-export type LessonType = "story" | "quiz";
+export type LessonType = "story" | "quiz" | "mini-game" | "challenge";
+export type LessonCategory = "intro" | "core" | "review" | "bridge" | "capstone";
+export type AgeGroup = "A" | "B" | "ALL";
 
 export class Lesson extends Model<
   InferAttributes<Lesson>,
   InferCreationAttributes<Lesson>
 > {
   declare id: CreationOptional<string>;
-  declare lectureId: ForeignKey<string>;
+  declare lectureId: ForeignKey<string> | null;
+  declare unitId: ForeignKey<string> | null;
   declare stepId: string;
   declare type: LessonType;
   declare title: string;
   declare text: string | null;
   declare question: string | null;
-  declare options: string[] | null;
   declare answer: number | null;
   declare explanation: string | null;
   declare icon: string | null;
   declare mascot: string | null;
   declare speech: string | null;
-  declare order: CreationOptional<number>;
+  declare notes: string | null;
+  declare order: number;
+  declare ageGroup: CreationOptional<AgeGroup>;
+  declare difficulty: CreationOptional<number>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -42,16 +47,24 @@ export function initLesson(sequelize: Sequelize): void {
       },
       lectureId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: { model: "lectures", key: "id" },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
+      },
+      unitId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: { model: "units", key: "id" },
+        onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       stepId: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       type: {
-        type: DataTypes.ENUM("story", "quiz"),
+        type: DataTypes.ENUM("story", "quiz", "mini-game", "challenge"),
         allowNull: false,
       },
       title: {
@@ -65,10 +78,6 @@ export function initLesson(sequelize: Sequelize): void {
       },
       question: {
         type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      options: {
-        type: DataTypes.JSONB,
         allowNull: true,
       },
       answer: {
@@ -91,10 +100,24 @@ export function initLesson(sequelize: Sequelize): void {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      notes: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       order: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+      },
+      ageGroup: {
+        type: DataTypes.ENUM("A", "B", "ALL"),
+        allowNull: false,
+        defaultValue: "B",
+      },
+      difficulty: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        validate: { min: 1, max: 5 },
       },
       createdAt: {
         type: DataTypes.DATE,

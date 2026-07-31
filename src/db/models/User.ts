@@ -25,6 +25,13 @@ export class User extends Model<
   declare resetPasswordCode: string | null;
   declare resetPasswordExpires: Date | null;
   declare onboarded: CreationOptional<boolean>;
+  declare xp: CreationOptional<number>;
+  declare level: CreationOptional<number>;
+  declare streak: CreationOptional<number>;
+  declare hearts: CreationOptional<number>;
+  declare gems: CreationOptional<number>;
+  declare ageGroup: CreationOptional<"A" | "B">;
+  declare role: CreationOptional<"user" | "admin">;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -87,6 +94,40 @@ export function initUser(sequelize: Sequelize): void {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
+      },
+      xp: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      level: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+      },
+      streak: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      hearts: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 5,
+      },
+      gems: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      ageGroup: {
+        type: DataTypes.ENUM("A", "B"),
+        allowNull: true,
+      },
+      role: {
+        type: DataTypes.ENUM("user", "admin"),
+        allowNull: false,
+        defaultValue: "user",
       },
       createdAt: {
         type: DataTypes.DATE,
