@@ -7,26 +7,24 @@ import {
   InferCreationAttributes,
 } from "sequelize";
 
-export class Lecture extends Model<
-  InferAttributes<Lecture>,
-  InferCreationAttributes<Lecture>
+export class CurriculumSection extends Model<
+  InferAttributes<CurriculumSection>,
+  InferCreationAttributes<CurriculumSection>
 > {
   declare id: CreationOptional<string>;
   declare slug: string;
   declare title: string;
-  declare subtitle: string;
+  declare description: string;
   declare icon: string;
   declare color: string;
-  declare badge: string;
-  declare badgeName: string;
-  declare order: CreationOptional<number>;
-  declare ageGroup: CreationOptional<"A" | "B">;
+  declare order: number;
+  declare ageGroup: "A" | "B";
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-export function initLecture(sequelize: Sequelize): void {
-  Lecture.init(
+export function initCurriculumSection(sequelize: Sequelize): void {
+  CurriculumSection.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -42,7 +40,7 @@ export function initLecture(sequelize: Sequelize): void {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      subtitle: {
+      description: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "",
@@ -57,16 +55,6 @@ export function initLecture(sequelize: Sequelize): void {
         allowNull: false,
         defaultValue: "#4D96FF",
       },
-      badge: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "⭐",
-      },
-      badgeName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "",
-      },
       order: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -74,7 +62,7 @@ export function initLecture(sequelize: Sequelize): void {
       },
       ageGroup: {
         type: DataTypes.ENUM("A", "B"),
-        allowNull: true,
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -87,7 +75,7 @@ export function initLecture(sequelize: Sequelize): void {
     },
     {
       sequelize,
-      tableName: "lectures",
+      tableName: "curriculum_sections",
     }
   );
 }

@@ -10,9 +10,6 @@ async function start(): Promise<void> {
     await sequelize.authenticate();
     logger.info("Connected to PostgreSQL", { component: "db" });
 
-    await sequelize.sync({ alter: true });
-    logger.info("Models synchronized", { component: "db" });
-
     const app = createApp();
     app.listen(config.port, () => {
       logger.info(`CyberQuest API listening on port ${config.port}`, { component: "server" });

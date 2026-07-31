@@ -1,6 +1,7 @@
 import { ModuleProgress, LessonProgress } from "../db";
 import { Lesson } from "../db/models/Lesson";
 import { Lecture } from "../db/models/Lecture";
+import { Unit } from "../db/models/Unit";
 import { User } from "../db/models/User";
 import { Op } from "sequelize";
 import { notFound } from "../utils/apiError";
@@ -26,7 +27,10 @@ export class ProgressService {
       const lesson = await Lesson.findByPk(lessonId);
       if (!lesson) throw notFound("Lesson not found");
 
-      const lecture = await Lecture.findByPk(lesson.lectureId);
+      const lectureId = lesson.lectureId || (lesson.unitId ? (await Unit.findByPk(lesson.unitId))?.sectionId || null : null);
+      if (!lectureId) throw notFound("Lecture not found");
+
+      const lecture = await Lecture.findByPk(lectureId);
       if (!lecture) throw notFound("Lecture not found");
 
       const effectiveTotal = total ?? 1;
@@ -84,10 +88,10 @@ export class ProgressService {
       }
 
       const [mp] = await ModuleProgress.findOrCreate({
-        where: { userId, lectureId: lesson.lectureId },
+        where: { userId, lectureId },
         defaults: {
           userId,
-          lectureId: lesson.lectureId,
+          lectureId,
           status: "in_progress",
           xpEarned: 0,
           stars: 0,
@@ -104,14 +108,14 @@ export class ProgressService {
         mp.score = score;
       }
 
-      const lessonQuery: any = { where: { lectureId: lesson.lectureId } };
+      const lessonQuery: any = { where: { lectureId } };
       if (userAgeGroup) {
         lessonQuery.where.ageGroup = userAgeGroup;
       }
       const allLessons = Number(await Lesson.count(lessonQuery as any));
 
       const lessonIds = await Lesson.findAll({
-        where: { lectureId: lesson.lectureId, ...(userAgeGroup ? { ageGroup: userAgeGroup } : {}) },
+        where: { lectureId, ...(userAgeGroup ? { ageGroup: userAgeGroup } : {}) },
         attributes: ["id"],
       }).then(l => l.map(x => x.id));
 
