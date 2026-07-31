@@ -18,7 +18,7 @@ import {
   Quest,
   ShopItem,
 } from "../db";
-import { CURRICULUM } from "./curriculumData";
+import { CURRICULUM } from "./curriculumSeed";
 import logger from "../utils/logger";
 
 const CONCEPT_DESCRIPTIONS: Record<string, string> = {
@@ -314,7 +314,7 @@ async function seed(): Promise<void> {
           color: section.color,
           badge: "⭐",
           badgeName: "Module",
-          order: 0,
+          order: section.order,
           ageGroup: section.ageGroup as "A" | "B",
         },
       });
@@ -323,6 +323,7 @@ async function seed(): Promise<void> {
         subtitle: section.description,
         icon: section.icon,
         color: section.color,
+        order: section.order,
         ageGroup: section.ageGroup as "A" | "B",
       });
 
@@ -335,7 +336,7 @@ async function seed(): Promise<void> {
             title: unit.title,
             description: unit.description,
             icon: unit.icon,
-            order: 0,
+            order: unit.order,
             ageGroup: unit.ageGroup as "A" | "B",
           },
         });
@@ -343,6 +344,7 @@ async function seed(): Promise<void> {
           title: unit.title,
           description: unit.description,
           icon: unit.icon,
+          order: unit.order,
           ageGroup: unit.ageGroup as "A" | "B",
         });
 
@@ -364,6 +366,7 @@ async function seed(): Promise<void> {
           await createdLesson.update({
             title: lesson.title,
             notes: lesson.notes,
+            order: lesson.order,
             ageGroup: lesson.ageGroup as "A" | "B",
             difficulty: lesson.difficulty,
           });

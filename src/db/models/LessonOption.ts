@@ -33,6 +33,7 @@ export function initLessonOption(sequelize: Sequelize): void {
         allowNull: false,
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       position: {
         type: DataTypes.INTEGER,

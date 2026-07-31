@@ -26,6 +26,7 @@ export function initLessonStandard(sequelize: Sequelize): void {
         primaryKey: true,
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       standardId: {
         type: DataTypes.UUID,

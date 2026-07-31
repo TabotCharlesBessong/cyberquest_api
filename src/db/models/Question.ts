@@ -38,6 +38,7 @@ export function initQuestion(sequelize: Sequelize): void {
         allowNull: false,
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
+        onUpdate: "CASCADE",
       },
       slug: {
         type: DataTypes.STRING,
