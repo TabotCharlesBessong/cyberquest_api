@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { createApp } from '../app';
-import { sequelize, User, Lecture, Lesson, ModuleProgress, LessonProgress, Badge, Quest, ShopItem, UserBadge, UserQuest, UserInventory, DailyActivity } from '../db';
+import { sequelize, User, Lecture, Lesson, ModuleProgress, LessonProgress, Badge, Quest, ShopItem, UserBadge, UserQuest, UserInventory, DailyActivity, LeaderboardEntry, League, LeagueMembership, Classroom, ClassroomRound, ClassroomParticipant, Event } from '../db';
+import { LeagueService } from '../services/leagueService';
 
 const app = createApp();
 
@@ -27,6 +28,13 @@ describe('API Integration', () => {
       await Quest.destroy({ where: {}, truncate: true, cascade: true });
       await Badge.destroy({ where: {}, truncate: true, cascade: true });
       await User.destroy({ where: {}, truncate: true, cascade: true });
+      await LeaderboardEntry.destroy({ where: {}, truncate: true, cascade: true });
+      await LeagueMembership.destroy({ where: {}, truncate: true, cascade: true });
+      await League.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomParticipant.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomRound.destroy({ where: {}, truncate: true, cascade: true });
+      await Classroom.destroy({ where: {}, truncate: true, cascade: true });
+      await Event.destroy({ where: {}, truncate: true, cascade: true });
     });
 
     test('POST /api/auth/signup - creates a new user', async () => {
@@ -157,6 +165,13 @@ describe('API Integration', () => {
       await Quest.destroy({ where: {}, truncate: true, cascade: true });
       await Badge.destroy({ where: {}, truncate: true, cascade: true });
       await User.destroy({ where: {}, truncate: true, cascade: true });
+      await LeaderboardEntry.destroy({ where: {}, truncate: true, cascade: true });
+      await LeagueMembership.destroy({ where: {}, truncate: true, cascade: true });
+      await League.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomParticipant.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomRound.destroy({ where: {}, truncate: true, cascade: true });
+      await Classroom.destroy({ where: {}, truncate: true, cascade: true });
+      await Event.destroy({ where: {}, truncate: true, cascade: true });
 
       const user = await User.create({
         name: 'Test User',
@@ -267,6 +282,13 @@ describe('API Integration', () => {
       await Quest.destroy({ where: {}, truncate: true, cascade: true });
       await Badge.destroy({ where: {}, truncate: true, cascade: true });
       await User.destroy({ where: {}, truncate: true, cascade: true });
+      await LeaderboardEntry.destroy({ where: {}, truncate: true, cascade: true });
+      await LeagueMembership.destroy({ where: {}, truncate: true, cascade: true });
+      await League.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomParticipant.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomRound.destroy({ where: {}, truncate: true, cascade: true });
+      await Classroom.destroy({ where: {}, truncate: true, cascade: true });
+      await Event.destroy({ where: {}, truncate: true, cascade: true });
 
       const user = await User.create({
         name: 'Test User',
@@ -339,6 +361,233 @@ describe('API Integration', () => {
       expect(res.body.data.user.id).toBe(userId);
       expect(res.body.data.modules.length).toBeGreaterThanOrEqual(1);
       expect(res.body.data.modules[0].status).toBe('completed');
+    });
+  });
+
+  describe('Phase 3 - Competitions & Social', () => {
+    let authToken: string;
+    let groupBUser: any;
+
+    beforeEach(async () => {
+      await DailyActivity.destroy({ where: {}, truncate: true, cascade: true });
+      await UserInventory.destroy({ where: {}, truncate: true, cascade: true });
+      await UserQuest.destroy({ where: {}, truncate: true, cascade: true });
+      await UserBadge.destroy({ where: {}, truncate: true, cascade: true });
+      await LessonProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await ModuleProgress.destroy({ where: {}, truncate: true, cascade: true });
+      await Lesson.destroy({ where: {}, truncate: true, cascade: true });
+      await Lecture.destroy({ where: {}, truncate: true, cascade: true });
+      await ShopItem.destroy({ where: {}, truncate: true, cascade: true });
+      await Quest.destroy({ where: {}, truncate: true, cascade: true });
+      await Badge.destroy({ where: {}, truncate: true, cascade: true });
+      await User.destroy({ where: {}, truncate: true, cascade: true });
+      await LeaderboardEntry.destroy({ where: {}, truncate: true, cascade: true });
+      await LeagueMembership.destroy({ where: {}, truncate: true, cascade: true });
+      await League.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomParticipant.destroy({ where: {}, truncate: true, cascade: true });
+      await ClassroomRound.destroy({ where: {}, truncate: true, cascade: true });
+      await Classroom.destroy({ where: {}, truncate: true, cascade: true });
+      await Event.destroy({ where: {}, truncate: true, cascade: true });
+
+      const user = await User.create({
+        name: 'Group B Hero',
+        email: 'groupb@test.com',
+        password: 'password123',
+        age: 10,
+        ageGroup: 'B',
+        avatar: '🦊',
+        isVerified: true,
+        xp: 500,
+      } as any);
+      groupBUser = user;
+
+      const loginRes = await request(app)
+        .post('/api/auth/login')
+        .send({ email: 'groupb@test.com', password: 'password123' });
+
+      authToken = loginRes.body.data.token;
+    });
+
+    test('GET /api/leaderboard - returns entries for Group B', async () => {
+      await request(app)
+        .post('/api/leaderboard/recompute?scope=global')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      const res = await request(app)
+        .get('/api/leaderboard?scope=global')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.entries).toHaveLength(1);
+      expect(res.body.data.entries[0].name).toBe('Group B Hero');
+    });
+
+    test('POST /api/leaderboard/recompute - rebuilds leaderboard with event multiplier', async () => {
+      await Event.create({
+        key: 'double-xp',
+        name: 'Double XP Weekend',
+        description: 'Earn 2x XP',
+        multiplier: 2.0,
+        startsAt: new Date(Date.now() - 86400000),
+        endsAt: new Date(Date.now() + 86400000),
+      } as any);
+
+      const res = await request(app)
+        .post('/api/leaderboard/recompute?scope=global')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.count).toBe(1);
+
+      const entries = await LeaderboardEntry.findAll({ where: { scope: 'global' } });
+      expect(entries[0].score).toBe(1000);
+    });
+
+    test('GET /api/leagues/me - returns league for Group B', async () => {
+      await LeagueService.assignMembersToLeagues(LeagueService.getCurrentSeason());
+
+      const res = await request(app)
+        .get('/api/leagues/me')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.league).not.toBeNull();
+    });
+
+    test('POST /api/leagues/weekly-reset - promotes and demotes members', async () => {
+      const lowUser = await User.create({
+        name: 'Low XP',
+        email: 'low@test.com',
+        password: 'password123',
+        age: 10,
+        ageGroup: 'B',
+        avatar: '🐱',
+        isVerified: true,
+        xp: 10,
+      } as any);
+
+      const midUser = await User.create({
+        name: 'Mid XP',
+        email: 'mid@test.com',
+        password: 'password123',
+        age: 10,
+        ageGroup: 'B',
+        avatar: '🐶',
+        isVerified: true,
+        xp: 250,
+      } as any);
+
+      const midUser2 = await User.create({
+        name: 'Mid XP 2',
+        email: 'mid2@test.com',
+        password: 'password123',
+        age: 10,
+        ageGroup: 'B',
+        avatar: '🐼',
+        isVerified: true,
+        xp: 200,
+      } as any);
+
+      await LeagueService.assignMembersToLeagues(LeagueService.getCurrentSeason());
+
+      const res = await request(app)
+        .post('/api/leagues/weekly-reset')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+
+      const allHigh = await LeagueMembership.findAll({ where: { userId: groupBUser.id }, raw: true });
+      const allLow = await LeagueMembership.findAll({ where: { userId: lowUser.id }, raw: true });
+      const allMid = await LeagueMembership.findAll({ where: { userId: midUser.id }, raw: true });
+      const allMid2 = await LeagueMembership.findAll({ where: { userId: midUser2.id }, raw: true });
+
+      const hasAnyPromotion = [...allHigh, ...allLow, ...allMid, ...allMid2].some(m => m.promoted);
+      const hasAnyDemotion = [...allHigh, ...allLow, ...allMid, ...allMid2].some(m => m.demoted);
+
+      expect(hasAnyPromotion).toBe(true);
+      expect(hasAnyDemotion).toBe(true);
+    });
+
+    test('POST /api/classroom - creates classroom with code', async () => {
+      const res = await request(app)
+        .post('/api/classroom/')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ name: 'Test Class', school: 'Test School' });
+
+      expect(res.status).toBe(201);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.code).toBeDefined();
+      expect(res.body.data.code.length).toBeGreaterThanOrEqual(6);
+    });
+
+    test('POST /api/classroom/join - joins classroom by code', async () => {
+      const classroom = await Classroom.create({
+        name: 'Test Class',
+        school: 'Test School',
+        code: 'ABC123',
+        memberIds: [],
+      } as any);
+
+      const res = await request(app)
+        .post('/api/classroom/join')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ code: 'ABC123' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.memberIds).toContain(groupBUser.id);
+    });
+
+    test('POST /api/classroom/:id/round/start - starts a round', async () => {
+      const classroom = await Classroom.create({
+        name: 'Test Class',
+        school: 'Test School',
+        code: 'XYZ789',
+        memberIds: [],
+      } as any);
+
+      const questions = [
+        { id: 'q1', text: 'Test?', options: ['A', 'B'], correctIndex: 0 },
+      ];
+
+      const res = await request(app)
+        .post(`/api/classroom/${classroom.id}/round/start`)
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({ questions });
+
+      expect(res.status).toBe(201);
+      expect(res.body.success).toBe(true);
+      expect(res.body.data.round.status).toBe('active');
+    });
+
+    test('POST /api/events/active - returns active event when exists', async () => {
+      await Event.create({
+        key: 'test-event',
+        name: 'Test Event',
+        multiplier: 1.5,
+        startsAt: new Date(Date.now() - 3600000),
+        endsAt: new Date(Date.now() + 3600000),
+      } as any);
+
+      const res = await request(app)
+        .get('/api/events/active')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).not.toBeNull();
+      expect(res.body.data.key).toBe('test-event');
+    });
+
+    test('GET /api/events/active - returns null when no active event', async () => {
+      const res = await request(app)
+        .get('/api/events/active')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data).toBeNull();
     });
   });
 });

@@ -41,7 +41,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
     message: "Logged in successfully.",
-    data: { token: signToken({ id: result.user.id }), user: sanitizeUser(result.user) },
+    data: { token: result.token, user: sanitizeUser(result.user) },
   });
 });
 
