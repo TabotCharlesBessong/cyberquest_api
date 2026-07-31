@@ -1,11 +1,15 @@
 import { ModuleProgress, LessonProgress } from "../db";
 import { Lesson } from "../db/models/Lesson";
 import { Lecture } from "../db/models/Lecture";
+import { Unit } from "../db/models/Unit";
 import { User } from "../db/models/User";
 import { Op } from "sequelize";
 import { notFound } from "../utils/apiError";
 import logger from "../utils/logger";
 import { traceProgressFlow } from "../utils/debugTrace";
+import { GamificationService } from "./gamificationService";
+import { BadgeService } from "./badgeService";
+import { QuestService } from "./questService";
 
 const XP_PER_CORRECT = 10;
 const XP_PER_WRONG = 5;
@@ -23,7 +27,10 @@ export class ProgressService {
       const lesson = await Lesson.findByPk(lessonId);
       if (!lesson) throw notFound("Lesson not found");
 
-      const lecture = await Lecture.findByPk(lesson.lectureId);
+      const lectureId = lesson.lectureId || (lesson.unitId ? (await Unit.findByPk(lesson.unitId))?.sectionId || null : null);
+      if (!lectureId) throw notFound("Lecture not found");
+
+      const lecture = await Lecture.findByPk(lectureId);
       if (!lecture) throw notFound("Lecture not found");
 
       const effectiveTotal = total ?? 1;
@@ -81,10 +88,10 @@ export class ProgressService {
       }
 
       const [mp] = await ModuleProgress.findOrCreate({
-        where: { userId, lectureId: lesson.lectureId },
+        where: { userId, lectureId },
         defaults: {
           userId,
-          lectureId: lesson.lectureId,
+          lectureId,
           status: "in_progress",
           xpEarned: 0,
           stars: 0,
@@ -101,14 +108,14 @@ export class ProgressService {
         mp.score = score;
       }
 
-      const lessonQuery: any = { where: { lectureId: lesson.lectureId } };
+      const lessonQuery: any = { where: { lectureId } };
       if (userAgeGroup) {
         lessonQuery.where.ageGroup = userAgeGroup;
       }
       const allLessons = Number(await Lesson.count(lessonQuery as any));
 
       const lessonIds = await Lesson.findAll({
-        where: { lectureId: lesson.lectureId, ...(userAgeGroup ? { ageGroup: userAgeGroup } : {}) },
+        where: { lectureId, ...(userAgeGroup ? { ageGroup: userAgeGroup } : {}) },
         attributes: ["id"],
       }).then(l => l.map(x => x.id));
 
@@ -167,6 +174,21 @@ export class ProgressService {
         await user.save();
       }
 
+      await GamificationService.recordDailyActivity(
+        userId,
+        new Date().toISOString().split("T")[0],
+        xpEarned,
+        score >= 70 ? 1 : 0,
+        score >= 70 ? 1 : 0
+      );
+
+      await GamificationService.updateStreak(userId);
+      await BadgeService.checkAndAwardBadges(userId);
+      await QuestService.updateQuestProgress(userId, "complete_1_lesson");
+      await QuestService.updateQuestProgress(userId, "complete_3_lessons");
+      await QuestService.updateQuestProgress(userId, "win_2_quizzes");
+      await QuestService.updateQuestProgress(userId, "earn_50_xp");
+
       traceProgressFlow("submit_complete", {
         userId,
         moduleId: mp.id,
@@ -217,6 +239,8 @@ export class ProgressService {
       const user = await User.findByPk(userId);
       if (!user) throw notFound("User not found");
 
+      const badges = await BadgeService.getUserBadges(userId);
+
       logger.info("Fetched user progress", {
         component: "ProgressService",
         userId,
@@ -238,6 +262,7 @@ export class ProgressService {
           hearts: user.hearts,
           gems: user.gems,
         },
+        badges,
         modules: modules.map(mp => ({
           id: mp.id,
           lectureId: mp.lectureId,

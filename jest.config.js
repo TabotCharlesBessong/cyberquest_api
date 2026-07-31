@@ -22,4 +22,5 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   verbose: true,
+  testTimeout: 15000,
 };

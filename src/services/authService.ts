@@ -52,7 +52,7 @@ export class AuthService {
 
     await sendWelcomeEmail(user.email, user.name);
 
-    const token = signToken({ id: user.id });
+    const token = signToken({ id: user.id, role: user.role });
     return { user, token };
   }
 
@@ -83,7 +83,7 @@ export class AuthService {
       throw forbidden("Please verify your email before logging in");
     }
 
-    const token = signToken({ id: user.id });
+    const token = signToken({ id: user.id, role: user.role });
     return { user, token };
   }
 

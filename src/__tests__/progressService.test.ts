@@ -1,5 +1,24 @@
 import { ProgressService } from '../services/progressService';
 
+jest.mock('../services/gamificationService', () => ({
+  GamificationService: {
+    recordDailyActivity: jest.fn(),
+    updateStreak: jest.fn(),
+  },
+}));
+
+jest.mock('../services/badgeService', () => ({
+  BadgeService: {
+    checkAndAwardBadges: jest.fn(),
+  },
+}));
+
+jest.mock('../services/questService', () => ({
+  QuestService: {
+    updateQuestProgress: jest.fn(),
+  },
+}));
+
 jest.mock('../db/models/Lesson', () => ({
   Lesson: { findByPk: jest.fn(), count: jest.fn(), findAll: jest.fn() },
 }));
