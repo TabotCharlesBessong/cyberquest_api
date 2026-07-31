@@ -1,10 +1,56 @@
 import { Router } from "express";
-import { getProfile, getBadges, claimQuestReward } from "../controllers/gamificationController";
+import { getProfile, getBadges, claimQuestReward, recordActivity } from "../controllers/gamificationController";
 import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
 
 router.use(authMiddleware);
+
+/**
+ * @swagger
+ * /gamification/activity:
+ *   post:
+ *     tags: [Gamification]
+ *     summary: Record gamification activity for non-lesson actions
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               action:
+ *                 type: string
+ *                 enum: [daily_login, profile_view, shop_visit, purchase, avatar_change, leaderboard_view]
+ *     responses:
+ *       200:
+ *         description: Activity recorded with XP/gems rewards
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     rewarded:
+ *                       type: boolean
+ *                     xpEarned:
+ *                       type: integer
+ *                     gemsEarned:
+ *                       type: integer
+ *                     stats:
+ *                       $ref: '#/components/schemas/UserStats'
+ *       400:
+ *         description: Invalid action
+ *       401:
+ *         description: Not authenticated
+ */
+router.post("/activity", recordActivity);
 
 /**
  * @swagger

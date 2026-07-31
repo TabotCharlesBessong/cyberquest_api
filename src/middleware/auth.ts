@@ -4,6 +4,7 @@ import { unauthorized } from "../utils/apiError";
 
 interface AuthPayload {
   id: string;
+  role?: string;
   iat?: number;
   exp?: number;
 }
@@ -29,4 +30,15 @@ export function authMiddleware(
   } catch {
     next(unauthorized("Invalid or expired token"));
   }
+}
+
+export function adminOnly(
+  req: AuthedRequest,
+  _res: Response,
+  next: NextFunction
+): void {
+  if (!req.user || req.user.role !== "admin") {
+    return next(unauthorized("Admin access required"));
+  }
+  next();
 }

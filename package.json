@@ -8,6 +8,7 @@
     "dev": "nodemon --exec tsx src/index.ts",
     "build": "tsc",
     "seed": "tsx src/seeders/seed.ts",
+    "seed:admin": "tsx src/seeders/seedAdmin.ts",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "test": "jest --runInBand",
