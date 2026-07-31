@@ -20,6 +20,7 @@ export class Lecture extends Model<
   declare badge: string;
   declare badgeName: string;
   declare order: CreationOptional<number>;
+  declare ageGroup: CreationOptional<"A" | "B">;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -70,6 +71,10 @@ export function initLecture(sequelize: Sequelize): void {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+      },
+      ageGroup: {
+        type: DataTypes.ENUM("A", "B"),
+        allowNull: true,
       },
       createdAt: {
         type: DataTypes.DATE,
