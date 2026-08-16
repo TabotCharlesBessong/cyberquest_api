@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProfile, getBadges, claimQuestReward, recordActivity } from "../controllers/gamificationController";
+import { getProfile, getBadges, claimQuestReward, recordActivity, consumeHeart, refillHearts } from "../controllers/gamificationController";
 import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
@@ -141,5 +141,83 @@ router.get("/badges", getBadges);
  *         description: Quest not found or not completed
  */
 router.post("/quests/:questId/claim", claimQuestReward);
+
+/**
+ * @swagger
+ * /gamification/hearts/consume:
+ *   post:
+ *     tags: [Gamification]
+ *     summary: Consume one heart
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Heart consumed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     consumed:
+ *                       type: boolean
+ *                     hearts:
+ *                       type: integer
+ *       401:
+ *         description: Not authenticated
+ */
+router.post("/hearts/consume", consumeHeart);
+
+/**
+ * @swagger
+ * /gamification/hearts/refill:
+ *   post:
+ *     tags: [Gamification]
+ *     summary: Refill hearts using gems, ad, or rewards
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - method
+ *             properties:
+ *               method:
+ *                 type: string
+ *                 enum: [gems, ad, rewards]
+ *     responses:
+ *       200:
+ *         description: Hearts refilled
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     hearts:
+ *                       type: integer
+ *                     gemsSpent:
+ *                       type: integer
+ *                     xpEarned:
+ *                       type: integer
+ *                     xpSpent:
+ *                       type: integer
+ *       400:
+ *         description: Invalid method or insufficient currency
+ *       401:
+ *         description: Not authenticated
+ */
+router.post("/hearts/refill", refillHearts);
 
 export default router;

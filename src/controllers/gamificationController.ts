@@ -15,6 +15,7 @@ const ACTIVITY_REWARDS: Record<string, { xp: number; gems: number; cooldownHours
   purchase: { xp: 10, gems: 0, cooldownHours: 0 },
   avatar_change: { xp: 5, gems: 0, cooldownHours: 0 },
   leaderboard_view: { xp: 2, gems: 0, cooldownHours: 0 },
+  watch_ad: { xp: 5, gems: 0, cooldownHours: 0 },
 };
 
 export const recordActivity = asyncHandler(async (req: any, res: Response) => {
@@ -130,4 +131,66 @@ export const claimQuestReward = asyncHandler(async (req: any, res: Response) => 
   const { questId } = req.params;
   const result = await QuestService.claimQuestReward(req.user.id, questId);
   res.status(200).json({ success: true, data: result });
+});
+
+export const consumeHeart = asyncHandler(async (req: any, res: Response) => {
+  const userId = req.user.id;
+  const success = await GamificationService.consumeHeart(userId);
+  const user = await User.findByPk(userId);
+  res.status(200).json({
+    success: true,
+    data: {
+      consumed: success,
+      hearts: user?.hearts ?? 0,
+    },
+  });
+});
+
+export const refillHearts = asyncHandler(async (req: any, res: Response) => {
+  const userId = req.user.id;
+  const { method } = req.body as { method: "gems" | "ad" | "rewards" };
+  const user = await User.findByPk(userId);
+  if (!user) {
+    res.status(404).json({ success: false, message: "User not found" });
+    return;
+  }
+
+  if (user.hearts >= 10) {
+    res.status(200).json({ success: true, data: { hearts: user.hearts, message: "Hearts are already full" } });
+    return;
+  }
+
+  if (method === "gems") {
+    const GEM_COST = 10;
+    const spent = await GamificationService.spendGems(userId, GEM_COST);
+    if (!spent) {
+      res.status(400).json({ success: false, message: "Not enough gems" });
+      return;
+    }
+    const newHearts = await GamificationService.replenishHearts(userId, 5);
+    res.status(200).json({ success: true, data: { hearts: newHearts, gemsSpent: GEM_COST } });
+    return;
+  }
+
+  if (method === "ad") {
+    await GamificationService.replenishHearts(userId, 1);
+    await GamificationService.addXp(userId, 5, "watch_ad");
+    res.status(200).json({ success: true, data: { hearts: user.hearts + 1, xpEarned: 5 } });
+    return;
+  }
+
+  if (method === "rewards") {
+    const cost = 50;
+    if ((user.xp ?? 0) < cost) {
+      res.status(400).json({ success: false, message: "Not enough XP" });
+      return;
+    }
+    await GamificationService.addXp(userId, -cost, "refill_hearts_rewards");
+    await GamificationService.replenishHearts(userId, 3);
+    const refreshed = await User.findByPk(userId);
+    res.status(200).json({ success: true, data: { hearts: refreshed?.hearts ?? user.hearts, xpSpent: cost } });
+    return;
+  }
+
+  res.status(400).json({ success: false, message: "Invalid refill method" });
 });
