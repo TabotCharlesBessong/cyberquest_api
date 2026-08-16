@@ -161,14 +161,21 @@ export const refillHearts = asyncHandler(async (req: any, res: Response) => {
   }
 
   if (method === "gems") {
-    const GEM_COST = 10;
-    const spent = await GamificationService.spendGems(userId, GEM_COST);
+    const GEM_COST_PER_HEART = 10;
+    const missingHearts = 5 - (user.hearts ?? 0);
+    if (missingHearts <= 0) {
+      res.status(200).json({ success: true, data: { hearts: user.hearts, message: "Hearts are already full" } });
+      return;
+    }
+    const totalCost = missingHearts * GEM_COST_PER_HEART;
+    const spent = await GamificationService.spendGems(userId, totalCost);
     if (!spent) {
       res.status(400).json({ success: false, message: "Not enough gems" });
       return;
     }
-    const newHearts = await GamificationService.replenishHearts(userId, 5);
-    res.status(200).json({ success: true, data: { hearts: newHearts, gemsSpent: GEM_COST } });
+    const newHearts = await GamificationService.replenishHearts(userId, missingHearts);
+    const refreshed = await User.findByPk(userId);
+    res.status(200).json({ success: true, data: { hearts: refreshed?.hearts ?? user.hearts, gemsSpent: totalCost } });
     return;
   }
 

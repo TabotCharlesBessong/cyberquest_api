@@ -112,7 +112,7 @@ export class GamificationService {
     const user = await User.findByPk(userId);
     if (!user) return null;
 
-    user.hearts = Math.min(user.hearts + amount, 10);
+    user.hearts = Math.min(user.hearts + amount, 5);
     await user.save();
     return user.hearts;
   }
