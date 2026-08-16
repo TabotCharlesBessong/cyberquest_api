@@ -142,6 +142,7 @@ export class AuthService {
     if (input.name !== undefined) user.name = input.name;
     if (input.age !== undefined) user.age = input.age;
     if (input.avatar !== undefined) user.avatar = input.avatar;
+    if (input.ageGroup !== undefined) user.ageGroup = input.ageGroup;
 
     await user.save();
     return user;

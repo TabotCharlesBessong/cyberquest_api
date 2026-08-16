@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { signup, verifyEmail, resendVerification, login, forgotPassword, resetPassword, me } from "../controllers/authController";
+import { signup, verifyEmail, resendVerification, login, forgotPassword, resetPassword, me, updateProfile } from "../controllers/authController";
 import { validateBody } from "../middleware/validate";
 import { authMiddleware } from "../middleware/auth";
-import { signupSchema, verifyEmailSchema, resendVerificationSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema } from "../validation/schemas";
+import { signupSchema, verifyEmailSchema, resendVerificationSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, updateProfileSchema } from "../validation/schemas";
 
 const router = Router();
 
@@ -213,5 +213,46 @@ router.post("/reset-password", validateBody(resetPasswordSchema), resetPassword)
  *         description: Not authenticated
  */
 router.get("/me", authMiddleware, me);
+
+/**
+ * @swagger
+ * /auth/me:
+ *   patch:
+ *     tags: [Auth]
+ *     summary: Update current user profile
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               age:
+ *                 type: integer
+ *               avatar:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Profile updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Not authenticated
+ */
+router.patch("/me", authMiddleware, validateBody(updateProfileSchema), updateProfile);
 
 export default router;

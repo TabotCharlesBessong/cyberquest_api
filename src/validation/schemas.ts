@@ -35,6 +35,7 @@ export const updateProfileSchema = z.object({
   name: z.string().min(1).optional(),
   age: z.coerce.number().int().positive().optional(),
   avatar: z.string().optional(),
+  ageGroup: z.enum(["A", "B"]).optional(),
 });
 
 export const slugParamSchema = z.object({

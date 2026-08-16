@@ -5,6 +5,8 @@ import { asyncHandler } from "../middleware/asyncHandler";
 import { ApiError, forbidden, unauthorized } from "../utils/apiError";
 import { signToken } from "../utils/token";
 import { sanitizeUser } from "../db/models/User";
+import { updateProfileSchema } from "../validation/schemas";
+import { validateBody } from "../middleware/validate";
 
 export const signup = asyncHandler(async (req: Request, res: Response) => {
   const result = await AuthService.signup(req.body);
@@ -61,6 +63,15 @@ export const resetPassword = asyncHandler(
 
 export const me = asyncHandler(async (req: AuthedRequest, res: Response) => {
   const user = await AuthService.getMe(req.user!.id);
+  res.status(200).json({
+    success: true,
+    data: { user: sanitizeUser(user) },
+  });
+});
+
+export const updateProfile = asyncHandler(async (req: AuthedRequest, res: Response) => {
+  const { name, age, avatar } = req.body as { name?: string; age?: number; avatar?: string };
+  const user = await AuthService.updateProfile(req.user!.id, { name, age, avatar });
   res.status(200).json({
     success: true,
     data: { user: sanitizeUser(user) },
