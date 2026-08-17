@@ -54,13 +54,23 @@ export class CurriculumService {
               if (lesson.questions?.length) {
                 lPlain.questions = lesson.questions.map((q: any) => ({
                   id: q.slug || q.id,
+                  type: q.type || "mcq",
                   question: q.question,
                   options: q.options,
                   correctIndex: q.correctIndex,
+                  pairs: q.pairs,
+                  sentenceParts: q.sentenceParts,
+                  correctSentence: q.correctSentence,
+                  investigationSteps: q.investigationSteps,
+                  correctOrder: q.correctOrder,
                   explanation: q.explanation,
                   difficulty: q.difficulty,
                   xpReward: q.xpReward,
                 }));
+              }
+
+              if (lesson.missionBriefing) {
+                lPlain.missionBriefing = lesson.missionBriefing;
               }
 
               return lPlain;

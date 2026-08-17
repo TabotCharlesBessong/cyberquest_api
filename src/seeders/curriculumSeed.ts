@@ -1,9 +1,15 @@
 export interface CurriculumQuestion {
   id: string;
   lessonId: string;
+  type: QuestionType;
   question: string;
-  options: string[];
-  correctIndex: number;
+  options?: string[];
+  correctIndex?: number;
+  pairs?: { left: string; right: string }[];
+  sentenceParts?: string[];
+  correctSentence?: string;
+  investigationSteps?: string[];
+  correctOrder?: number[];
   explanation: string;
   difficulty: 1 | 2 | 3 | 4 | 5;
   xpReward: number;
@@ -14,6 +20,7 @@ export interface CurriculumLesson {
   unitId: string;
   title: string;
   notes: string;
+  missionBriefing?: string;
   order: number;
   ageGroup: "A" | "B";
   difficulty: 1 | 2 | 3 | 4 | 5;
@@ -75,6 +82,7 @@ function shuffle<T>(arr: T[], seed: string): T[] {
   return a;
 }
 
+// Old signature: q(lessonId, id, question, correct, wrongs, explanation, difficulty?, xpReward?)
 function q(
   lessonId: string,
   id: string,
@@ -82,17 +90,104 @@ function q(
   correct: string,
   wrongs: string[],
   explanation: string,
-  difficulty: 1 | 2 | 3 | 4 | 5 = 1,
-  xpReward: number = 10
+  difficulty?: 1 | 2 | 3 | 4 | 5,
+  xpReward?: number
+): CurriculumQuestion;
+// New signature: q(lessonId, id, type, question, payload, explanation, difficulty?, xpReward?)
+function q(
+  lessonId: string,
+  id: string,
+  type: QuestionType,
+  question: string,
+  payload: {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  },
+  explanation: string,
+  difficulty?: 1 | 2 | 3 | 4 | 5,
+  xpReward?: number
+): CurriculumQuestion;
+// Implementation
+function q(
+  lessonId: string,
+  id: string,
+  typeOrQuestion: string | QuestionType,
+  maybeQuestionOrCorrect: string | {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  },
+  maybeCorrectOrWrongsOrPayload: string | string[] | {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  },
+  maybeExplanationOrDifficulty: string | number,
+  maybeDifficultyOrXpReward?: number,
+  maybeXpReward?: number
 ): CurriculumQuestion {
-  const options = shuffle([correct, ...wrongs], `${lessonId}-${id}`);
-  const correctIndex = options.indexOf(correct);
+  const QUESTION_TYPES: QuestionType[] = ["mcq", "matching", "sentence_builder", "investigation"];
+  const isNewSignature = typeof typeOrQuestion === "string" && QUESTION_TYPES.includes(typeOrQuestion as QuestionType);
+
+  let type: QuestionType = "mcq";
+  let question: string = "";
+  let payload: {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  } = {};
+  let explanation: string = "";
+  let difficulty: 1 | 2 | 3 | 4 | 5 = 1;
+  let xpReward: number = 10;
+
+  if (isNewSignature) {
+    type = typeOrQuestion as QuestionType;
+    question = maybeQuestionOrCorrect as string;
+    payload = (maybeCorrectOrWrongsOrPayload || {}) as typeof payload;
+    explanation = maybeExplanationOrDifficulty as string;
+    difficulty = (maybeDifficultyOrXpReward as 1 | 2 | 3 | 4 | 5) || 1;
+    xpReward = maybeXpReward || 10;
+  } else {
+    question = typeOrQuestion;
+    const correct = maybeQuestionOrCorrect as string;
+    const wrongs = maybeCorrectOrWrongsOrPayload as string[];
+    explanation = maybeExplanationOrDifficulty as string;
+    difficulty = (maybeDifficultyOrXpReward as 1 | 2 | 3 | 4 | 5) || 1;
+    xpReward = maybeXpReward || 10;
+    const options = shuffle([correct, ...wrongs], `${lessonId}-${id}`);
+    const correctIndex = options.indexOf(correct);
+    payload = { options, correctIndex };
+  }
+
   return {
     id: `${lessonId}-${id}`,
     lessonId,
+    type,
     question,
-    options,
-    correctIndex,
+    options: payload.options,
+    correctIndex: payload.correctIndex,
+    pairs: payload.pairs,
+    sentenceParts: payload.sentenceParts,
+    correctSentence: payload.correctSentence,
+    investigationSteps: payload.investigationSteps,
+    correctOrder: payload.correctOrder,
     explanation,
     difficulty,
     xpReward,
@@ -107,9 +202,10 @@ function lesson(
   order: number,
   ageGroup: "A" | "B",
   difficulty: 1 | 2 | 3 | 4 | 5,
-  questions: CurriculumQuestion[]
+  questions: CurriculumQuestion[],
+  missionBriefing?: string
 ): CurriculumLesson {
-  return { id: `${unitId}-${id}`, unitId, title, notes, order, ageGroup, difficulty, questions };
+  return { id: `${unitId}-${id}`, unitId, title, notes, missionBriefing, order, ageGroup, difficulty, questions };
 }
 
 function unit(
@@ -138,11 +234,21 @@ function section(
   return { id, title, description, icon, color, order, ageGroup, units };
 }
 
+export type QuestionType = "mcq" | "matching" | "sentence_builder" | "investigation";
+
 type QuestionDef = {
   id: string;
+  type?: QuestionType;
   question: string;
-  correct: string;
-  wrongs: string[];
+  correct?: string;
+  wrongs?: string[];
+  options?: string[];
+  correctIndex?: number;
+  pairs?: { left: string; right: string }[];
+  sentenceParts?: string[];
+  correctSentence?: string;
+  investigationSteps?: string[];
+  correctOrder?: number[];
   explanation: string;
   difficulty?: 1 | 2 | 3 | 4 | 5;
   xpReward?: number;
@@ -152,6 +258,7 @@ type LessonDef = {
   id: string;
   title: string;
   notes: string;
+  missionBriefing?: string;
   difficulty: 1 | 2 | 3 | 4 | 5;
   questions: QuestionDef[];
 };
@@ -176,19 +283,40 @@ type SectionDef = {
 
 function buildLesson(unitId: string, ageGroup: "A" | "B", def: LessonDef, order: number): CurriculumLesson {
   const lessonId = `${unitId}-${def.id}`;
-  const questions = def.questions.map((qd) =>
-    q(
+  const questions = def.questions.map((qd) => {
+    const type = qd.type || "mcq";
+    if (type === "mcq" && qd.correct && qd.wrongs) {
+      return q(
+        lessonId,
+        qd.id,
+        qd.question,
+        qd.correct,
+        qd.wrongs,
+        qd.explanation,
+        qd.difficulty ?? def.difficulty,
+        qd.xpReward ?? 10
+      );
+    }
+    return q(
       lessonId,
       qd.id,
+      type,
       qd.question,
-      qd.correct,
-      qd.wrongs,
+      {
+        options: qd.options,
+        correctIndex: qd.correctIndex,
+        pairs: qd.pairs,
+        sentenceParts: qd.sentenceParts,
+        correctSentence: qd.correctSentence,
+        investigationSteps: qd.investigationSteps,
+        correctOrder: qd.correctOrder,
+      },
       qd.explanation,
       qd.difficulty ?? def.difficulty,
       qd.xpReward ?? 10
-    )
-  );
-  return lesson(unitId, def.id, def.title, def.notes, order, ageGroup, def.difficulty, questions);
+    );
+  });
+  return lesson(unitId, def.id, def.title, def.notes, order, ageGroup, def.difficulty, questions, def.missionBriefing);
 }
 
 function buildUnit(sectionId: string, ageGroup: "A" | "B", def: UnitDef, order: number): CurriculumUnit {
@@ -1880,6 +2008,548 @@ const SECTION_DEFS: SectionDef[] = [
                 correct: "Review account security (passwords, 2FA)",
                 wrongs: ["Turn off security", "Share credentials", "Click more links"],
                 explanation: "Security review helps prevent future issues.",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "b-social-media-safety",
+    title: "Social Media & Deepfakes",
+    description: "Understand social media risks, deepfakes, and how to verify truth.",
+    icon: "📱",
+    color: "#8b5cf6",
+    ageGroup: "B",
+    units: [
+      {
+        id: "smart-social-media",
+        title: "Smart Social Media Use",
+        description: "Learn how to use social platforms safely and wisely.",
+        icon: "🌐",
+        lessons: [
+          {
+            id: "being-smart-online",
+            title: "Being Smart Online",
+            notes: "Social media lets people share photos, videos, and thoughts with friends and even the whole world. But not everything you see or read online is true or kind. Some posts are designed to get likes by making people angry or scared. Others might try to sell you something you do not need or trick you into sharing personal information. Being smart online means pausing before you post, questioning what you read, and thinking about who can see your content. It also means understanding that once something is posted, it can be copied, saved, and shared by others even if you delete it later. Your digital footprint - the trail of data you leave behind - can affect your reputation, friendships, and even future opportunities. Learning to manage your online presence thoughtfully is one of the most important skills you can develop for the digital age.",
+            missionBriefing: "🎯 Mission: Social Media Detective! Your task is to investigate a social media feed, identify risky posts, and learn how to protect your digital footprint. Stay sharp!",
+            difficulty: 3,
+            questions: [
+              {
+                id: "q1",
+                type: "mcq",
+                question: "Why should you pause before posting?",
+                correct: "Because posts can be shared and saved by others",
+                wrongs: ["Because posts are always private", "Because only your friends see them", "Because it does not matter"],
+                explanation: "Once posted, content can spread beyond your control.",
+              },
+              {
+                id: "q2",
+                type: "matching",
+                question: "Match the social media situation to the smart choice:",
+                pairs: [
+                  { left: "A friend posts an angry comment", right: "Do not add fuel; report or block if needed" },
+                  { left: "An ad says 'You won a free phone!'", right: "It is likely a trick; do not click" },
+                  { left: "Someone you do not know asks to follow you", right: "Think carefully before accepting" },
+                ],
+                explanation: "Smart choices keep you safer online.",
+              },
+              {
+                id: "q3",
+                type: "sentence_builder",
+                question: "Build the golden rule of social media:",
+                sentenceParts: ["Think", "before", "you", "post", "and", "pause", "before", "you", "share"],
+                correctSentence: "Think before you post and pause before you share",
+                explanation: "This rule protects your digital footprint.",
+              },
+              {
+                id: "q4",
+                type: "investigation",
+                question: "Order the steps to review a risky post:",
+                investigationSteps: [
+                  "Read the post carefully",
+                  "Check if the source is trustworthy",
+                  "Do not share it until you verify",
+                  "Report it if it is harmful or fake",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Verifying before acting stops misinformation.",
+              },
+              {
+                id: "q5",
+                type: "mcq",
+                question: "What is a digital footprint?",
+                correct: "The trail of data you leave online",
+                wrongs: ["The shoes you wear online", "A type of social media app", "Your online avatar"],
+                explanation: "Your digital footprint follows you everywhere.",
+              },
+              {
+                id: "q6",
+                type: "mcq",
+                question: "Which post is safest to share?",
+                correct: "A photo of your drawing",
+                wrongs: ["Your school address and bus route", "A screenshot of someone's private message", "Your home phone number"],
+                explanation: "Safe posts do not reveal personal details.",
+              },
+              {
+                id: "q7",
+                type: "matching",
+                question: "Match the risk to the consequence:",
+                pairs: [
+                  { left: "Posting your location in real time", right: "Strangers might know where you are" },
+                  { left: "Sharing a fake news story", right: "You could mislead friends" },
+                  { left: "Giving out your phone number", right: "You could get unwanted messages" },
+                ],
+                explanation: "Every post has possible consequences.",
+              },
+              {
+                id: "q8",
+                type: "investigation",
+                question: "Put these privacy habits in order:",
+                investigationSteps: [
+                  "Check who can see your posts",
+                  "Turn on privacy settings",
+                  "Think before you tag friends",
+                  "Regularly review old posts",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "These habits protect your privacy.",
+              },
+              {
+                id: "q9",
+                type: "mcq",
+                question: "Why can deleted posts still be a problem?",
+                correct: "Others may have saved or screenshotted them",
+                wrongs: ["They never really existed", "Deleting always removes everything", "Only adults can see deleted posts"],
+                explanation: "Deleted content can still exist elsewhere.",
+              },
+              {
+                id: "q10",
+                type: "sentence_builder",
+                question: "Build a safe sharing rule:",
+                sentenceParts: ["Share", "less", "than", "you", "think", "is", "necessary"],
+                correctSentence: "Share less than you think is necessary",
+                explanation: "Oversharing is a common online risk.",
+              },
+              {
+                id: "q11",
+                type: "matching",
+                question: "Match the scenario to the smart action:",
+                pairs: [
+                  { left: "A brand-new account follows you", right: "Check their profile before following back" },
+                  { left: "A quiz asks for your birthday and address", right: "Do not take the quiz" },
+                  { left: "A friend tags you in an old embarrassing photo", right: "Ask them to remove the tag" },
+                ],
+                explanation: "These actions protect your reputation.",
+              },
+              {
+                id: "q12",
+                type: "investigation",
+                question: "Order the steps if someone pressures you to post something:",
+                investigationSteps: [
+                  "Say no clearly",
+                  "Block or report if they keep pushing",
+                  "Tell a trusted adult",
+                  "Review your privacy settings together",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "No one should pressure you to post.",
+              },
+            ],
+          },
+          {
+            id: "privacy-settings-101",
+            title: "Privacy Settings 101",
+            notes: "Every social media platform and app has privacy settings - controls that let you decide who can see your posts, who can message you, and what information the app collects. Many young users skip these settings because they seem complicated or because they want to get started quickly. But privacy settings are like locks on a door: they keep out people you do not want inside. On most platforms, you can set your account to private so only approved followers can see your posts. You can also turn off location sharing, limit who sees your friends list, and control whether apps can access your camera or microphone. Taking twenty minutes to review these settings with a trusted adult can dramatically reduce your risk. Make it a habit to check settings after any app update, because companies sometimes change what you can control. The more you understand these tools, the more power you have over your own digital experience.",
+            missionBriefing: "🔒 Mission: Privacy Fortress Builder! Your challenge is to explore privacy settings, understand what each control does, and build the strongest possible protection for a social media account.",
+            difficulty: 4,
+            questions: [
+              {
+                id: "q1",
+                type: "mcq",
+                question: "What does a private account setting do?",
+                correct: "Only approved followers can see your posts",
+                wrongs: ["Everyone on the internet can see your posts", "No one can message you", "It hides your profile completely"],
+                explanation: "Private accounts limit who sees your content.",
+              },
+              {
+                id: "q2",
+                type: "sentence_builder",
+                question: "Build the privacy principle:",
+                sentenceParts: ["You", "control", "who", "sees", "your", "online", "world"],
+                correctSentence: "You control who sees your online world",
+                explanation: "Privacy settings put you in charge.",
+              },
+              {
+                id: "q3",
+                type: "matching",
+                question: "Match the setting to what it protects:",
+                pairs: [
+                  { left: "Who can send you messages", right: "Your inbox privacy" },
+                  { left: "Who sees your friends list", right: "Your social connections" },
+                  { left: "Location sharing", right: "Your physical safety" },
+                ],
+                explanation: "Each setting guards a different part of your life.",
+              },
+              {
+                id: "q4",
+                type: "investigation",
+                question: "Order the steps to secure a new social account:",
+                investigationSteps: [
+                  "Set the account to private",
+                  "Turn off location sharing",
+                  "Review who can tag you",
+                  "Save the settings and check them monthly",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Securing an account takes a few important steps.",
+              },
+              {
+                id: "q5",
+                type: "mcq",
+                question: "Why should you review privacy settings after an app update?",
+                correct: "Companies sometimes change what you can control",
+                wrongs: ["Updates never affect settings", "Settings are permanent", "Adults handle all updates"],
+                explanation: "Updates can reset or change your controls.",
+              },
+              {
+                id: "q6",
+                type: "mcq",
+                question: "Which setting helps protect your physical location?",
+                correct: "Turning off location sharing",
+                wrongs: ["Turning on notifications", "Using a funny username", "Posting more photos"],
+                explanation: "Location sharing can reveal where you are.",
+              },
+              {
+                id: "q7",
+                type: "matching",
+                question: "Match the risky default to the safer choice:",
+                pairs: [
+                  { left: "Default: public profile", right: "Change to private" },
+                  { left: "Default: location on", right: "Turn location off" },
+                  { left: "Default: everyone can tag you", right: "Limit tags to friends" },
+                ],
+                explanation: "Defaults are often set for the company, not you.",
+              },
+              {
+                id: "q8",
+                type: "investigation",
+                question: "Put these privacy review steps in order:",
+                investigationSteps: [
+                  "Open the app's privacy or security section",
+                  "Check each setting one by one",
+                  "Ask an adult if you are unsure",
+                  "Save changes and set a reminder to review again",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Regular reviews keep your privacy strong.",
+              },
+              {
+                id: "q9",
+                type: "mcq",
+                question: "What can happen if your profile is public?",
+                correct: "Strangers can see your posts and photos",
+                wrongs: ["Only your friends see everything", "The app becomes faster", "You get more followers automatically"],
+                explanation: "Public profiles are visible to anyone.",
+              },
+              {
+                id: "q10",
+                type: "sentence_builder",
+                question: "Build a safe settings rule:",
+                sentenceParts: ["Check", "your", "settings", "every", "few", "months"],
+                correctSentence: "Check your settings every few months",
+                explanation: "Regular checks catch unwanted changes.",
+              },
+              {
+                id: "q11",
+                type: "matching",
+                question: "Match the control to its purpose:",
+                pairs: [
+                  { left: "Who can comment on your posts", right: "Prevent unwanted comments" },
+                  { left: "Who sees your email address", right: "Stop strangers from contacting you" },
+                  { left: "Data sharing with advertisers", right: "Limit what companies collect" },
+                ],
+                explanation: "These controls protect different parts of you.",
+              },
+              {
+                id: "q12",
+                type: "investigation",
+                question: "Order the actions if a setting resets after an update:",
+                investigationSteps: [
+                  "Log in and check the settings right away",
+                  "Change anything that reverted to public",
+                  "Tell a trusted adult if you see something odd",
+                  "Set a reminder to check again in one month",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Updates can surprise you; stay on top of it.",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "deepfakes-truth",
+        title: "Deepfakes & Truth",
+        description: "Learn about manipulated media and how to spot what is real.",
+        icon: "🎭",
+        lessons: [
+          {
+            id: "what-are-deepfakes",
+            title: "What Are Deepfakes?",
+            notes: "Deepfakes are videos, images, or audio clips that have been changed using artificial intelligence to make it look like someone said or did something they never actually did. The technology is becoming easier to use, which means fake videos of celebrities, politicians, and even regular people are starting to appear online. Some deepfakes are harmless fun - like putting your favorite actor's face on a dancing cat video. But others are created to spread lies, damage reputations, or trick people into believing something false. As a young digital citizen, it is important to know that seeing is not always believing. A video that looks real might have been edited. Learning to question what you see, check multiple sources, and ask a trusted adult when something seems strange are all critical skills. Media literacy - the ability to analyze and evaluate media messages - is your best defense against deepfakes and other forms of misinformation.",
+            missionBriefing: "🎭 Mission: Truth Verifier! Deepfake technology is making it harder to tell real from fake. Your mission is to learn the clues that reveal manipulated media and become a master truth verifier.",
+            difficulty: 4,
+            questions: [
+              {
+                id: "q1",
+                type: "mcq",
+                question: "What is a deepfake?",
+                correct: "Media altered by AI to look real",
+                wrongs: ["A type of filter in photo apps", "A cartoon about deep oceans", "A video game character"],
+                explanation: "Deepfakes use AI to manipulate real media.",
+              },
+              {
+                id: "q2",
+                type: "matching",
+                question: "Match the deepfake type to its description:",
+                pairs: [
+                  { left: "Face-swapped video", right: "Someone's face is put on another person's body" },
+                  { left: "Cloned voice audio", right: "AI copies someone's voice to say fake words" },
+                  { left: "Fake celebrity endorsement", right: "A celebrity appears to support something they never did" },
+                ],
+                explanation: "Deepfakes come in several formats.",
+              },
+              {
+                id: "q3",
+                type: "sentence_builder",
+                question: "Build the deepfake rule:",
+                sentenceParts: ["Seeing", "is", "not", "always", "believing", "online"],
+                correctSentence: "Seeing is not always believing online",
+                explanation: "Always question what you see.",
+              },
+              {
+                id: "q4",
+                type: "investigation",
+                question: "Order the steps to verify a suspicious video:",
+                investigationSteps: [
+                  "Pause and do not share it immediately",
+                  "Check if other trusted sources report the same thing",
+                  "Look for signs of editing (weird faces, voices)",
+                  "Ask a trusted adult or teacher",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Verification stops the spread of fakes.",
+              },
+              {
+                id: "q5",
+                type: "mcq",
+                question: "Why are deepfakes dangerous?",
+                correct: "They can spread false information",
+                wrongs: ["They are always funny", "They make videos shorter", "They improve video quality"],
+                explanation: "Deepfakes can make people believe lies.",
+              },
+              {
+                id: "q6",
+                type: "mcq",
+                question: "What should you do if you see a video that looks strange or shocking?",
+                correct: "Do not share it; ask an adult to check",
+                wrongs: ["Share it quickly to warn others", "Comment that it is fake without checking", "Save it to show all your friends"],
+                explanation: "Sharing unverified content spreads misinformation.",
+              },
+              {
+                id: "q7",
+                type: "matching",
+                question: "Match the deepfake clue to what it reveals:",
+                pairs: [
+                  { left: "Face looks slightly wobbly or blurry", right: "Possible video manipulation" },
+                  { left: "Voice sounds robotic or monotone", right: "Possible cloned audio" },
+                  { left: "The person says something out of character", right: "Context may be fake" },
+                ],
+                explanation: "These clues can help spot manipulation.",
+              },
+              {
+                id: "q8",
+                type: "investigation",
+                question: "Put these media literacy habits in order:",
+                investigationSteps: [
+                  "Always check the source of a post",
+                  "Compare with at least two other sources",
+                  "Ask: does this seem too strange to be true?",
+                  "Ask an adult if you are still unsure",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "These habits build strong truth-checking skills.",
+              },
+              {
+                id: "q9",
+                type: "mcq",
+                question: "What is media literacy?",
+                correct: "The ability to analyze and evaluate media messages",
+                wrongs: ["Knowing how to make videos", "Being able to edit photos", "Watching a lot of TV"],
+                explanation: "Media literacy helps you judge what you see.",
+              },
+              {
+                id: "q10",
+                type: "sentence_builder",
+                question: "Build the verification rule:",
+                sentenceParts: ["Always", "check", "multiple", "sources", "before", "believing"],
+                correctSentence: "Always check multiple sources before believing",
+                explanation: "Multiple sources help confirm truth.",
+              },
+              {
+                id: "q11",
+                type: "matching",
+                question: "Match the action to the situation:",
+                pairs: [
+                  { left: "A celebrity endorses a random product", right: "Check the celebrity's real account for confirmation" },
+                  { left: "A video shows something shocking", right: "Search for news reports from real outlets" },
+                  { left: "An audio clip seems out of context", right: "Listen for odd pauses or tone changes" },
+                ],
+                explanation: "These steps help you spot deepfakes.",
+              },
+              {
+                id: "q12",
+                type: "investigation",
+                question: "Order the response if someone sends you a deepfake:",
+                investigationSteps: [
+                  "Do not forward the deepfake",
+                  "Tell a trusted adult what you received",
+                  "Block the sender if it was a message",
+                  "Help others by sharing how to spot fakes",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Stopping the spread and helping others is key.",
+              },
+            ],
+          },
+          {
+            id: "checking-whats-real",
+            title: "Checking What's Real",
+            notes: "In a world where anyone can create and share content, the ability to fact-check and verify information is a superpower. Fact-checking means looking for evidence that something is true, rather than just accepting it because it looks convincing or comes from someone you know. Start by checking the source: who created the content, and do they have a history of being accurate? Next, look for corroboration: do other reliable sources report the same facts? Be especially careful with content that triggers strong emotions like fear, anger, or excitement - these feelings can make you less critical and more likely to share without thinking. Reverse image search tools can help you see if a photo has been used before in a different context. And when in doubt, ask a trusted adult or a teacher. They can model good research habits and help you find trustworthy information. Practicing these skills now will make you a more informed citizen and a smarter consumer of information throughout your life.",
+            missionBriefing: "🔍 Mission: Fact-Checking Ninja! Your mission is to learn the step-by-step process of fact-checking any claim you see online. By the end, you will be able to separate fact from fiction like a pro.",
+            difficulty: 5,
+            questions: [
+              {
+                id: "q1",
+                type: "mcq",
+                question: "What is the first step in fact-checking?",
+                correct: "Check who created the content",
+                wrongs: ["Share it to ask others", "Ignore the source", "Look at the pictures only"],
+                explanation: "The source tells you a lot about reliability.",
+              },
+              {
+                id: "q2",
+                type: "sentence_builder",
+                question: "Build the fact-checking rule:",
+                sentenceParts: ["Verify", "before", "you", "trust", "and", "check", "before", "you", "share"],
+                correctSentence: "Verify before you trust and check before you share",
+                explanation: "Verification prevents spreading false info.",
+              },
+              {
+                id: "q3",
+                type: "matching",
+                question: "Match the verification tool to its use:",
+                pairs: [
+                  { left: "Reverse image search", right: "See if a photo was used elsewhere" },
+                  { left: "Cross-referencing sources", right: "Confirm facts with multiple outlets" },
+                  { left: "Checking the date", right: "Make sure the info is current" },
+                ],
+                explanation: "Different tools catch different problems.",
+              },
+              {
+                id: "q4",
+                type: "investigation",
+                question: "Order the fact-checking steps:",
+                investigationSteps: [
+                  "Identify the original source",
+                  "Check if other reliable sources confirm it",
+                  "Look for evidence and data",
+                  "Decide if the claim is likely true, false, or unproven",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "A systematic approach prevents mistakes.",
+              },
+              {
+                id: "q5",
+                type: "mcq",
+                question: "Why should you be careful with content that triggers strong emotions?",
+                correct: "Emotions can make you less critical",
+                wrongs: ["Emotions always help you think", "Scary content is always true", "Angry posts are always correct"],
+                explanation: "Strong emotions are a common manipulation tactic.",
+              },
+              {
+                id: "q6",
+                type: "mcq",
+                question: "What does corroboration mean?",
+                correct: "Confirming a fact with multiple sources",
+                wrongs: ["Deleting old posts", "Sharing with friends", "Ignoring the truth"],
+                explanation: "Corroboration strengthens your confidence in a claim.",
+              },
+              {
+                id: "q7",
+                type: "matching",
+                question: "Match the red flag to the fact-checking action:",
+                pairs: [
+                  { left: "No author or source listed", right: "Treat the claim with skepticism" },
+                  { left: "The claim seems too extreme to be true", right: "Search for reputable fact-checkers" },
+                  { left: "The image looks manipulated", right: "Run a reverse image search" },
+                ],
+                explanation: "Red flags trigger deeper investigation.",
+              },
+              {
+                id: "q8",
+                type: "investigation",
+                question: "Put these verification steps in order:",
+                investigationSteps: [
+                  "Pause before sharing anything shocking",
+                  "Find the original source of the claim",
+                  "Search for fact-checks from reputable organizations",
+                  "Decide whether to share, correct, or drop the claim",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Following a process keeps you from rushing to judgment.",
+              },
+              {
+                id: "q9",
+                type: "mcq",
+                question: "Which source is most reliable for fact-checking?",
+                correct: "Reputable fact-checking organizations",
+                wrongs: ["Random social media comments", "Anonymous forum posts", "Your friend's cousin"],
+                explanation: "Reputable organizations follow strict verification methods.",
+              },
+              {
+                id: "q10",
+                type: "sentence_builder",
+                question: "Build the critical thinking rule:",
+                sentenceParts: ["Question", "what", "you", "see", "and", "verify", "before", "you", "share"],
+                correctSentence: "Question what you see and verify before you share",
+                explanation: "Critical thinking stops the spread of misinformation.",
+              },
+              {
+                id: "q11",
+                type: "matching",
+                question: "Match the tool to the problem it solves:",
+                pairs: [
+                  { left: "A photo that might be old", right: "Check the date and context" },
+                  { left: "A quote that sounds fake", right: "Find the original speech or interview" },
+                  { left: "A viral claim with no evidence", right: "Look for data or expert confirmation" },
+                ],
+                explanation: "Each tool addresses a different type of doubt.",
+              },
+              {
+                id: "q12",
+                type: "investigation",
+                question: "Order the steps if you discover you shared something false:",
+                investigationSteps: [
+                  "Admit the mistake to yourself",
+                  "Correct the record if you can",
+                  "Tell the people you shared it with",
+                  "Learn the fact-checking steps to use next time",
+                ],
+                correctOrder: [0, 1, 2, 3],
+                explanation: "Correcting mistakes builds trust and learning.",
               },
             ],
           },

@@ -1,9 +1,17 @@
+export type QuestionType = "mcq" | "matching" | "sentence_builder" | "investigation";
+
 export interface CurriculumQuestion {
   id: string;
   lessonId: string;
+  type: QuestionType;
   question: string;
-  options: string[];
-  correctIndex: number;
+  options?: string[];
+  correctIndex?: number;
+  pairs?: { left: string; right: string }[];
+  sentenceParts?: string[];
+  correctSentence?: string;
+  investigationSteps?: string[];
+  correctOrder?: number[];
   explanation: string;
   difficulty: 1 | 2 | 3 | 4 | 5;
   xpReward: number;
@@ -14,6 +22,7 @@ export interface CurriculumLesson {
   unitId: string;
   title: string;
   notes: string;
+  missionBriefing?: string;
   order: number;
   ageGroup: "A" | "B";
   difficulty: 1 | 2 | 3 | 4 | 5;
@@ -55,21 +64,122 @@ function generateOptions(correct: string, wrongs: string[]): string[] {
   return all;
 }
 
-function q(lessonId: string, id: string, question: string, correct: string, wrongs: string[], explanation: string, difficulty: 1 | 2 | 3 | 4 | 5 = 1, xpReward: number = 10): CurriculumQuestion {
+// Old signature: q(lessonId, id, question, correct, wrongs, explanation, difficulty?, xpReward?)
+function q(
+  lessonId: string,
+  id: string,
+  question: string,
+  correct: string,
+  wrongs: string[],
+  explanation: string,
+  difficulty?: 1 | 2 | 3 | 4 | 5,
+  xpReward?: number
+): CurriculumQuestion;
+// New signature: q(lessonId, id, type, question, payload, explanation, difficulty?, xpReward?)
+function q(
+  lessonId: string,
+  id: string,
+  type: QuestionType,
+  question: string,
+  payload: {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  },
+  explanation: string,
+  difficulty?: 1 | 2 | 3 | 4 | 5,
+  xpReward?: number
+): CurriculumQuestion;
+// Implementation
+function q(
+  lessonId: string,
+  id: string,
+  typeOrQuestion: string | QuestionType,
+  maybeQuestionOrCorrect: string | {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  },
+  maybeCorrectOrWrongsOrPayload: string | string[] | {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  },
+  maybeExplanationOrDifficulty: string | number,
+  maybeDifficultyOrXpReward?: number,
+  maybeXpReward?: number
+): CurriculumQuestion {
+  const QUESTION_TYPES: QuestionType[] = ["mcq", "matching", "sentence_builder", "investigation"];
+  const isNewSignature = typeof typeOrQuestion === "string" && QUESTION_TYPES.includes(typeOrQuestion as QuestionType);
+
+  let type: QuestionType = "mcq";
+  let question: string = "";
+  let payload: {
+    correctIndex?: number;
+    options?: string[];
+    pairs?: { left: string; right: string }[];
+    sentenceParts?: string[];
+    correctSentence?: string;
+    investigationSteps?: string[];
+    correctOrder?: number[];
+  } = {};
+  let explanation: string = "";
+  let difficulty: 1 | 2 | 3 | 4 | 5 = 1;
+  let xpReward: number = 10;
+
+  if (isNewSignature) {
+    type = typeOrQuestion as QuestionType;
+    question = maybeQuestionOrCorrect as string;
+    payload = (maybeCorrectOrWrongsOrPayload || {}) as typeof payload;
+    explanation = maybeExplanationOrDifficulty as string;
+    difficulty = (maybeDifficultyOrXpReward as 1 | 2 | 3 | 4 | 5) || 1;
+    xpReward = maybeXpReward || 10;
+  } else {
+    question = typeOrQuestion;
+    const correct = maybeQuestionOrCorrect as string;
+    const wrongs = maybeCorrectOrWrongsOrPayload as string[];
+    explanation = maybeExplanationOrDifficulty as string;
+    difficulty = (maybeDifficultyOrXpReward as 1 | 2 | 3 | 4 | 5) || 1;
+    xpReward = maybeXpReward || 10;
+    const options = generateOptions(correct, wrongs);
+    payload = {
+      options,
+      correctIndex: 0,
+    };
+  }
+
   return {
     id: `${lessonId}-${id}`,
     lessonId,
+    type,
     question,
-    options: generateOptions(correct, wrongs),
-    correctIndex: 0,
+    options: payload.options,
+    correctIndex: payload.correctIndex,
+    pairs: payload.pairs,
+    sentenceParts: payload.sentenceParts,
+    correctSentence: payload.correctSentence,
+    investigationSteps: payload.investigationSteps,
+    correctOrder: payload.correctOrder,
     explanation,
     difficulty,
     xpReward,
   };
 }
 
-function lesson(unitId: string, id: string, title: string, notes: string, ageGroup: "A" | "B", difficulty: 1 | 2 | 3 | 4 | 5, questions: CurriculumQuestion[]): CurriculumLesson {
-  return { id: `${unitId}-${id}`, unitId, title, notes, order: 0, ageGroup, difficulty, questions };
+function lesson(unitId: string, id: string, title: string, notes: string, ageGroup: "A" | "B", difficulty: 1 | 2 | 3 | 4 | 5, questions: CurriculumQuestion[], missionBriefing?: string): CurriculumLesson {
+  return { id: `${unitId}-${id}`, unitId, title, notes, missionBriefing, order: 0, ageGroup, difficulty, questions };
 }
 
 function unit(sectionId: string, id: string, title: string, description: string, icon: string, ageGroup: "A" | "B", lessons: CurriculumLesson[]): CurriculumUnit {

@@ -30,6 +30,7 @@ export class Lesson extends Model<
   declare mascot: string | null;
   declare speech: string | null;
   declare notes: string | null;
+  declare missionBriefing: string | null;
   declare order: number;
   declare ageGroup: CreationOptional<AgeGroup>;
   declare difficulty: CreationOptional<number>;
@@ -101,6 +102,10 @@ export function initLesson(sequelize: Sequelize): void {
         allowNull: true,
       },
       notes: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      missionBriefing: {
         type: DataTypes.TEXT,
         allowNull: true,
       },

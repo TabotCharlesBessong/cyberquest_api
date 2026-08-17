@@ -15,9 +15,15 @@ export class Question extends Model<
   declare id: CreationOptional<string>;
   declare lessonId: ForeignKey<string>;
   declare slug: string;
+  declare type: CreationOptional<string>;
   declare question: string;
   declare options: string[];
-  declare correctIndex: number;
+  declare correctIndex: number | null;
+  declare pairs: CreationOptional<{ left: string; right: string }[]>;
+  declare sentenceParts: CreationOptional<string[]>;
+  declare correctSentence: CreationOptional<string>;
+  declare investigationSteps: CreationOptional<string[]>;
+  declare correctOrder: CreationOptional<number[]>;
   declare explanation: string;
   declare difficulty: 1 | 2 | 3 | 4 | 5;
   declare xpReward: number;
@@ -55,7 +61,32 @@ export function initQuestion(sequelize: Sequelize): void {
       },
       correctIndex: {
         type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      type: {
+        type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: "mcq",
+      },
+      pairs: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+      },
+      sentenceParts: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+      },
+      correctSentence: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      investigationSteps: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+      },
+      correctOrder: {
+        type: DataTypes.JSONB,
+        allowNull: true,
       },
       explanation: {
         type: DataTypes.TEXT,

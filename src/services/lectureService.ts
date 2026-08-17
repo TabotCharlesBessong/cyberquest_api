@@ -54,17 +54,27 @@ export class LectureService {
               }));
           }
 
-          if (lesson.questions?.length) {
-            lPlain.questions = lesson.questions.map((q: any) => ({
-              id: q.slug || q.id,
-              question: q.question,
-              options: q.options,
-              correctIndex: q.correctIndex,
-              explanation: q.explanation,
-              difficulty: q.difficulty,
-              xpReward: q.xpReward,
-            }));
-          }
+           if (lesson.questions?.length) {
+             lPlain.questions = lesson.questions.map((q: any) => ({
+               id: q.slug || q.id,
+               type: q.type || "mcq",
+               question: q.question,
+               options: q.options,
+               correctIndex: q.correctIndex,
+               pairs: q.pairs,
+               sentenceParts: q.sentenceParts,
+               correctSentence: q.correctSentence,
+               investigationSteps: q.investigationSteps,
+               correctOrder: q.correctOrder,
+               explanation: q.explanation,
+               difficulty: q.difficulty,
+               xpReward: q.xpReward,
+             }));
+           }
+
+           if (lesson.missionBriefing) {
+             lPlain.missionBriefing = lesson.missionBriefing;
+           }
 
           if (lesson.concepts?.length) {
             lPlain.conceptKeys = lesson.concepts.map((c: any) => c.code);
@@ -136,13 +146,23 @@ export class LectureService {
         if (lesson.questions?.length) {
           lPlain.questions = lesson.questions.map((q: any) => ({
             id: q.slug || q.id,
+            type: q.type || "mcq",
             question: q.question,
             options: q.options,
             correctIndex: q.correctIndex,
+            pairs: q.pairs,
+            sentenceParts: q.sentenceParts,
+            correctSentence: q.correctSentence,
+            investigationSteps: q.investigationSteps,
+            correctOrder: q.correctOrder,
             explanation: q.explanation,
             difficulty: q.difficulty,
             xpReward: q.xpReward,
           }));
+        }
+
+        if (lesson.missionBriefing) {
+          lPlain.missionBriefing = lesson.missionBriefing;
         }
 
         if (lesson.concepts?.length) {
