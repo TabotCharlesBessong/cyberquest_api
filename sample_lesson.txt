@@ -1,0 +1,18 @@
+ private and what is safe to share.",
+        icon: "🧩",
+        lessons: [
+          {
+            id: "what-is-personal",
+            title: "What Is Personal Info?",
+            notes: "Personal info can identify you in real life. Keep it private online.",
+            difficulty: 1,
+            questions: [
+              {
+                id: "q1",
+                question: "Which of these is personal information?",
+                correct: "Your home address",
+                wrongs: ["Your favorite color", "Your favorite animal", "Your favorite game"],
+                explanation: "An address can be used to find you in real life.",
+              },
+              {
+                id: "q

@@ -1,0 +1,25 @@
+336:     title: "Online Safety Basics",
+337:     description: "Learn what is safe to share, who to trust, and how to browse safely.",
+338:     icon: "🛡️",
+339:     color: "#22c55e",
+340:     ageGroup: "A",
+341:     units: [
+342:       {
+343:         id: "personal-info",
+344:         title: "Personal Information",
+345:         description: "Know what to keep private and what is safe to share.",
+346:         icon: "🧩",
+347:         lessons: [
+348:                     {
+349:             id: "what-is-personal",
+350:             title: "What Is Personal Info?",
+351:             notes: "Personal info can identify you in real life. Keep it private online. Remember to always ask a trusted adult if you are unsure. The internet is a fun place, but it is important to stay safe. Keep your personal information private and only share it with people you trust. Practice these skills every time you go online!",
+352:             missionBriefing: "Mission: Safety Scout! Your mission is to complete this lesson and answer the questions. Listen carefully!",
+353:             difficulty: 1,
+354:             questions: [
+355: 
+356:               {
+357:                 id: "q1",
+358:                 question: "Which of these is personal information?",
+359:                 correct: "Your home address",
+360:                 wrongs: ["Your favorite color", "Your favorite animal", "Your favorite game"],

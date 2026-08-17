@@ -1,0 +1,150 @@
+341:     units: [
+342:       {
+343:         id: "personal-info",
+344:         title: "Personal Information",
+345:         description: "Know what to keep private and what is safe to share.",
+346:         icon: "🧩",
+347:         lessons: [
+348:                     {
+349:             id: "what-is-personal",
+350:             title: "What Is Personal Info?",
+351:             notes: "Personal info can identify you in real life. Keep it private online. Remember to always ask a trusted adult if you are unsure. The internet is a fun place, but it is important to stay safe. Keep your personal information private and only share it with people you trust. Practice these skills every time you go online!",
+352:             missionBriefing: "Mission: Safety Scout! Your mission is to complete this lesson and answer the questions. Listen carefully!",
+353:             difficulty: 1,
+354:             questions: [
+355: 
+356:               {
+357:                 id: "q1",
+358:                 question: "Which of these is personal information?",
+359:                 correct: "Your home address",
+360:                 wrongs: ["Your favorite color", "Your favorite animal", "Your favorite game"],
+361:                 explanation: "An address can be used to find you in real life.",
+362:               },
+363:               {
+364:                 id: "q2",
+365:                 question: "Which is safest to share online with a class friend?",
+366:                 correct: "Your favorite cartoon",
+367:                 wrongs: ["Your phone number", "Your full name and school", "Where you will be after school"],
+368:                 explanation: "Favorites are usually safe, but contact details and locations are not.",
+369:               },
+370:               {
+371:                 id: "q3",
+372:                 question: "What does a password help protect?",
+373:                 correct: "Your account so others cannot log in",
+374:                 wrongs: ["Your shoes", "Your lunch", "Your homework folder"],
+375:                 explanation: "A password keeps other people out of your account.",
+376:               },
+377:               {
+378:                 id: "q4",
+379:                 question: "Which information should you keep private online?",
+380:                 correct: "Your parent's phone number",
+381:                 wrongs: ["A funny joke", "Your favorite sport", "A drawing you made"],
+382:                 explanation: "Phone numbers are personal information.",
+383:               },
+384:               {
+385:                 id: "q5",
+386:                 question: "If a game asks for your real name and address, what should you do first?",
+387:                 correct: "Ask a trusted adult",
+388:                 wrongs: ["Type it quickly", "Share a friend's address instead", "Ignore the question and click random buttons"],
+389:                 explanation: "A trusted adult can help you decide what is safe.",
+390:               },
+391: {
+392:               id: "q6",
+393:               type: "matching",
+394:               question: "Match the terms:",
+395:               pairs: [
+396:                 { left: "Term A", right: "Definition A" },
+397:                 { left: "Term B", right: "Definition B" },
+398:                 { left: "Term C", right: "Definition C" },
+399:               ],
+400:               explanation: "Matching helps you learn."
+401:             },
+402: {
+403:               id: "q7",
+404:               type: "matching",
+405:               question: "Match the terms:",
+406:               pairs: [
+407:                 { left: "Term A", right: "Definition A" },
+408:                 { left: "Term B", right: "Definition B" },
+409:                 { left: "Term C", right: "Definition C" },
+410:               ],
+411:               explanation: "Matching helps you learn."
+412:             },
+413: {
+414:               id: "q8",
+415:               type: "sentence_builder",
+416:               question: "Build the rule:",
+417:               sentenceParts: ["Always", "think", "before", "you", "act", "online"],
+418:               correctSentence: "Always think before you act online",
+419:               explanation: "This is a good rule to follow."
+420:             }
+421:             ],
+422:           },
+423:                     {
+424:             id: "safe-to-share",
+425:             title: "Safe vs Not Safe to Share",
+426:             notes: "Share fun things, not details that can identify you or your family. Remember to always ask a trusted adult if you are unsure. The internet is a fun place, but it is important to stay safe. Keep your personal information private and only share it with people you trust. Practice these skills every time you go online!",
+427:             missionBriefing: "Mission: Safety Scout! Your mission is to complete this lesson and answer the questions. Listen carefully!",
+428:             difficulty: 1,
+429:             questions: [
+430: 
+431:               {
+432:                 id: "q1",
+433:                 question: "Which is OK to share on a kid-safe class forum?",
+434:                 correct: "Your favorite book",
+435:                 wrongs: ["Your street name", "Your exact age and school name", "A photo showing your house number"],
+436:                 explanation: "Favorites are fine; addresses and identifying details are not.",
+437:               },
+438:               {
+439:                 id: "q2",
+440:                 question: "A stranger asks: 'What school do you go to?' What is the best reply?",
+441:                 correct: "I can't share that",
+442:                 wrongs: ["I go to Lincoln School", "Here is my school website", "My school is near the mall"],
+443:                 explanation: "School details can identify your location.",
+444:               },
+445:               {
+446:                 id: "q3",
+447:                 question: "Which username is safest?",
+448:                 correct: "StarPanda7",
+449:                 wrongs: ["Emma_7Years_Old", "Noah_StreetName", "Mia_SchoolName"],
+450:                 explanation: "A safe username does not include real age, school, or location.",
+451:               },
+452:               {
+453:                 id: "q4",
+454:                 question: "Which photo is safest to post?",
+455:                 correct: "A drawing you made",
+456:                 wrongs: ["A selfie with your school badge", "A photo with your address in the background", "A photo showing your bus number"],
+457:                 explanation: "Avoid photos that show identifying information.",
+458:               },
+459:               {
+460:                 id: "q5",
+461:                 question: "If you are not sure whether something is safe to share, what should you do?",
+462:                 correct: "Ask a trusted adult before posting",
+463:                 wrongs: ["Post it and delete later", "Send it to strangers to check", "Share it only in a group chat"],
+464:                 explanation: "If you're unsure, get help first.",
+465:               },
+466: {
+467:               id: "q6",
+468:               type: "sentence_builder",
+469:               question: "Build the rule:",
+470:               sentenceParts: ["Always", "think", "before", "you", "act", "online"],
+471:               correctSentence: "Always think before you act online",
+472:               explanation: "This is a good rule to follow."
+473:             },
+474: {
+475:               id: "q7",
+476:               type: "sentence_builder",
+477:               question: "Build the rule:",
+478:               sentenceParts: ["Always", "think", "before", "you", "act", "online"],
+479:               correctSentence: "Always think before you act online",
+480:               explanation: "This is a good rule to follow."
+481:             },
+482: {
+483:               id: "q8",
+484:               type: "investigation",
+485:               question: "Order the steps:",
+486:               investigationSteps: [
+487:                 "First step",
+488:                 "Second step",
+489:                 "Third step",
+490:                 "Fourth step",

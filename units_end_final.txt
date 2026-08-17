@@ -1,0 +1,35 @@
+1519:               type: "mcq",
+1520:               question: "Question 5 about this lesson's topic?",
+1521:               correct: "The correct choice",
+1522:               wrongs: ["Wrong choice A", "Wrong choice B", "Wrong choice C"],
+1523:               explanation: "This is the correct explanation for the answer.",
+1524:             },{
+1525:               id: "q6",
+1526:               type: "mcq",
+1527:               question: "Question 6 about this lesson's topic?",
+1528:               correct: "The correct choice",
+1529:               wrongs: ["Wrong choice A", "Wrong choice B", "Wrong choice C"],
+1530:               explanation: "This is the correct explanation for the answer.",
+1531:             },{
+1532:               id: "q7",
+1533:               type: "mcq",
+1534:               question: "Question 7 about this lesson's topic?",
+1535:               correct: "The correct choice",
+1536:               wrongs: ["Wrong choice A", "Wrong choice B", "Wrong choice C"],
+1537:               explanation: "This is the correct explanation for the answer.",
+1538:             },{
+1539:               id: "q8",
+1540:               type: "mcq",
+1541:               question: "Question 8 about this lesson's topic?",
+1542:               correct: "The correct choice",
+1543:               wrongs: ["Wrong choice A", "Wrong choice B", "Wrong choice C"],
+1544:               explanation: "This is the correct explanation for the answer.",
+1545:             }
+1546:             ],
+1547:           }
+1548:         ],
+1549:       }],
+1550:   },
+1551:   {
+1552:     id: "a-kindness-online",
+1553:     title: "Kindness Online",

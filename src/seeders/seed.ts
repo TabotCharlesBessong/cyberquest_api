@@ -366,6 +366,7 @@ async function seed(): Promise<void> {
           await createdLesson.update({
             title: lesson.title,
             notes: lesson.notes,
+            missionBriefing: lesson.missionBriefing,
             order: lesson.order,
             ageGroup: lesson.ageGroup as "A" | "B",
             difficulty: lesson.difficulty,

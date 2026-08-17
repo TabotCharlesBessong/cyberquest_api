@@ -1,0 +1,4 @@
+Pattern 1 did not match
+Pattern 2 matched: personal-info
+Pattern 3 matched: a-online-safety
+Lesson matched: personal-info, difficulty: 1, questions: 1

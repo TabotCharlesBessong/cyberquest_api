@@ -1,0 +1,40 @@
+1146:         id: "unit-5",
+1147:         title: "Unit 5",
+1148:         description: "Learn more about this important topic.",
+1149:         icon: "📚",
+1150:         lessons: [
+1151:           {
+1152:             id: "l1",
+1153:             title: "Lesson 1: Learning More",
+1154:             notes: "This lesson teaches important safety skills for young learners. You will learn through stories and questions that help you remember what to do online. Ask a trusted adult if you have questions!",
+1155:             missionBriefing: "🎯 Mission: Safety Scout 1! Your mission is to learn about this topic and complete the challenges. Listen carefully and do your best!",
+1156:             difficulty: 4,
+1157:             questions: [
+1158:               {
+1159:               id: "q1",
+1160:               type: "mcq",
+1161:               question: "Question 1 about this lesson's topic?",
+1162:               correct: "The correct choice",
+1163:               wrongs: ["Wrong choice A", "Wrong choice B", "Wrong choice C"],
+1164:               explanation: "This is the correct explanation for the answer.",
+1165:             },{
+1166:               id: "q2",
+1167:               type: "mcq",
+1168:               question: "Question 2 about this lesson's topic?",
+1169:               correct: "The correct choice",
+1170:               wrongs: ["Wrong choice A", "Wrong choice B", "Wrong choice C"],
+1171:               explanation: "This is the correct explanation for the answer.",
+1172:             },{
+1173:               id: "q3",
+1174:               type: "matching",
+1175:               question: "Match the terms related to this lesson:",
+1176:               pairs: [
+1177:                 { left: "Term A", right: "Definition A" },
+1178:                 { left: "Term B", right: "Definition B" },
+1179:                 { left: "Term C", right: "Definition C" },
+1180:               ],
+1181:               explanation: "Matching helps you understand key concepts.",
+1182:             },{
+1183:               id: "q4",
+1184:               type: "matching",
+1185:               question: "Match the terms related to this lesson:",
