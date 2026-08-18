@@ -1,33 +1,32 @@
-file_path = "src/seeders/curriculumSeed.ts"
-with open(file_path, "r", encoding="utf-8") as f:
+with open("src/seeders/curriculumSeed.ts", "r", encoding="utf-8") as f:
     content = f.read()
 
-import re
-
-# Test regex on a sample lesson
-sample = content[8874:8874 + 1000]
-print("Sample lesson:")
-print(sample[:500])
-
-# Try different regex patterns
-patterns = [
-    r'id: "([^"]+)"\s+title: "([^"]+)"\s+notes: "([^"]*)"',
-    r'\{\s*id: "([^"]+)"[\s\S]*?title: "([^"]+)"[\s\S]*?notes: "([^"]*)"',
-    r'id: "([^"]+)"[\s\S]*?title: "([^"]+)"[\s\S]*?notes: "([^"]*)"',
-]
-
-for i, p in enumerate(patterns):
-    m = re.search(p, sample)
-    if m:
-        print(f"Pattern {i+1} matched: {m.group(1)}")
-    else:
-        print(f"Pattern {i+1} did not match")
-
-# Try matching the actual structure
-print("\nTrying to match lesson block...")
-lesson_pattern = r'\{\s*id: "([^"]+)"[\s\S]*?difficulty: (\d+)[\s\S]*?questions: \[([\s\S]*?)\]'
-m = re.search(lesson_pattern, sample)
-if m:
-    print(f"Matched lesson: {m.group(1)}, difficulty: {m.group(2)}, questions: {m.group(3).count('id: \"q')}")
-else:
-    print("No lesson match")
+# Find the first section
+idx = content.find('a-online-safety')
+with open("debug_output.txt", "w", encoding="utf-8") as f:
+    f.write(f'Context around a-online-safety:\n')
+    f.write(repr(content[idx-20:idx+300]) + "\n\n")
+    
+    # Check if color pattern exists
+    color_idx = content.find('color: "#22c55e"')
+    f.write(f'color found at: {color_idx}\n')
+    if color_idx >= 0:
+        f.write(repr(content[color_idx-30:color_idx+50]) + "\n\n")
+    
+    # Check if ageGroup pattern exists
+    age_idx = content.find('ageGroup: "A"')
+    f.write(f'ageGroup found at: {age_idx}\n')
+    if age_idx >= 0:
+        f.write(repr(content[age_idx-30:age_idx+50]) + "\n\n")
+    
+    # Check if units pattern exists near a-online-safety
+    units_idx = content.find('units: [', idx)
+    f.write(f'units found at: {units_idx}\n')
+    if units_idx >= 0:
+        f.write(repr(content[units_idx-30:units_idx+50]) + "\n\n")
+    
+    # Check what comes after { 
+    brace_idx = content.rfind('{', 0, idx)
+    f.write(f'Opening brace at: {brace_idx}\n')
+    if brace_idx >= 0:
+        f.write(repr(content[brace_idx:brace_idx+200]) + "\n")

@@ -1,0 +1,1 @@
+'           ],\n          }\n        ],\n      } ) as UnitDef] as UnitDef[],\n  }as SectionDef,\n    id: "a-digital-footprint",\n    title: "Digital Footprint",\n    description: "Understand what you leave behind online.",\n    icon: "👣",\n    color: "#22c55e",\n    ageGroup: "A",\n    units: [\n      ( {\n      '

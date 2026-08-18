@@ -1,0 +1,14 @@
+Context:
+const SECTION_DEFS: SectionDef[] = [
+  {
+    id: "a-online-safety",
+    title: "Online Safety Basics",
+    description: "Learn what is safe to share, 
+
+Pattern 1 (\{\s*\n\s*id:) match: True
+Pattern 2 (\{\n\s*id:) match: True
+
+Snippet around brace:
+'{\n    id: "a-online-safety",\n '
+
+Line ending test: '{\n'

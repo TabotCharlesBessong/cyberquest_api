@@ -1,0 +1,1 @@
+'      } ) as UnitDef] as UnitDef[],\n  },\n    id: "a-malware-safety",\n    title: "Malware & Downloads",\n    description: "Learn what malware is and how to download safely.",\n    icon: "🦠",\n    color: "#ef4444",\n    ageGroup: "A",\n    units: [\n      ( {\n        id: "unit-1",\n        title: "Unit 1",\n        description: "Learn more about this importa'

@@ -1,33 +1,25 @@
-file_path = "src/seeders/curriculumSeed.ts"
-with open(file_path, "r", encoding="utf-8") as f:
+with open("src/seeders/curriculumSeed.ts", "r", encoding="utf-8") as f:
     content = f.read()
 
-import re
+# Find the first section
+idx = content.find('a-online-safety')
+print('Context around a-online-safety:')
+print(repr(content[idx-20:idx+300]))
 
-# Find the first lesson in the file
-lesson_start = content.find('id: "what-is-personal"')
-if lesson_start == -1:
-    print("Lesson not found")
-    exit(1)
+# Check if color pattern exists
+color_idx = content.find('color: "#22c55e"')
+print(f'\ncolor found at: {color_idx}')
+if color_idx >= 0:
+    print(repr(content[color_idx-30:color_idx+50]))
 
-# Get a chunk around the lesson
-chunk = content[lesson_start - 50:lesson_start + 800]
+# Check if ageGroup pattern exists
+age_idx = content.find('ageGroup: "A"')
+print(f'\nageGroup found at: {age_idx}')
+if age_idx >= 0:
+    print(repr(content[age_idx-30:age_idx+50]))
 
-# Try different regex patterns
-patterns = [
-    r'id: "([^"]+)"\s+title: "([^"]+)"\s+notes: "([^"]*)"\s+difficulty: (\d+)',
-    r'\{[^}]*id: "([^"]+)"[^}]*notes: "([^"]*)"[^}]*difficulty: (\d+)',
-    r'id: "([^"]+)"[\s\S]*?notes: "([^"]*)"',
-    r'notes: "([^"]*)"',
-]
-
-for i, pattern in enumerate(patterns):
-    match = re.search(pattern, chunk)
-    if match:
-        print(f"Pattern {i+1} matched: {match.group(0)[:100]}")
-    else:
-        print(f"Pattern {i+1} did not match")
-
-# Show the actual chunk structure
-print("\nActual chunk (first 500 chars):")
-print(chunk[:500])
+# Check if units pattern exists near a-online-safety
+units_idx = content.find('units: [', idx)
+print(f'\nunits found at: {units_idx}')
+if units_idx >= 0:
+    print(repr(content[units_idx-30:units_idx+50]))

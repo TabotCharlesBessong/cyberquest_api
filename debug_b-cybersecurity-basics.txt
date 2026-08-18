@@ -1,0 +1,1 @@
+'           }\n            ],\n          }\n        ],\n      } ) as UnitDef\n  } as SectionDef,\n    id: "b-cybersecurity-basics",\n    title: "Cybersecurity Basics",\n    description: "Learn the basics of staying safe from cyber threats.",\n    icon: "🔐",\n    color: "#ef4444",\n    ageGroup: "B",\n    units: '

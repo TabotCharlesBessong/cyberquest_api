@@ -1,0 +1,1 @@
+'           }\n            ],\n          }\n        ],\n      } ) as UnitDef\n  } as SectionDef,\n    id: "b-digital-citizenship",\n    title: "Digital Citizenship",\n    description: "Learn to be a responsible and ethical digital citizen.",\n    icon: "🌐",\n    color: "#3b82f6",\n    ageGroup: "B",\n    units: '

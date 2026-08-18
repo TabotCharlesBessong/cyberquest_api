@@ -1,0 +1,1 @@
+'           }\n            ],\n          }\n        ],\n      } ) as UnitDef\n  } as SectionDef,\n    id: "b-information-literacy",\n    title: "Information Literacy",\n    description: "Learn to find and verify reliable information.",\n    icon: "🔍",\n    color: "#8b5cf6",\n    ageGroup: "B",\n    units: [\n    '

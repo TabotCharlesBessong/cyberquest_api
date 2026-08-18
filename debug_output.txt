@@ -1,0 +1,14 @@
+Context around a-online-safety:
+'[] = [\n  {\n    id: "a-online-safety",\n    title: "Online Safety Basics",\n    description: "Learn what is safe to share, who to trust, and how to browse safely.",\n    icon: "🛡️",\n    color: "#22c55e",\n    ageGroup: "A",\n    units: [\n      {\n        id: "personal-info",\n        title: "Personal Information",\n        desc'
+
+color found at: 9133
+'safely.",\n    icon: "🛡️",\n    color: "#22c55e",\n    ageGroup: "A",\n    units: [\n'
+
+ageGroup found at: 572
+'?: string;\n  order: number;\n  ageGroup: "A" | "B";\n  difficulty: 1 | 2 | 3 | 4 |'
+
+units found at: 9174
+'c55e",\n    ageGroup: "A",\n    units: [\n      {\n        id: "personal-info",\n    '
+
+Opening brace at: 8960
+'{\n    id: "a-online-safety",\n    title: "Online Safety Basics",\n    description: "Learn what is safe to share, who to trust, and how to browse safely.",\n    icon: "🛡️",\n    color: "#22c55e",\n    ageGr'
