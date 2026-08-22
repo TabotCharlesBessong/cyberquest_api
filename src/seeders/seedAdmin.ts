@@ -34,8 +34,17 @@ async function seedAdmin(): Promise<void> {
       },
     });
 
-    if (admin.password !== ADMIN_PASSWORD) {
-      await admin.update({ password: ADMIN_PASSWORD, name: ADMIN_NAME, role: "admin" });
+    const needsUpdate =
+      admin.name !== ADMIN_NAME ||
+      admin.role !== "admin" ||
+      !(await admin.comparePassword(ADMIN_PASSWORD));
+
+    if (needsUpdate) {
+      await admin.update({
+        password: ADMIN_PASSWORD,
+        name: ADMIN_NAME,
+        role: "admin",
+      });
     }
 
     logger.info("Admin user ensured", {

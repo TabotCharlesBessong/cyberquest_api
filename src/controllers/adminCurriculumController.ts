@@ -6,9 +6,11 @@ import { notFound } from "../utils/apiError";
 import { CURRICULUM } from "../seeders/curriculumData";
 
 export const getAdminSections = asyncHandler(
-  async (_req: AuthedRequest, res: Response) => {
-    const sections = await CurriculumService.getSections();
-    res.status(200).json({ success: true, data: { sections } });
+  async (req: AuthedRequest, res: Response) => {
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+    const result = await CurriculumService.getSections(page, limit);
+    res.status(200).json({ success: true, data: result });
   },
 );
 
@@ -41,8 +43,10 @@ export const getUnitsBySection = asyncHandler(
   async (req: AuthedRequest, res: Response) => {
     const sectionId =
       typeof req.params.sectionId === "string" ? req.params.sectionId : "";
-    const units = await CurriculumService.getUnits(sectionId);
-    res.status(200).json({ success: true, data: { units } });
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+    const result = await CurriculumService.getUnits(sectionId, page, limit);
+    res.status(200).json({ success: true, data: result });
   },
 );
 
@@ -75,8 +79,10 @@ export const getLessonsByUnit = asyncHandler(
   async (req: AuthedRequest, res: Response) => {
     const unitId =
       typeof req.params.unitId === "string" ? req.params.unitId : "";
-    const lessons = await CurriculumService.getLessons(unitId);
-    res.status(200).json({ success: true, data: { lessons } });
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+    const result = await CurriculumService.getLessons(unitId, page, limit);
+    res.status(200).json({ success: true, data: result });
   },
 );
 
@@ -109,8 +115,10 @@ export const getQuestionsByLesson = asyncHandler(
   async (req: AuthedRequest, res: Response) => {
     const lessonId =
       typeof req.params.lessonId === "string" ? req.params.lessonId : "";
-    const questions = await CurriculumService.getQuestions(lessonId);
-    res.status(200).json({ success: true, data: { questions } });
+    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
+    const result = await CurriculumService.getQuestions(lessonId, page, limit);
+    res.status(200).json({ success: true, data: result });
   },
 );
 

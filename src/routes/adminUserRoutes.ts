@@ -11,9 +11,9 @@ const router = Router();
 
 router.use(authMiddleware, adminOnly);
 
-router.get("/users", getUsers);
-router.get("/users/:id", getUserDetail);
-router.put("/users/:id", updateUser);
-router.delete("/users/:id", deleteUser);
+router.get("/", getUsers);
+router.get("/:id", getUserDetail);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 
 export default router;

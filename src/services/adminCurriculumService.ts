@@ -2,8 +2,9 @@ import { Lecture, Unit, Lesson, Question } from "../db";
 import { CURRICULUM } from "../seeders/curriculumData";
 
 export class CurriculumService {
-  static async getSections() {
-    return Lecture.findAll({
+  static async getSections(page = 1, limit = 20) {
+    const offset = (page - 1) * limit;
+    const { rows: sections, count } = await Lecture.findAndCountAll({
       include: [
         {
           model: Unit,
@@ -18,7 +19,10 @@ export class CurriculumService {
         },
       ],
       order: [["order", "ASC"]],
+      limit,
+      offset,
     });
+    return { sections, total: count, page, limit, totalPages: Math.ceil(count / limit) };
   }
 
   static async getSectionBySlug(slug: string) {
@@ -57,8 +61,9 @@ export class CurriculumService {
     return section;
   }
 
-  static async getUnits(sectionId: string) {
-    return Unit.findAll({
+  static async getUnits(sectionId: string, page = 1, limit = 20) {
+    const offset = (page - 1) * limit;
+    const { rows: units, count } = await Unit.findAndCountAll({
       where: { sectionId },
       include: [
         {
@@ -68,7 +73,10 @@ export class CurriculumService {
         },
       ],
       order: [["order", "ASC"]],
+      limit,
+      offset,
     });
+    return { units, total: count, page, limit, totalPages: Math.ceil(count / limit) };
   }
 
   static async createUnit(data: any) {
@@ -88,12 +96,16 @@ export class CurriculumService {
     return unit;
   }
 
-  static async getLessons(unitId: string) {
-    return Lesson.findAll({
+  static async getLessons(unitId: string, page = 1, limit = 20) {
+    const offset = (page - 1) * limit;
+    const { rows: lessons, count } = await Lesson.findAndCountAll({
       where: { unitId },
       include: [{ model: Question, as: "questions" }],
       order: [["order", "ASC"]],
+      limit,
+      offset,
     });
+    return { lessons, total: count, page, limit, totalPages: Math.ceil(count / limit) };
   }
 
   static async createLesson(data: any) {
@@ -113,21 +125,79 @@ export class CurriculumService {
     return lesson;
   }
 
-  static async getQuestions(lessonId: string) {
-    return Question.findAll({
+  static async getQuestions(lessonId: string, page = 1, limit = 20) {
+    const offset = (page - 1) * limit;
+    const { rows: questions, count } = await Question.findAndCountAll({
       where: { lessonId },
       order: [["difficulty", "ASC"]],
+      limit,
+      offset,
     });
+    return { questions, total: count, page, limit, totalPages: Math.ceil(count / limit) };
+  }
+
+  static normalizeQuestion(data: Record<string, any>) {
+    const type = data.type || "mcq";
+    const normalized: Record<string, any> = { ...data, type };
+
+    switch (type) {
+      case "matching":
+        normalized.options = null;
+        normalized.correctIndex = null;
+        normalized.sentenceParts = null;
+        normalized.correctSentence = null;
+        normalized.investigationSteps = null;
+        normalized.correctOrder = null;
+        if (!Array.isArray(normalized.pairs)) {
+          throw new Error("Matching questions require 'pairs' array");
+        }
+        break;
+      case "sentence_builder":
+        normalized.options = null;
+        normalized.correctIndex = null;
+        normalized.pairs = null;
+        normalized.investigationSteps = null;
+        normalized.correctOrder = null;
+        if (!Array.isArray(normalized.sentenceParts) || !normalized.correctSentence) {
+          throw new Error("Sentence builder questions require 'sentenceParts' array and 'correctSentence'");
+        }
+        break;
+      case "investigation":
+        normalized.options = null;
+        normalized.correctIndex = null;
+        normalized.pairs = null;
+        normalized.sentenceParts = null;
+        normalized.correctSentence = null;
+        if (!Array.isArray(normalized.investigationSteps) || !Array.isArray(normalized.correctOrder)) {
+          throw new Error("Investigation questions require 'investigationSteps' and 'correctOrder' arrays");
+        }
+        break;
+      case "mcq":
+      default:
+        normalized.pairs = null;
+        normalized.sentenceParts = null;
+        normalized.correctSentence = null;
+        normalized.investigationSteps = null;
+        normalized.correctOrder = null;
+        if (!Array.isArray(normalized.options) || normalized.correctIndex == null) {
+          throw new Error("MCQ questions require 'options' array and 'correctIndex'");
+        }
+        break;
+    }
+
+    return normalized;
   }
 
   static async createQuestion(data: any) {
-    return Question.create(data);
+    const normalized = this.normalizeQuestion(data);
+    return Question.create(normalized as any);
   }
 
   static async updateQuestion(id: string, data: any) {
     const question = await Question.findByPk(id);
     if (!question) return null;
-    return question.update(data);
+    const normalized = this.normalizeQuestion(data);
+    return question.update(normalized as any);
   }
 
   static async deleteQuestion(id: string) {
