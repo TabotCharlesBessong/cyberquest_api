@@ -26,6 +26,26 @@ router.use(authMiddleware);
  *     responses:
  *       200:
  *         description: List of curriculum sections with units and lessons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     sections:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/CurriculumSection'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/sections", validateQuery(ageGroupQuerySchema), getSections);
 
@@ -48,11 +68,42 @@ router.get("/sections", validateQuery(ageGroupQuerySchema), getSections);
  *         schema:
  *           type: string
  *           enum: [A, B]
+ *         description: Filter by age group
  *     responses:
  *       200:
  *         description: Curriculum section with units and lessons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     section:
+ *                       $ref: '#/components/schemas/CurriculumSection'
+ *                     units:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                     lessons:
+ *                       type: array
+ *                       items:
+ *                         type: object
  *       404:
  *         description: Section not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get(
   "/sections/:slug",
@@ -75,9 +126,36 @@ router.get(
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of units with lessons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     units:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *       404:
+ *         description: Section not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/sections/:sectionId/units", getUnits);
 
@@ -95,11 +173,38 @@ router.get("/sections/:sectionId/units", getUnits);
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: Unit with lessons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     unit:
+ *                       $ref: '#/components/schemas/Unit'
+ *                     lessons:
+ *                       type: array
+ *                       items:
+ *                         type: object
  *       404:
  *         description: Unit not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/units/:id", getUnitById);
 
@@ -117,9 +222,36 @@ router.get("/units/:id", getUnitById);
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: List of lessons with questions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     lessons:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *       404:
+ *         description: Unit not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/units/:unitId/lessons", getLessons);
 
@@ -137,11 +269,38 @@ router.get("/units/:unitId/lessons", getLessons);
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
  *     responses:
  *       200:
  *         description: Lesson with questions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     lesson:
+ *                       type: object
+ *                     questions:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Question'
  *       404:
  *         description: Lesson not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/lessons/:id", getLessonById);
 

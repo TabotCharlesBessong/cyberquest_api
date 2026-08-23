@@ -39,8 +39,26 @@ const router = Router();
  *     responses:
  *       201:
  *         description: Account created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
  *       409:
  *         description: Email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/signup", validateBody(signupSchema), signup);
 
@@ -66,8 +84,28 @@ router.post("/signup", validateBody(signupSchema), signup);
  *     responses:
  *       200:
  *         description: Email verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     token:
+ *                       type: string
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid or expired code
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/verify", validateBody(verifyEmailSchema), verifyEmail);
 
@@ -93,6 +131,15 @@ router.post("/verify", validateBody(verifyEmailSchema), verifyEmail);
  *     responses:
  *       200:
  *         description: Verification code resent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.post("/resend-verification", validateBody(resendVerificationSchema), resendVerification);
 
@@ -121,10 +168,22 @@ router.post("/resend-verification", validateBody(resendVerificationSchema), rese
  *     responses:
  *       200:
  *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Email not verified
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/login", validateBody(loginSchema), login);
 
@@ -150,6 +209,15 @@ router.post("/login", validateBody(loginSchema), login);
  *     responses:
  *       200:
  *         description: Reset code sent if account exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.post("/forgot-password", validateBody(forgotPasswordSchema), forgotPassword);
 
@@ -183,6 +251,21 @@ router.post("/forgot-password", validateBody(forgotPasswordSchema), forgotPasswo
  *     responses:
  *       200:
  *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid or expired code
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/reset-password", validateBody(resetPasswordSchema), resetPassword);
 
@@ -211,6 +294,10 @@ router.post("/reset-password", validateBody(resetPasswordSchema), resetPassword)
  *                       $ref: '#/components/schemas/User'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/me", authMiddleware, me);
 
@@ -252,6 +339,10 @@ router.get("/me", authMiddleware, me);
  *                       $ref: '#/components/schemas/User'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.patch("/me", authMiddleware, validateBody(updateProfileSchema), updateProfile);
 

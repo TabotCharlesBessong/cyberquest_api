@@ -33,6 +33,10 @@ router.use(authMiddleware);
  *                         $ref: '#/components/schemas/ShopItem'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/items", getShopItems);
 
@@ -71,10 +75,22 @@ router.get("/items", getShopItems);
  *                   $ref: '#/components/schemas/PurchaseResult'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Item not found or out of stock
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       400:
  *         description: Insufficient currency
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/purchase", purchaseItem);
 
@@ -105,6 +121,10 @@ router.post("/purchase", purchaseItem);
  *                         $ref: '#/components/schemas/InventoryItem'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/inventory", getInventory);
 
@@ -143,8 +163,16 @@ router.get("/inventory", getInventory);
  *                       type: string
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Item not found in inventory
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/equip/:itemId", equipItem);
 
@@ -183,8 +211,16 @@ router.post("/equip/:itemId", equipItem);
  *                       type: string
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Item not found in inventory
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/unequip/:itemId", unequipItem);
 
