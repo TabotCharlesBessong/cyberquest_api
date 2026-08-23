@@ -19,6 +19,7 @@ function initQuestion(sequelize) {
             references: { model: "lessons", key: "id" },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
+            field: "lesson_id",
         },
         slug: {
             type: sequelize_1.DataTypes.STRING,
@@ -36,6 +37,7 @@ function initQuestion(sequelize) {
         correctIndex: {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: true,
+            field: "correct_index",
         },
         type: {
             type: sequelize_1.DataTypes.STRING,
@@ -49,18 +51,22 @@ function initQuestion(sequelize) {
         sentenceParts: {
             type: sequelize_1.DataTypes.JSONB,
             allowNull: true,
+            field: "sentence_parts",
         },
         correctSentence: {
             type: sequelize_1.DataTypes.TEXT,
             allowNull: true,
+            field: "correct_sentence",
         },
         investigationSteps: {
             type: sequelize_1.DataTypes.JSONB,
             allowNull: true,
+            field: "investigation_steps",
         },
         correctOrder: {
             type: sequelize_1.DataTypes.JSONB,
             allowNull: true,
+            field: "correct_order",
         },
         explanation: {
             type: sequelize_1.DataTypes.TEXT,
@@ -75,14 +81,17 @@ function initQuestion(sequelize) {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 10,
+            field: "xp_reward",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

@@ -19,14 +19,17 @@ function initLeaderboardEntry(sequelize) {
         userId: {
             type: sequelize_1.DataTypes.UUID,
             allowNull: false,
+            field: "user_id",
         },
         scope: {
-            type: sequelize_1.DataTypes.ENUM("class", "school", "global"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "scope",
         },
         seasonId: {
             type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "season_id",
         },
         score: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -41,6 +44,7 @@ function initLeaderboardEntry(sequelize) {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "created_at",
         },
     }, {
         sequelize,

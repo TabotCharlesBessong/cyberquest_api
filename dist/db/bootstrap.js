@@ -8,9 +8,13 @@ const sequelize_1 = require("sequelize");
 const config_1 = __importDefault(require("../config/config"));
 const logger_1 = __importDefault(require("../utils/logger"));
 async function ensureDatabase() {
-    const admin = new sequelize_1.Sequelize("postgres", config_1.default.database.user, config_1.default.database.password, {
-        host: config_1.default.database.host,
-        port: config_1.default.database.port,
+    if (config_1.default.primaryDb === "supabase") {
+        logger_1.default.info("Using Supabase — skipping database creation", { component: "db" });
+        return;
+    }
+    const admin = new sequelize_1.Sequelize("postgres", config_1.default.database.user || "postgres", config_1.default.database.password || "postgres", {
+        host: config_1.default.database.host || "localhost",
+        port: config_1.default.database.port || 5432,
         dialect: "postgres",
         logging: false,
     });

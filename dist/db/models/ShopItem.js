@@ -27,8 +27,9 @@ function initShopItem(sequelize) {
             allowNull: false,
         },
         type: {
-            type: sequelize_1.DataTypes.ENUM("avatar", "powerup", "consumable"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "type",
         },
         cost: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -36,9 +37,10 @@ function initShopItem(sequelize) {
             defaultValue: 0,
         },
         costType: {
-            type: sequelize_1.DataTypes.ENUM("gems", "xp"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
             defaultValue: "gems",
+            field: "cost_type",
         },
         effect: {
             type: sequelize_1.DataTypes.JSONB,
@@ -49,9 +51,10 @@ function initShopItem(sequelize) {
             allowNull: false,
         },
         rarity: {
-            type: sequelize_1.DataTypes.ENUM("common", "rare", "epic", "legendary"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
             defaultValue: "common",
+            field: "rarity",
         },
         stock: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -61,14 +64,17 @@ function initShopItem(sequelize) {
             type: sequelize_1.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,
+            field: "is_active",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

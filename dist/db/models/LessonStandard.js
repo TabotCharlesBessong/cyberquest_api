@@ -15,6 +15,7 @@ function initLessonStandard(sequelize) {
             references: { model: "lessons", key: "id" },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
+            field: "lesson_id",
         },
         standardId: {
             type: sequelize_1.DataTypes.UUID,
@@ -22,10 +23,12 @@ function initLessonStandard(sequelize) {
             primaryKey: true,
             references: { model: "standards", key: "id" },
             onDelete: "CASCADE",
+            field: "standard_id",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
     }, {
         sequelize,

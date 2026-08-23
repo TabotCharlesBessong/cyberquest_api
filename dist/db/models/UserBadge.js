@@ -15,16 +15,19 @@ function initUserBadge(sequelize) {
             type: sequelize_1.DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
+            field: "user_id",
         },
         badgeId: {
             type: sequelize_1.DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
+            field: "badge_id",
         },
         earnedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "earned_at",
         },
         progress: {
             type: sequelize_1.DataTypes.INTEGER,

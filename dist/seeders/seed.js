@@ -276,9 +276,7 @@ const SEED_SHOP_ITEMS = [
 async function seed() {
     try {
         await db_1.sequelize.authenticate();
-        logger_1.default.info("Connected to PostgreSQL", { component: "seed" });
-        await db_1.sequelize.sync({ alter: true });
-        logger_1.default.info("Models synchronized", { component: "seed" });
+        logger_1.default.info("Connected to database for seeding", { component: "seed" });
         const conceptCache = new Map();
         const standardCache = new Map();
         for (const section of curriculumSeed_1.CURRICULUM.sections) {

@@ -19,8 +19,9 @@ function initQuest(sequelize) {
             unique: true,
         },
         type: {
-            type: sequelize_1.DataTypes.ENUM("daily", "weekly", "special"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "type",
         },
         title: {
             type: sequelize_1.DataTypes.STRING,
@@ -39,24 +40,29 @@ function initQuest(sequelize) {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
+            field: "xp_reward",
         },
         gemsReward: {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
+            field: "gems_reward",
         },
         isActive: {
             type: sequelize_1.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,
+            field: "is_active",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

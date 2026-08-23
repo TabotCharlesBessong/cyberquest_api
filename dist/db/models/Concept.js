@@ -25,10 +25,12 @@ function initConcept(sequelize) {
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

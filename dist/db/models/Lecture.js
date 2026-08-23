@@ -46,6 +46,7 @@ function initLecture(sequelize) {
             type: sequelize_1.DataTypes.STRING,
             allowNull: false,
             defaultValue: "",
+            field: "badge_name",
         },
         order: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -53,16 +54,19 @@ function initLecture(sequelize) {
             defaultValue: 0,
         },
         ageGroup: {
-            type: sequelize_1.DataTypes.ENUM("A", "B"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: true,
+            field: "age_group",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

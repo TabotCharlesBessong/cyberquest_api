@@ -18,29 +18,35 @@ function initClassroomRound(sequelize) {
         classroomId: {
             type: sequelize_1.DataTypes.UUID,
             allowNull: false,
+            field: "classroom_id",
         },
         status: {
-            type: sequelize_1.DataTypes.ENUM("waiting", "active", "finished"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
             defaultValue: "waiting",
+            field: "status",
         },
         currentQuestionIndex: {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
+            field: "current_question_index",
         },
         startedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: true,
+            field: "started_at",
         },
         finishedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: true,
+            field: "finished_at",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "created_at",
         },
     }, {
         sequelize,

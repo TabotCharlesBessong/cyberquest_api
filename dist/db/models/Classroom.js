@@ -26,11 +26,13 @@ function initClassroom(sequelize) {
         teacherId: {
             type: sequelize_1.DataTypes.UUID,
             allowNull: true,
+            field: "teacher_id",
         },
         memberIds: {
             type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.UUID),
             allowNull: false,
             defaultValue: [],
+            field: "member_ids",
         },
         code: {
             type: sequelize_1.DataTypes.STRING(8),
@@ -41,6 +43,7 @@ function initClassroom(sequelize) {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "created_at",
         },
     }, {
         sequelize,

@@ -63,18 +63,41 @@ Object.defineProperty(exports, "Event", { enumerable: true, get: function () { r
 const ParentalControl_1 = require("./models/ParentalControl");
 Object.defineProperty(exports, "ParentalControl", { enumerable: true, get: function () { return ParentalControl_1.ParentalControl; } });
 const logger_1 = __importDefault(require("../utils/logger"));
-exports.sequelize = new sequelize_1.Sequelize(config_1.default.database.name, config_1.default.database.user, config_1.default.database.password, {
-    host: config_1.default.database.host,
-    port: config_1.default.database.port,
-    dialect: "postgres",
-    logging: config_1.default.env === "development"
-        ? (msg) => logger_1.default.debug(`[sequelize] ${msg}`, { component: "sequelize" })
-        : false,
-    define: {
-        underscored: false,
-        freezeTableName: false,
-    },
-});
+exports.sequelize = config_1.default.database.url && config_1.default.primaryDb === "supabase"
+    ? new sequelize_1.Sequelize(config_1.default.database.url, {
+        dialect: "postgres",
+        logging: config_1.default.env === "development"
+            ? (msg) => logger_1.default.debug(`[sequelize] ${msg}`, { component: "sequelize" })
+            : false,
+        pool: {
+            max: 10,
+            min: 2,
+            acquire: 30000,
+            idle: 10000,
+        },
+        define: {
+            underscored: false,
+            freezeTableName: false,
+        },
+    })
+    : new sequelize_1.Sequelize(config_1.default.database.name || "cyberquest", config_1.default.database.user || "postgres", config_1.default.database.password || "postgres", {
+        host: config_1.default.database.host || "localhost",
+        port: config_1.default.database.port || 5432,
+        dialect: "postgres",
+        logging: config_1.default.env === "development"
+            ? (msg) => logger_1.default.debug(`[sequelize] ${msg}`, { component: "sequelize" })
+            : false,
+        pool: {
+            max: 10,
+            min: 2,
+            acquire: 30000,
+            idle: 10000,
+        },
+        define: {
+            underscored: false,
+            freezeTableName: false,
+        },
+    });
 (0, User_1.initUser)(exports.sequelize);
 (0, Lecture_1.initLecture)(exports.sequelize);
 (0, Lesson_1.initLesson)(exports.sequelize);

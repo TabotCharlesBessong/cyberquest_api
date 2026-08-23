@@ -31,9 +31,10 @@ function initBadge(sequelize) {
             allowNull: false,
         },
         rarity: {
-            type: sequelize_1.DataTypes.ENUM("common", "rare", "epic", "legendary"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
             defaultValue: "common",
+            field: "rarity",
         },
         criteria: {
             type: sequelize_1.DataTypes.STRING,
@@ -43,19 +44,23 @@ function initBadge(sequelize) {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
+            field: "xp_reward",
         },
         gemsReward: {
             type: sequelize_1.DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 0,
+            field: "gems_reward",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

@@ -35,15 +35,18 @@ function initEvent(sequelize) {
         startsAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "starts_at",
         },
         endsAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "ends_at",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "created_at",
         },
     }, {
         sequelize,

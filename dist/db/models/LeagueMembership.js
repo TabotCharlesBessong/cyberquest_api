@@ -13,11 +13,13 @@ function initLeagueMembership(sequelize) {
             type: sequelize_1.DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
+            field: "league_id",
         },
         userId: {
             type: sequelize_1.DataTypes.UUID,
             allowNull: false,
             primaryKey: true,
+            field: "user_id",
         },
         xp: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -41,11 +43,13 @@ function initLeagueMembership(sequelize) {
         changeNote: {
             type: sequelize_1.DataTypes.STRING,
             allowNull: true,
+            field: "change_note",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "created_at",
         },
     }, {
         sequelize,

@@ -19,6 +19,7 @@ function initLesson(sequelize) {
             references: { model: "lectures", key: "id" },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
+            field: "lecture_id",
         },
         unitId: {
             type: sequelize_1.DataTypes.UUID,
@@ -26,14 +27,17 @@ function initLesson(sequelize) {
             references: { model: "units", key: "id" },
             onDelete: "CASCADE",
             onUpdate: "CASCADE",
+            field: "unit_id",
         },
         stepId: {
             type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "step_id",
         },
         type: {
-            type: sequelize_1.DataTypes.ENUM("story", "quiz", "mini-game", "challenge"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "type",
         },
         title: {
             type: sequelize_1.DataTypes.STRING,
@@ -75,6 +79,7 @@ function initLesson(sequelize) {
         missionBriefing: {
             type: sequelize_1.DataTypes.TEXT,
             allowNull: true,
+            field: "mission_briefing",
         },
         order: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -82,9 +87,10 @@ function initLesson(sequelize) {
             defaultValue: 0,
         },
         ageGroup: {
-            type: sequelize_1.DataTypes.ENUM("A", "B", "ALL"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
             defaultValue: "B",
+            field: "age_group",
         },
         difficulty: {
             type: sequelize_1.DataTypes.INTEGER,
@@ -94,10 +100,12 @@ function initLesson(sequelize) {
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "created_at",
         },
         updatedAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "updated_at",
         },
     }, {
         sequelize,

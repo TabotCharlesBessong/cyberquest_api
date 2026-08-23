@@ -20,25 +20,30 @@ function initLeague(sequelize) {
             allowNull: false,
         },
         tier: {
-            type: sequelize_1.DataTypes.ENUM("bronze", "silver", "gold", "diamond"),
+            type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "tier",
         },
         seasonId: {
             type: sequelize_1.DataTypes.STRING,
             allowNull: false,
+            field: "season_id",
         },
         startsAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "starts_at",
         },
         endsAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
+            field: "ends_at",
         },
         createdAt: {
             type: sequelize_1.DataTypes.DATE,
             allowNull: false,
             defaultValue: sequelize_1.DataTypes.NOW,
+            field: "created_at",
         },
     }, {
         sequelize,
