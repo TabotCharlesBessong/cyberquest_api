@@ -34,29 +34,35 @@ export function initClassroomRound(sequelize: Sequelize): void {
       classroomId: {
         type: DataTypes.UUID,
         allowNull: false,
+        field: "classroom_id",
       },
       status: {
-        type: DataTypes.ENUM("waiting", "active", "finished"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "waiting",
+        field: "status",
       },
       currentQuestionIndex: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "current_question_index",
       },
       startedAt: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "started_at",
       },
       finishedAt: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "finished_at",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "created_at",
       },
     },
     {

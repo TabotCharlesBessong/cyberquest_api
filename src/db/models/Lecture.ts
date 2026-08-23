@@ -66,6 +66,7 @@ export function initLecture(sequelize: Sequelize): void {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "",
+        field: "badge_name",
       },
       order: {
         type: DataTypes.INTEGER,
@@ -73,16 +74,19 @@ export function initLecture(sequelize: Sequelize): void {
         defaultValue: 0,
       },
       ageGroup: {
-        type: DataTypes.ENUM("A", "B"),
+        type: DataTypes.STRING,
         allowNull: true,
+        field: "age_group",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

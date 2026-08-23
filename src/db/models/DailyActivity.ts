@@ -28,6 +28,7 @@ export function initDailyActivity(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "user_id",
       },
       date: {
         type: DataTypes.STRING,
@@ -38,25 +39,30 @@ export function initDailyActivity(sequelize: Sequelize): void {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "xp_earned",
       },
       lessonsCompleted: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "lessons_completed",
       },
       quizzesPassed: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "quizzes_passed",
       },
       lastActionAt: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "last_action_at",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "created_at",
       },
     },
     {

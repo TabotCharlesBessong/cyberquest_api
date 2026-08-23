@@ -38,8 +38,9 @@ export function initQuest(sequelize: Sequelize): void {
         unique: true,
       },
       type: {
-        type: DataTypes.ENUM("daily", "weekly", "special"),
+        type: DataTypes.STRING,
         allowNull: false,
+        field: "type",
       },
       title: {
         type: DataTypes.STRING,
@@ -58,24 +59,29 @@ export function initQuest(sequelize: Sequelize): void {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "xp_reward",
       },
       gemsReward: {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "gems_reward",
       },
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true,
+        field: "is_active",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

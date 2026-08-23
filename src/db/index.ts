@@ -30,24 +30,49 @@ import { initEvent, Event } from "./models/Event";
 import { initParentalControl, associateParentalControl, ParentalControl } from "./models/ParentalControl";
 import logger from "../utils/logger";
 
-export const sequelize = new Sequelize(
-  config.database.name,
-  config.database.user,
-  config.database.password,
-  {
-    host: config.database.host,
-    port: config.database.port,
-    dialect: "postgres",
-    logging:
-      config.env === "development"
-        ? (msg) => logger.debug(`[sequelize] ${msg}`, { component: "sequelize" })
-        : false,
-    define: {
-      underscored: false,
-      freezeTableName: false,
-    },
-  }
-);
+export const sequelize =
+  config.database.url && config.primaryDb === "supabase"
+    ? new Sequelize(config.database.url, {
+        dialect: "postgres",
+        logging:
+          config.env === "development"
+            ? (msg) => logger.debug(`[sequelize] ${msg}`, { component: "sequelize" })
+            : false,
+        pool: {
+          max: 10,
+          min: 2,
+          acquire: 30000,
+          idle: 10000,
+        },
+        define: {
+          underscored: false,
+          freezeTableName: false,
+        },
+      })
+    : new Sequelize(
+        config.database.name || "cyberquest",
+        config.database.user || "postgres",
+        config.database.password || "postgres",
+        {
+          host: config.database.host || "localhost",
+          port: config.database.port || 5432,
+          dialect: "postgres",
+          logging:
+            config.env === "development"
+              ? (msg) => logger.debug(`[sequelize] ${msg}`, { component: "sequelize" })
+              : false,
+          pool: {
+            max: 10,
+            min: 2,
+            acquire: 30000,
+            idle: 10000,
+          },
+          define: {
+            underscored: false,
+            freezeTableName: false,
+          },
+        }
+      );
 
 initUser(sequelize);
 initLecture(sequelize);

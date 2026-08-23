@@ -27,11 +27,13 @@ export function initUserInventory(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "user_id",
       },
       shopItemId: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "shop_item_id",
       },
       quantity: {
         type: DataTypes.INTEGER,
@@ -42,6 +44,7 @@ export function initUserInventory(sequelize: Sequelize): void {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "purchased_at",
       },
       equipped: {
         type: DataTypes.BOOLEAN,

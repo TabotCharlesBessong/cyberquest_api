@@ -51,15 +51,18 @@ export function initEvent(sequelize: Sequelize): void {
       startsAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "starts_at",
       },
       endsAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "ends_at",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "created_at",
       },
     },
     {

@@ -49,8 +49,9 @@ export function initShopItem(sequelize: Sequelize): void {
         allowNull: false,
       },
       type: {
-        type: DataTypes.ENUM("avatar", "powerup", "consumable"),
+        type: DataTypes.STRING,
         allowNull: false,
+        field: "type",
       },
       cost: {
         type: DataTypes.INTEGER,
@@ -58,9 +59,10 @@ export function initShopItem(sequelize: Sequelize): void {
         defaultValue: 0,
       },
       costType: {
-        type: DataTypes.ENUM("gems", "xp"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "gems",
+        field: "cost_type",
       },
       effect: {
         type: DataTypes.JSONB,
@@ -71,9 +73,10 @@ export function initShopItem(sequelize: Sequelize): void {
         allowNull: false,
       },
       rarity: {
-        type: DataTypes.ENUM("common", "rare", "epic", "legendary"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "common",
+        field: "rarity",
       },
       stock: {
         type: DataTypes.INTEGER,
@@ -83,14 +86,17 @@ export function initShopItem(sequelize: Sequelize): void {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true,
+        field: "is_active",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

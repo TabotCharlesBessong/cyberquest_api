@@ -1,11 +1,12 @@
 import "dotenv/config";
 
 interface DatabaseConfig {
-  host: string;
-  port: number;
-  name: string;
-  user: string;
-  password: string;
+  url?: string;
+  host?: string;
+  port?: number;
+  name?: string;
+  user?: string;
+  password?: string;
   dialect: "postgres";
 }
 
@@ -23,18 +24,28 @@ interface EmailConfig {
   from: string;
 }
 
+const primaryDb = process.env.PRIMARY_DB || "local";
+
+const database: DatabaseConfig =
+  primaryDb === "supabase"
+    ? {
+        url: process.env.SUPABASE_DB_URL,
+        dialect: "postgres",
+      }
+    : {
+        host: process.env.DB_HOST || "localhost",
+        port: parseInt(process.env.DB_PORT || "", 10) || 5432,
+        name: process.env.DB_NAME || "cyberquest",
+        user: process.env.DB_USER || "postgres",
+        password: process.env.DB_PASSWORD || "postgres",
+        dialect: "postgres",
+      };
+
 const config = {
   env: process.env.NODE_ENV || "development",
   port: parseInt(process.env.PORT || "", 10) || 4000,
 
-  database: {
-    host: process.env.DB_HOST || "localhost",
-    port: parseInt(process.env.DB_PORT || "", 10) || 5432,
-    name: process.env.DB_NAME || "cyberquest",
-    user: process.env.DB_USER || "postgres",
-    password: process.env.DB_PASSWORD || "postgres",
-    dialect: "postgres",
-  } as DatabaseConfig,
+  database,
 
   jwt: {
     secret: process.env.JWT_SECRET || "dev_insecure_secret_change_me",
@@ -51,6 +62,8 @@ const config = {
   } as EmailConfig,
 
   clientUrl: process.env.CLIENT_URL || "http://localhost:8081",
+
+  primaryDb,
 
   // How long verification / reset codes stay valid (minutes)
   codeExpiryMinutes: 15,

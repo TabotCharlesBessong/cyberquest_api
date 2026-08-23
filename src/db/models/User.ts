@@ -73,22 +73,27 @@ export function initUser(sequelize: Sequelize): void {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
+        field: "is_verified",
       },
       verificationCode: {
         type: DataTypes.STRING,
         allowNull: true,
+        field: "verification_code",
       },
       verificationCodeExpires: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "verification_code_expires",
       },
       resetPasswordCode: {
         type: DataTypes.STRING,
         allowNull: true,
+        field: "reset_password_code",
       },
       resetPasswordExpires: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "reset_password_expires",
       },
       onboarded: {
         type: DataTypes.BOOLEAN,
@@ -121,21 +126,25 @@ export function initUser(sequelize: Sequelize): void {
         defaultValue: 0,
       },
       ageGroup: {
-        type: DataTypes.ENUM("A", "B"),
+        type: DataTypes.STRING,
         allowNull: true,
+        field: "age_group",
       },
       role: {
-        type: DataTypes.ENUM("user", "admin"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "user",
+        field: "role",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

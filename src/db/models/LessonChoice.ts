@@ -37,6 +37,7 @@ export function initLessonChoice(sequelize: Sequelize): void {
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+        field: "lesson_id",
       },
       position: {
         type: DataTypes.INTEGER,
@@ -51,20 +52,24 @@ export function initLessonChoice(sequelize: Sequelize): void {
         allowNull: false,
       },
       consequence: {
-        type: DataTypes.ENUM("positive", "negative", "neutral"),
+        type: DataTypes.STRING,
         allowNull: false,
+        field: "consequence",
       },
       xpDelta: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        field: "xp_delta",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

@@ -34,6 +34,7 @@ export function initLessonOption(sequelize: Sequelize): void {
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+        field: "lesson_id",
       },
       position: {
         type: DataTypes.INTEGER,
@@ -46,10 +47,12 @@ export function initLessonOption(sequelize: Sequelize): void {
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

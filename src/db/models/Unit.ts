@@ -37,6 +37,7 @@ export function initUnit(sequelize: Sequelize): void {
         allowNull: false,
         references: { model: "lectures", key: "id" },
         onDelete: "CASCADE",
+        field: "section_id",
       },
       slug: {
         type: DataTypes.STRING,
@@ -63,16 +64,19 @@ export function initUnit(sequelize: Sequelize): void {
         defaultValue: 0,
       },
       ageGroup: {
-        type: DataTypes.ENUM("A", "B"),
+        type: DataTypes.STRING,
         allowNull: false,
+        field: "age_group",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

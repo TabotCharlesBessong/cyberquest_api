@@ -61,16 +61,19 @@ export function initCurriculumSection(sequelize: Sequelize): void {
         defaultValue: 0,
       },
       ageGroup: {
-        type: DataTypes.ENUM("A", "B"),
+        type: DataTypes.STRING,
         allowNull: false,
+        field: "age_group",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

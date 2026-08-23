@@ -26,16 +26,19 @@ export function initUserBadge(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "user_id",
       },
       badgeId: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "badge_id",
       },
       earnedAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "earned_at",
       },
       progress: {
         type: DataTypes.INTEGER,

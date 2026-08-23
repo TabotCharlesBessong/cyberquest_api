@@ -28,16 +28,19 @@ export function initUserQuest(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "user_id",
       },
       questId: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "quest_id",
       },
       status: {
-        type: DataTypes.ENUM("active", "completed", "claimed", "expired"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "active",
+        field: "status",
       },
       progress: {
         type: DataTypes.INTEGER,
@@ -47,10 +50,12 @@ export function initUserQuest(sequelize: Sequelize): void {
       claimedAt: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "claimed_at",
       },
       expiresAt: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "expires_at",
       },
     },
     {

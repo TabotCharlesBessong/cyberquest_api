@@ -3,13 +3,18 @@ import config from "../config/config";
 import logger from "../utils/logger";
 
 export async function ensureDatabase(): Promise<void> {
+  if (config.primaryDb === "supabase") {
+    logger.info("Using Supabase — skipping database creation", { component: "db" });
+    return;
+  }
+
   const admin = new Sequelize(
     "postgres",
-    config.database.user,
-    config.database.password,
+    config.database.user || "postgres",
+    config.database.password || "postgres",
     {
-      host: config.database.host,
-      port: config.database.port,
+      host: config.database.host || "localhost",
+      port: config.database.port || 5432,
       dialect: "postgres",
       logging: false,
     }

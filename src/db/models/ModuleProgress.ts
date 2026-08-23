@@ -37,17 +37,20 @@ export function initModuleProgress(sequelize: Sequelize): void {
         allowNull: false,
         references: { model: "users", key: "id" },
         onDelete: "CASCADE",
+        field: "user_id",
       },
       lectureId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: { model: "lectures", key: "id" },
         onDelete: "CASCADE",
+        field: "lecture_id",
       },
       status: {
-        type: DataTypes.ENUM("not_started", "in_progress", "completed"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "not_started",
+        field: "status",
       },
       score: {
         type: DataTypes.INTEGER,
@@ -62,18 +65,22 @@ export function initModuleProgress(sequelize: Sequelize): void {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+        field: "xp_earned",
       },
       completedAt: {
         type: DataTypes.DATE,
         allowNull: true,
+        field: "completed_at",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

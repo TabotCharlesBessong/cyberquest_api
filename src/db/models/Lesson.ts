@@ -52,6 +52,7 @@ export function initLesson(sequelize: Sequelize): void {
         references: { model: "lectures", key: "id" },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+        field: "lecture_id",
       },
       unitId: {
         type: DataTypes.UUID,
@@ -59,14 +60,17 @@ export function initLesson(sequelize: Sequelize): void {
         references: { model: "units", key: "id" },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+        field: "unit_id",
       },
       stepId: {
         type: DataTypes.STRING,
         allowNull: false,
+        field: "step_id",
       },
       type: {
-        type: DataTypes.ENUM("story", "quiz", "mini-game", "challenge"),
+        type: DataTypes.STRING,
         allowNull: false,
+        field: "type",
       },
       title: {
         type: DataTypes.STRING,
@@ -108,6 +112,7 @@ export function initLesson(sequelize: Sequelize): void {
       missionBriefing: {
         type: DataTypes.TEXT,
         allowNull: true,
+        field: "mission_briefing",
       },
       order: {
         type: DataTypes.INTEGER,
@@ -115,9 +120,10 @@ export function initLesson(sequelize: Sequelize): void {
         defaultValue: 0,
       },
       ageGroup: {
-        type: DataTypes.ENUM("A", "B", "ALL"),
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "B",
+        field: "age_group",
       },
       difficulty: {
         type: DataTypes.INTEGER,
@@ -127,10 +133,12 @@ export function initLesson(sequelize: Sequelize): void {
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

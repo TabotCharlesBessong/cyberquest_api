@@ -37,6 +37,7 @@ export function initLessonProgress(sequelize: Sequelize): void {
         allowNull: false,
         references: { model: "users", key: "id" },
         onDelete: "CASCADE",
+        field: "user_id",
       },
       lessonId: {
         type: DataTypes.UUID,
@@ -44,6 +45,7 @@ export function initLessonProgress(sequelize: Sequelize): void {
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+        field: "lesson_id",
       },
       attempts: {
         type: DataTypes.INTEGER,
@@ -58,6 +60,7 @@ export function initLessonProgress(sequelize: Sequelize): void {
       bestScore: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        field: "best_score",
       },
       completed: {
         type: DataTypes.BOOLEAN,
@@ -65,16 +68,19 @@ export function initLessonProgress(sequelize: Sequelize): void {
         defaultValue: false,
       },
       lastResult: {
-        type: DataTypes.ENUM("pass", "fail"),
+        type: DataTypes.STRING,
         allowNull: true,
+        field: "last_result",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
       updatedAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "updated_at",
       },
     },
     {

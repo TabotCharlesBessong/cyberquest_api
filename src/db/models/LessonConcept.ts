@@ -27,6 +27,7 @@ export function initLessonConcept(sequelize: Sequelize): void {
         references: { model: "lessons", key: "id" },
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
+        field: "lesson_id",
       },
       conceptId: {
         type: DataTypes.UUID,
@@ -34,10 +35,12 @@ export function initLessonConcept(sequelize: Sequelize): void {
         primaryKey: true,
         references: { model: "concepts", key: "id" },
         onDelete: "CASCADE",
+        field: "concept_id",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
+        field: "created_at",
       },
     },
     {

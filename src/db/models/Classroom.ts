@@ -41,11 +41,13 @@ export function initClassroom(sequelize: Sequelize): void {
       teacherId: {
         type: DataTypes.UUID,
         allowNull: true,
+        field: "teacher_id",
       },
       memberIds: {
         type: DataTypes.ARRAY(DataTypes.UUID),
         allowNull: false,
         defaultValue: [],
+        field: "member_ids",
       },
       code: {
         type: DataTypes.STRING(8),
@@ -56,6 +58,7 @@ export function initClassroom(sequelize: Sequelize): void {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "created_at",
       },
     },
     {

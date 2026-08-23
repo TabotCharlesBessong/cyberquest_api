@@ -24,11 +24,13 @@ export function initClassroomParticipant(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "round_id",
       },
       userId: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "user_id",
       },
       score: {
         type: DataTypes.INTEGER,
@@ -39,6 +41,7 @@ export function initClassroomParticipant(sequelize: Sequelize): void {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "joined_at",
       },
     },
     {

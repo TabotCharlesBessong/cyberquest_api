@@ -30,11 +30,13 @@ export function initLeagueMembership(sequelize: Sequelize): void {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "league_id",
       },
       userId: {
         type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
+        field: "user_id",
       },
       xp: {
         type: DataTypes.INTEGER,
@@ -58,11 +60,13 @@ export function initLeagueMembership(sequelize: Sequelize): void {
       changeNote: {
         type: DataTypes.STRING,
         allowNull: true,
+        field: "change_note",
       },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
+        field: "created_at",
       },
     },
     {
