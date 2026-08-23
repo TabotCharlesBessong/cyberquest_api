@@ -4,7 +4,7 @@
   "description": "Backend API for CyberQuest - kids cybersecurity education app",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "node dist/index.js",
     "dev": "nodemon --exec tsx src/index.ts",
     "build": "tsc",
     "seed": "tsx src/seeders/seed.ts",
