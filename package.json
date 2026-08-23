@@ -9,6 +9,8 @@
     "build": "tsc",
     "seed": "tsx src/seeders/seed.ts",
     "seed:admin": "tsx src/seeders/seedAdmin.ts",
+    "migrate": "tsx src/db/runMigrations.ts",
+    "migrate:seed": "tsx src/db/runMigrations.ts && pnpm run seed && pnpm run seed:admin",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "test": "jest --runInBand",

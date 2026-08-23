@@ -9,10 +9,7 @@ const ADMIN_NAME = process.env.ADMIN_NAME || "Admin";
 async function seedAdmin(): Promise<void> {
   try {
     await sequelize.authenticate();
-    logger.info("Connected to PostgreSQL", { component: "seedAdmin" });
-
-    await sequelize.sync({ alter: true });
-    logger.info("Models synchronized", { component: "seedAdmin" });
+    logger.info("Connected to database for admin seed", { component: "seedAdmin" });
 
     const [admin] = await User.findOrCreate({
       where: { email: ADMIN_EMAIL },

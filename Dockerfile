@@ -22,6 +22,7 @@ RUN addgroup -g 1001 -S nodejs && \
 
 COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nodejs:nodejs /app/src/db/migrations ./src/db/migrations
 COPY --from=builder --chown=nodejs:nodejs /app/package.json ./package.json
 
 USER nodejs

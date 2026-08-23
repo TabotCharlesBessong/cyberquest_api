@@ -295,10 +295,7 @@ const SEED_SHOP_ITEMS = [
 async function seed(): Promise<void> {
   try {
     await sequelize.authenticate();
-    logger.info("Connected to PostgreSQL", { component: "seed" });
-
-    await sequelize.sync({ alter: true });
-    logger.info("Models synchronized", { component: "seed" });
+    logger.info("Connected to database for seeding", { component: "seed" });
 
     const conceptCache = new Map<string, string>();
     const standardCache = new Map<string, string>();
