@@ -1,0 +1,1 @@
+{"version":3,"file":"leagueRoutes.js","sourceRoot":"","sources":["../../src/routes/leagueRoutes.ts"],"names":[],"mappings":";;AAAA,qCAAiC;AACjC,sEAA8E;AAC9E,6CAAoD;AAEpD,MAAM,MAAM,GAAG,IAAA,gBAAM,GAAE,CAAC;AAExB,MAAM,CAAC,GAAG,CAAC,qBAAc,CAAC,CAAC;AAE3B,MAAM,CAAC,GAAG,CAAC,KAAK,EAAE,8BAAW,CAAC,CAAC;AAC/B,MAAM,CAAC,IAAI,CAAC,eAAe,EAAE,iCAAc,CAAC,CAAC;AAE7C,kBAAe,MAAM,CAAC"}
