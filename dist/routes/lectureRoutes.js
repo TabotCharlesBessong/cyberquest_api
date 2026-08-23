@@ -39,6 +39,8 @@ router.use(auth_1.authMiddleware);
  *                       type: array
  *                       items:
  *                         $ref: '#/components/schemas/Lecture'
+ *       401:
+ *         description: Not authenticated
  */
 router.get("/", (0, validate_1.validateQuery)(schemas_1.ageGroupQuerySchema), lectureController_1.getAllLectures);
 /**
@@ -65,8 +67,23 @@ router.get("/", (0, validate_1.validateQuery)(schemas_1.ageGroupQuerySchema), le
  *     responses:
  *       200:
  *         description: Lecture details with lessons
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Lecture'
  *       404:
  *         description: Lecture not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
  */
 router.get("/:slug", (0, validate_1.validateParams)(schemas_1.slugParamSchema), (0, validate_1.validateQuery)(schemas_1.ageGroupQuerySchema), lectureController_1.getLectureBySlug);
 exports.default = router;

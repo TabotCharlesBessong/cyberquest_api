@@ -24,6 +24,7 @@ const leagueRoutes_1 = __importDefault(require("./routes/leagueRoutes"));
 const classroomRoutes_1 = __importDefault(require("./routes/classroomRoutes"));
 const eventRoutes_1 = __importDefault(require("./routes/eventRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
+const requestLogger_1 = require("./middleware/requestLogger");
 const swagger_1 = require("./config/swagger");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const cors_1 = __importDefault(require("cors"));
@@ -56,6 +57,7 @@ function createApp() {
     }));
     app.use(express_1.default.json());
     app.use(express_1.default.urlencoded({ extended: true }));
+    app.use(requestLogger_1.requestLogger);
     app.get("/health", (_req, res) => {
         res.status(200).json({ success: true, message: "CyberQuest API is up" });
     });

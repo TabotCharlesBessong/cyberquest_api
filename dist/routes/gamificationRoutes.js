@@ -19,6 +19,8 @@ router.use(auth_1.authMiddleware);
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - action
  *             properties:
  *               action:
  *                 type: string
@@ -43,11 +45,19 @@ router.use(auth_1.authMiddleware);
  *                     gemsEarned:
  *                       type: integer
  *                     stats:
- *                       $ref: '#/components/schemas/UserStats'
+ *                       $ref: '#/components/schemas/Stats'
  *       400:
  *         description: Invalid action
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/activity", gamificationController_1.recordActivity);
 /**
@@ -64,14 +74,19 @@ router.post("/activity", gamificationController_1.recordActivity);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/GamificationProfile'
+ *               $ref: '#/components/schemas/GamificationProfile'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/profile", gamificationController_1.getProfile);
 /**
@@ -101,6 +116,10 @@ router.get("/profile", gamificationController_1.getProfile);
  *                         $ref: '#/components/schemas/Badge'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/badges", gamificationController_1.getBadges);
 /**
@@ -133,8 +152,16 @@ router.get("/badges", gamificationController_1.getBadges);
  *                   $ref: '#/components/schemas/QuestClaimResult'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Quest not found or not completed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/quests/:questId/claim", gamificationController_1.claimQuestReward);
 /**
@@ -164,6 +191,10 @@ router.post("/quests/:questId/claim", gamificationController_1.claimQuestReward)
  *                       type: integer
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/hearts/consume", gamificationController_1.consumeHeart);
 /**
@@ -209,8 +240,16 @@ router.post("/hearts/consume", gamificationController_1.consumeHeart);
  *                       type: integer
  *       400:
  *         description: Invalid method or insufficient currency
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/hearts/refill", gamificationController_1.refillHearts);
 exports.default = router;

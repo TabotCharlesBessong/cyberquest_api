@@ -32,6 +32,10 @@ router.use(auth_1.authMiddleware);
  *                 type: integer
  *                 minimum: 0
  *                 maximum: 100
+ *               correctCount:
+ *                 type: integer
+ *               total:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Progress saved successfully
@@ -55,6 +59,18 @@ router.use(auth_1.authMiddleware);
  *                       type: integer
  *                     newLevel:
  *                       type: integer
+ *       400:
+ *         description: Invalid request body
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/lesson", (0, validate_1.validateBody)(schemas_1.progressSubmitSchema), progressController_1.submitLessonProgress);
 /**
@@ -71,12 +87,13 @@ router.post("/lesson", (0, validate_1.validateBody)(schemas_1.progressSubmitSche
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/ProgressResponse'
+ *               $ref: '#/components/schemas/ProgressResponse'
+ *       401:
+ *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/me", progressController_1.getMyProgress);
 exports.default = router;

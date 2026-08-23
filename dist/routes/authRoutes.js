@@ -39,8 +39,26 @@ const router = (0, express_1.Router)();
  *     responses:
  *       201:
  *         description: Account created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
  *       409:
  *         description: Email already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/signup", (0, validate_1.validateBody)(schemas_1.signupSchema), authController_1.signup);
 /**
@@ -65,8 +83,28 @@ router.post("/signup", (0, validate_1.validateBody)(schemas_1.signupSchema), aut
  *     responses:
  *       200:
  *         description: Email verified successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     token:
+ *                       type: string
+ *                     user:
+ *                       $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid or expired code
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/verify", (0, validate_1.validateBody)(schemas_1.verifyEmailSchema), authController_1.verifyEmail);
 /**
@@ -91,6 +129,15 @@ router.post("/verify", (0, validate_1.validateBody)(schemas_1.verifyEmailSchema)
  *     responses:
  *       200:
  *         description: Verification code resent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.post("/resend-verification", (0, validate_1.validateBody)(schemas_1.resendVerificationSchema), authController_1.resendVerification);
 /**
@@ -118,10 +165,22 @@ router.post("/resend-verification", (0, validate_1.validateBody)(schemas_1.resen
  *     responses:
  *       200:
  *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
  *       401:
  *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       403:
  *         description: Email not verified
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/login", (0, validate_1.validateBody)(schemas_1.loginSchema), authController_1.login);
 /**
@@ -146,6 +205,15 @@ router.post("/login", (0, validate_1.validateBody)(schemas_1.loginSchema), authC
  *     responses:
  *       200:
  *         description: Reset code sent if account exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  */
 router.post("/forgot-password", (0, validate_1.validateBody)(schemas_1.forgotPasswordSchema), authController_1.forgotPassword);
 /**
@@ -178,6 +246,21 @@ router.post("/forgot-password", (0, validate_1.validateBody)(schemas_1.forgotPas
  *     responses:
  *       200:
  *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid or expired code
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.post("/reset-password", (0, validate_1.validateBody)(schemas_1.resetPasswordSchema), authController_1.resetPassword);
 /**
@@ -205,6 +288,10 @@ router.post("/reset-password", (0, validate_1.validateBody)(schemas_1.resetPassw
  *                       $ref: '#/components/schemas/User'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/me", auth_1.authMiddleware, authController_1.me);
 /**
@@ -245,6 +332,10 @@ router.get("/me", auth_1.authMiddleware, authController_1.me);
  *                       $ref: '#/components/schemas/User'
  *       401:
  *         description: Not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.patch("/me", auth_1.authMiddleware, (0, validate_1.validateBody)(schemas_1.updateProfileSchema), authController_1.updateProfile);
 exports.default = router;
