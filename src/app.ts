@@ -18,6 +18,7 @@ import leagueRoutes from "./routes/leagueRoutes";
 import classroomRoutes from "./routes/classroomRoutes";
 import eventRoutes from "./routes/eventRoutes";
 import { notFoundHandler, errorHandler } from "./middleware/errorHandler";
+import { requestLogger } from "./middleware/requestLogger";
 import { specs } from "./config/swagger";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
@@ -53,6 +54,8 @@ export function createApp(): Application {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(requestLogger);
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ success: true, message: "CyberQuest API is up" });
