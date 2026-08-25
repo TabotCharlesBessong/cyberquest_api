@@ -2,6 +2,7 @@ import { User } from "../db/models/User";
 import { signToken } from "../utils/token";
 import { generateCode } from "../utils/code";
 import config from "../config/config";
+import logger from "../utils/logger";
 import { sendVerificationEmail, sendPasswordResetEmail, sendWelcomeEmail } from "../utils/email";
 import { ApiError, badRequest, forbidden, unauthorized } from "../utils/apiError";
 import { SignupInput, LoginInput, UpdateProfileInput } from "../validation/schemas";
@@ -23,12 +24,13 @@ export class AuthService {
       email: input.email,
       password: input.password,
       age: input.age ?? null,
+      ageGroup: input.age ? (input.age <= 8 ? "A" : "B") : "A",
       avatar: input.avatar ?? null,
       verificationCode,
       verificationCodeExpires,
     });
 
-    await sendVerificationEmail(input.email, verificationCode);
+    void sendVerificationEmail(input.email, verificationCode);
 
     return {
       user,
@@ -50,7 +52,14 @@ export class AuthService {
     user.verificationCodeExpires = null;
     await user.save();
 
-    await sendWelcomeEmail(user.email, user.name);
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+    } catch (e) {
+      logger.warn("Welcome email failed to send", {
+        component: "auth",
+        error: e instanceof Error ? e.message : "Unknown error",
+      });
+    }
 
     const token = signToken({ id: user.id, role: user.role });
     return { user, token };
@@ -68,7 +77,14 @@ export class AuthService {
     );
     await user.save();
 
-    await sendVerificationEmail(email, verificationCode);
+    try {
+      await sendVerificationEmail(email, verificationCode);
+    } catch (e) {
+      logger.warn("Verification email failed to send", {
+        component: "auth",
+        error: e instanceof Error ? e.message : "Unknown error",
+      });
+    }
     return { message: "A new verification code has been sent to your email." };
   }
 
@@ -105,7 +121,9 @@ export class AuthService {
     );
     await user.save();
 
-    await sendPasswordResetEmail(email, resetPasswordCode);
+    logger.info("About to send password reset email", { component: "auth", email });
+
+    void sendPasswordResetEmail(email, resetPasswordCode);
     return generic;
   }
 
@@ -143,6 +161,7 @@ export class AuthService {
     if (input.age !== undefined) user.age = input.age;
     if (input.avatar !== undefined) user.avatar = input.avatar;
     if (input.ageGroup !== undefined) user.ageGroup = input.ageGroup;
+    if (input.onboarded !== undefined) user.onboarded = input.onboarded;
 
     await user.save();
     return user;
