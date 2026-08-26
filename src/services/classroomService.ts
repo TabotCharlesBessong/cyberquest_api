@@ -9,11 +9,11 @@ export class ClassroomService {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   }
 
-  static async createClassroom(name: string, school: string, teacherId?: string) {
+  static async createClassroom(name: string, description: string, teacherId?: string) {
     const code = this.generateCode();
     const classroom = await Classroom.create({
       name,
-      school,
+      description,
       teacherId,
       code,
     });

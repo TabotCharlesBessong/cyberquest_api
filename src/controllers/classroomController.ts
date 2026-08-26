@@ -3,8 +3,8 @@ import { ClassroomService } from "../services/classroomService";
 import { asyncHandler } from "../middleware/asyncHandler";
 
 export const createClassroom = asyncHandler(async (req: any, res: Response) => {
-  const { name, school } = req.body as { name: string; school: string };
-  const classroom = await ClassroomService.createClassroom(name, school, req.user.id);
+  const { name, description } = req.body as { name: string; description: string };
+  const classroom = await ClassroomService.createClassroom(name, description, req.user.id);
   res.status(201).json({ success: true, data: classroom });
 });
 

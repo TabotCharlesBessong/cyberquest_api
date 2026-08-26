@@ -398,6 +398,7 @@ describe('API Integration', () => {
         avatar: '🦊',
         isVerified: true,
         xp: 500,
+        role: 'admin',
       } as any);
       groupBUser = user;
 
@@ -515,7 +516,7 @@ describe('API Integration', () => {
       const res = await request(app)
         .post('/api/classroom/')
         .set('Authorization', `Bearer ${authToken}`)
-        .send({ name: 'Test Class', school: 'Test School' });
+        .send({ name: 'Test Class', description: 'Test School' });
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
@@ -526,7 +527,7 @@ describe('API Integration', () => {
     test('POST /api/classroom/join - joins classroom by code', async () => {
       const classroom = await Classroom.create({
         name: 'Test Class',
-        school: 'Test School',
+        description: 'Test School',
         code: 'ABC123',
         memberIds: [],
       } as any);
@@ -544,7 +545,7 @@ describe('API Integration', () => {
     test('POST /api/classroom/:id/round/start - starts a round', async () => {
       const classroom = await Classroom.create({
         name: 'Test Class',
-        school: 'Test School',
+        description: 'Test School',
         code: 'XYZ789',
         memberIds: [],
       } as any);
