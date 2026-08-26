@@ -4,7 +4,7 @@
 
 INSERT INTO users (id, name, email, password, age, age_group, avatar, xp, level, streak, hearts, gems, onboarded, is_verified, role, language_preference, created_at, updated_at)
 VALUES (
-  uuid_generate_v4(),
+   gen_random_uuid(),
   'Charles Bessong',
   'charlesbessongtabot@gmail.com',
   '$2a$10$rH8qHx8qHx8qHx8qHx8qHux8qHx8qHx8qHx8qHx8qHx8qHx8qHx8q',
