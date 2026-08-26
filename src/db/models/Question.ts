@@ -21,6 +21,8 @@ export class Question extends Model<
   declare correctIndex: number | null;
   declare pairs: CreationOptional<{ left: string; right: string }[]>;
   declare sentenceParts: CreationOptional<string[]>;
+  declare sentence: CreationOptional<string>;
+  declare missingWords: CreationOptional<string[]>;
   declare correctSentence: CreationOptional<string>;
   declare investigationSteps: CreationOptional<string[]>;
   declare correctOrder: CreationOptional<number[]>;
@@ -78,6 +80,15 @@ export function initQuestion(sequelize: Sequelize): void {
         type: DataTypes.JSONB,
         allowNull: true,
         field: "sentence_parts",
+      },
+      sentence: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      missingWords: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        field: "missing_words",
       },
       correctSentence: {
         type: DataTypes.TEXT,
