@@ -36,7 +36,25 @@ export class ProgressService {
       const effectiveTotal = total ?? 1;
       const effectiveCorrect = Math.max(0, Math.min(correctCount ?? Math.round(score / 100), effectiveTotal));
       const wrongCount = effectiveTotal - effectiveCorrect;
-      const xpEarned = Math.max(0, effectiveCorrect * XP_PER_CORRECT - wrongCount * XP_PER_WRONG);
+      let xpEarned = Math.max(0, effectiveCorrect * XP_PER_CORRECT - wrongCount * XP_PER_WRONG);
+
+      await GamificationService.checkDoubleXpStatus(userId);
+      const userBeforeXp = await User.findByPk(userId);
+      let doubleXpActive = false;
+      if (
+        userBeforeXp?.doubleXpActive &&
+        userBeforeXp.doubleXpExpiresAt &&
+        new Date() < new Date(userBeforeXp.doubleXpExpiresAt)
+      ) {
+        doubleXpActive = true;
+        xpEarned = xpEarned * 2;
+      }
+
+      let gemsEarned = 1;
+      if (score >= 70) {
+        gemsEarned += Math.ceil(effectiveCorrect * 0.5);
+      }
+      await GamificationService.addGems(userId, gemsEarned);
 
       traceProgressFlow("submit_start", {
         userId,
@@ -47,6 +65,8 @@ export class ProgressService {
         correctCount: effectiveCorrect,
         total: effectiveTotal,
         xpEarned,
+        gemsEarned,
+        doubleXp: doubleXpActive,
       });
 
       logger.info("Lesson progress submitted", {
@@ -57,6 +77,8 @@ export class ProgressService {
         correctCount: effectiveCorrect,
         total: effectiveTotal,
         xpEarned,
+        gemsEarned,
+        doubleXp: doubleXpActive,
       });
 
       const [lp] = await LessonProgress.findOrCreate({
@@ -167,13 +189,6 @@ export class ProgressService {
 
       await mp.save();
 
-      await User.increment("xp", { by: xpEarned, where: { id: userId } });
-      const user = await User.findByPk(userId);
-      if (user) {
-        user.level = Math.floor(Math.sqrt(user.xp / 100)) + 1;
-        await user.save();
-      }
-
       await GamificationService.recordDailyActivity(
         userId,
         new Date().toISOString().split("T")[0],
@@ -182,7 +197,20 @@ export class ProgressService {
         score >= 70 ? 1 : 0
       );
 
-      await GamificationService.updateStreak(userId);
+      const xpResult = await GamificationService.addXp(userId, xpEarned, `lesson:${lessonId}`);
+      const user = await User.findByPk(userId);
+
+      if (xpResult.leveledUp) {
+        await GamificationService.activateDoubleXp(userId, 1, "level_up");
+      }
+
+      const streak = await GamificationService.updateStreak(userId);
+      if (streak >= 7 && !xpResult.leveledUp) {
+        if (!doubleXpActive) {
+          await GamificationService.activateDoubleXp(userId, 48, "streak_bonus");
+        }
+      }
+
       await BadgeService.checkAndAwardBadges(userId);
       await QuestService.updateQuestProgress(userId, "complete_1_lesson");
       await QuestService.updateQuestProgress(userId, "complete_3_lessons");
@@ -195,6 +223,7 @@ export class ProgressService {
         lectureId: lecture.id,
         status: mp.status,
         xpEarned,
+        gemsEarned,
         newLevel: user?.level ?? 1,
       });
 
@@ -203,6 +232,7 @@ export class ProgressService {
         moduleProgress: mp,
         xpEarned,
         newLevel: user?.level ?? 1,
+        gemsEarned,
       };
     } catch (error) {
       traceProgressFlow("submit_error", {
