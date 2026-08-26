@@ -3,7 +3,7 @@ import config from "../config/config";
 import logger from "../utils/logger";
 
 export async function ensureDatabase(): Promise<void> {
-  if (config.primaryDb === "supabase") {
+  if (config.isCloudDb) {
     logger.info("Using Supabase — skipping database creation", { component: "db" });
     return;
   }

@@ -70,8 +70,14 @@ export const me = asyncHandler(async (req: AuthedRequest, res: Response) => {
 });
 
 export const updateProfile = asyncHandler(async (req: AuthedRequest, res: Response) => {
-  const { name, age, avatar } = req.body as { name?: string; age?: number; avatar?: string };
-  const user = await AuthService.updateProfile(req.user!.id, { name, age, avatar });
+  const { name, age, avatar, ageGroup, onboarded } = req.body as {
+    name?: string;
+    age?: number;
+    avatar?: string;
+    ageGroup?: "A" | "B";
+    onboarded?: boolean;
+  };
+  const user = await AuthService.updateProfile(req.user!.id, { name, age, avatar, ageGroup, onboarded });
   res.status(200).json({
     success: true,
     data: { user: sanitizeUser(user) },
