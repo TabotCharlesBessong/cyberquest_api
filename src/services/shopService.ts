@@ -72,6 +72,12 @@ export class ShopService {
       await item.save();
     }
 
+    let doubleXpActivated = false;
+    if (item.effect === "double_xp") {
+      await GamificationService.activateDoubleXp(userId, 24, "shop_purchase");
+      doubleXpActivated = true;
+    }
+
     return {
       success: true,
       item: {
@@ -83,6 +89,7 @@ export class ShopService {
       },
       remainingCurrency:
         item.costType === "gems" ? user.gems : user.xp,
+      doubleXpActivated,
     };
   }
 

@@ -4,46 +4,91 @@ import { GamificationService } from "./gamificationService";
 
 export class QuestService {
   static async getDailyQuests(userId: string) {
-    const today = new Date().toISOString().split("T")[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split("T")[0];
+    const result = await this.getQuests(userId);
+    return result.daily;
+  }
 
-    const dailyQuests = await Quest.findAll({
-      where: { type: "daily", isActive: true },
+  static async getWeeklyQuests(userId: string) {
+    const result = await this.getQuests(userId);
+    return result.weekly;
+  }
+
+  static async getQuests(userId: string) {
+    const daily = await this._fetchQuestsByType(userId, "daily");
+    const weekly = await this._fetchQuestsByType(userId, "weekly");
+    return { daily, weekly };
+  }
+
+  private static async _fetchQuestsByType(userId: string, type: "daily" | "weekly") {
+    const now = new Date();
+    const startDate = new Date(now);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + (type === "daily" ? 1 : 7));
+
+    const quests = await Quest.findAll({
+      where: { type, isActive: true },
     });
 
     const userQuests = await UserQuest.findAll({
       where: {
         userId,
-        questId: dailyQuests.map((q) => q.id),
+        questId: quests.map((q) => q.id),
       },
     });
 
     const userQuestMap = new Map(userQuests.map((uq: any) => [uq.questId, uq]));
 
-    const todayActivity = await DailyActivity.findOne({
-      where: { userId, date: today },
-    });
+    let activityQuery: any = { where: { userId } };
+    if (type === "daily") {
+      const today = now.toISOString().split("T")[0];
+      activityQuery = { where: { userId, date: today } };
+    } else {
+      const sevenDaysAgo = new Date(Date.now() - 7 * 86400000)
+        .toISOString()
+        .split("T")[0];
+      activityQuery = {
+        where: {
+          userId,
+          date: { [Op.gte]: sevenDaysAgo },
+        },
+      };
+    }
 
-    const lessonsToday = todayActivity?.lessonsCompleted || 0;
-    const quizzesToday = todayActivity?.quizzesPassed || 0;
-    const xpToday = todayActivity?.xpEarned || 0;
+    const activities = await DailyActivity.findAll(activityQuery as any);
+    const aggregated = activities.reduce(
+      (acc, a: any) => ({
+        xp: acc.xp + (a.xpEarned || 0),
+        lessons: acc.lessons + (a.lessonsCompleted || 0),
+        quizzes: acc.quizzes + (a.quizzesPassed || 0),
+        days: acc.days + 1,
+      }),
+      { xp: 0, lessons: 0, quizzes: 0, days: 0 }
+    );
 
-    return dailyQuests.map((quest) => {
+    return quests.map((quest) => {
       const userQuest = userQuestMap.get(quest.id);
       let progress = 0;
 
       switch (quest.key) {
         case "complete_1_lesson":
-          progress = Math.min(lessonsToday, quest.target);
-          break;
         case "complete_3_lessons":
-          progress = Math.min(lessonsToday, quest.target);
+          progress = Math.min(aggregated.lessons, quest.target);
           break;
         case "win_2_quizzes":
-          progress = Math.min(quizzesToday, quest.target);
+          progress = Math.min(aggregated.quizzes, quest.target);
           break;
         case "earn_50_xp":
-          progress = Math.min(xpToday, quest.target);
+          progress = Math.min(aggregated.xp, quest.target);
+          break;
+        case "week_complete_3_lessons":
+          progress = Math.min(aggregated.lessons, quest.target);
+          break;
+        case "week_earn_200_xp":
+          progress = Math.min(aggregated.xp, quest.target);
+          break;
+        case "week_active_7_days":
+          progress = Math.min(aggregated.days, quest.target);
           break;
         default:
           progress = userQuest?.progress || 0;
@@ -51,6 +96,11 @@ export class QuestService {
 
       const isCompleted = progress >= quest.target;
       const isClaimed = userQuest?.status === "claimed";
+
+      const expiresAt =
+        type === "daily"
+          ? new Date(now.getTime() + 86400000)
+          : new Date(now.getTime() + 7 * 86400000);
 
       return {
         id: quest.id,
@@ -64,9 +114,33 @@ export class QuestService {
         isClaimed,
         xpReward: quest.xpReward,
         gemsReward: quest.gemsReward,
-        expiresAt: tomorrow,
+        expiresAt: expiresAt.toISOString(),
       };
     });
+  }
+
+  static async refreshWeeklyQuests() {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
+
+    const activeWeeklyQuests = await Quest.findAll({
+      where: { type: "weekly", isActive: true },
+    });
+
+    for (const quest of activeWeeklyQuests) {
+      await UserQuest.update(
+        { status: "expired", expiresAt: now },
+        {
+          where: {
+            questId: quest.id,
+            status: { [Op.or]: ["active", "completed"] },
+            expiresAt: { [Op.lt]: sevenDaysAgo },
+          },
+        }
+      );
+    }
+
+    return { refreshed: activeWeeklyQuests.length };
   }
 
   static async claimQuestReward(userId: string, questId: string) {
@@ -108,7 +182,7 @@ export class QuestService {
         questId: quest.id,
         status: "active",
         progress: 0,
-        expiresAt: new Date(Date.now() + 86400000),
+        expiresAt: new Date(Date.now() + (quest.type === "weekly" ? 7 * 86400000 : 86400000)),
       },
     });
 
@@ -118,6 +192,7 @@ export class QuestService {
 
     if ((userQuest as any).progress >= quest.target) {
       (userQuest as any).status = "completed";
+      await GamificationService.addGems(userId, quest.gemsReward);
     }
 
     await userQuest.save();
