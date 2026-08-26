@@ -36,6 +36,7 @@ export const updateProfileSchema = z.object({
   age: z.coerce.number().int().positive().optional(),
   avatar: z.string().optional(),
   ageGroup: z.enum(["A", "B"]).optional(),
+  onboarded: z.boolean().optional(),
 });
 
 export const slugParamSchema = z.object({

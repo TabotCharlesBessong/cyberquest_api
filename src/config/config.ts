@@ -24,10 +24,11 @@ interface EmailConfig {
   from: string;
 }
 
-const primaryDb = process.env.PRIMARY_DB || "local";
+const primaryDb = (process.env.PRIMARY_DB || "local").trim();
+const isCloudDb = primaryDb === "supabase" || primaryDb === "cloud";
 
 const database: DatabaseConfig =
-  primaryDb === "supabase"
+  isCloudDb
     ? {
         url: process.env.SUPABASE_DB_URL,
         dialect: "postgres",
@@ -64,6 +65,7 @@ const config = {
   clientUrl: process.env.CLIENT_URL || "http://localhost:8081",
 
   primaryDb,
+  isCloudDb,
 
   // How long verification / reset codes stay valid (minutes)
   codeExpiryMinutes: 15,

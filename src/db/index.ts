@@ -30,10 +30,30 @@ import { initEvent, Event } from "./models/Event";
 import { initParentalControl, associateParentalControl, ParentalControl } from "./models/ParentalControl";
 import logger from "../utils/logger";
 
+// Override pg's default TIMESTAMP (OID 1114) parser to interpret as UTC.
+// Without this, pg parses TIMESTAMP WITHOUT TIME ZONE values using local
+// timezone, causing date/time mismatches (e.g., 1-hour offset in UTC+1 zones).
+// Only apply when using PostgreSQL (not SQLite in tests)
+if (config.database.dialect === "postgres") {
+  const pgTypes = require("pg").types;
+  pgTypes.setTypeParser(1114, (val: string | null) => {
+    if (!val) return val;
+    return new Date(val + "+0000");
+  });
+  pgTypes.setTypeParser(1184, (val: string | null) => {
+    if (!val) return val;
+    return new Date(val);
+  });
+}
+
 export const sequelize =
-  config.database.url && config.primaryDb === "supabase"
+  config.database.url && config.isCloudDb
     ? new Sequelize(config.database.url, {
         dialect: "postgres",
+        timezone: "+00:00",
+        dialectOptions: {
+          timezone: "+00:00",
+        },
         logging:
           config.env === "development"
             ? (msg) => logger.debug(`[sequelize] ${msg}`, { component: "sequelize" })
@@ -49,7 +69,7 @@ export const sequelize =
           freezeTableName: false,
         },
       })
-    : new Sequelize(
+        : new Sequelize(
         config.database.name || "cyberquest",
         config.database.user || "postgres",
         config.database.password || "postgres",
@@ -57,6 +77,10 @@ export const sequelize =
           host: config.database.host || "localhost",
           port: config.database.port || 5432,
           dialect: "postgres",
+          timezone: "+00:00",
+          dialectOptions: {
+            timezone: "+00:00",
+          },
           logging:
             config.env === "development"
               ? (msg) => logger.debug(`[sequelize] ${msg}`, { component: "sequelize" })

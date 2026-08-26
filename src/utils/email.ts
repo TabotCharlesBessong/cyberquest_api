@@ -4,6 +4,17 @@ import logger from "./logger";
 
 const isConfigured = Boolean(config.email.host && config.email.user);
 
+// Diagnostic logging at module load
+logger.info("Email configuration status", {
+  component: "email",
+  isConfigured,
+  host: config.email.host,
+  port: config.email.port,
+  secure: config.email.secure,
+  user: config.email.user,
+  from: config.email.from,
+});
+
 export const transporter: Transporter | null = isConfigured
   ? nodemailer.createTransport({
       host: config.email.host,
@@ -13,6 +24,9 @@ export const transporter: Transporter | null = isConfigured
         user: config.email.user,
         pass: config.email.pass,
       },
+      // Prevent SMTP from hanging indefinitely on slow/blocked connections
+      connectionTimeout: 10000,
+      socketTimeout: 10000,
     })
   : null;
 
