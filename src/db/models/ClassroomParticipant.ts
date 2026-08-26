@@ -47,6 +47,7 @@ export function initClassroomParticipant(sequelize: Sequelize): void {
     {
       sequelize,
       tableName: "classroom_participants",
+      timestamps: false,
     }
   );
 }

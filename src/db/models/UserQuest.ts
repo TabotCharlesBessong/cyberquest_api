@@ -61,6 +61,7 @@ export function initUserQuest(sequelize: Sequelize): void {
     {
       sequelize,
       tableName: "user_quests",
+      timestamps: false,
     }
   );
 }

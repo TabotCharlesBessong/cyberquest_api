@@ -19,6 +19,7 @@ export class LeaderboardEntry extends Model<
   declare rank: CreationOptional<number>;
   declare seasonId: string;
   declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export function initLeaderboardEntry(sequelize: Sequelize): void {
@@ -60,13 +61,18 @@ export function initLeaderboardEntry(sequelize: Sequelize): void {
         defaultValue: DataTypes.NOW,
         field: "created_at",
       },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "updated_at",
+      },
     },
     {
       sequelize,
       tableName: "leaderboard_entries",
       indexes: [
-        { fields: ["scope", "seasonId", "score"] },
-        { fields: ["userId", "scope", "seasonId"] },
+        { fields: ["scope", "season_id", "score"] },
+        { fields: ["user_id", "scope", "season_id"] },
       ],
     }
   );

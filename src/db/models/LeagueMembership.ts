@@ -21,6 +21,7 @@ export class LeagueMembership extends Model<
   declare demoted: CreationOptional<boolean>;
   declare changeNote: CreationOptional<string>;
   declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export function initLeagueMembership(sequelize: Sequelize): void {
@@ -68,11 +69,16 @@ export function initLeagueMembership(sequelize: Sequelize): void {
         defaultValue: DataTypes.NOW,
         field: "created_at",
       },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "updated_at",
+      },
     },
     {
       sequelize,
       tableName: "league_memberships",
-      indexes: [{ fields: ["leagueId", "xp"] }],
+      indexes: [{ fields: ["league_id", "xp"] }],
     }
   );
 }

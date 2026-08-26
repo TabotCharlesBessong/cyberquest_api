@@ -12,13 +12,14 @@ export class Classroom extends Model<
   InferAttributes<Classroom>,
   InferCreationAttributes<Classroom>
 > {
-  declare id: CreationOptional<string>;
-  declare name: string;
-  declare school: string;
-  declare teacherId: CreationOptional<string>;
-  declare memberIds: CreationOptional<string[]>;
-  declare code: string;
-  declare createdAt: CreationOptional<Date>;
+   declare id: CreationOptional<string>;
+   declare name: string;
+   declare teacherId: CreationOptional<string>;
+   declare memberIds: CreationOptional<string[]>;
+   declare code: string;
+   declare description: CreationOptional<string>;
+   declare createdAt: CreationOptional<Date>;
+   declare updatedAt: CreationOptional<Date>;
 }
 
 export function initClassroom(sequelize: Sequelize): void {
@@ -31,10 +32,6 @@ export function initClassroom(sequelize: Sequelize): void {
         defaultValue: DataTypes.UUIDV4,
       },
       name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      school: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -54,11 +51,21 @@ export function initClassroom(sequelize: Sequelize): void {
         allowNull: false,
         unique: true,
       },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        field: "description",
+      },
       createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
         field: "created_at",
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "updated_at",
       },
     },
     {

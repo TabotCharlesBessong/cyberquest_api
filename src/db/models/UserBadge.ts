@@ -49,6 +49,7 @@ export function initUserBadge(sequelize: Sequelize): void {
     {
       sequelize,
       tableName: "user_badges",
+      timestamps: false,
     }
   );
 }

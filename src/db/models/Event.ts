@@ -19,6 +19,7 @@ export class Event extends Model<
   declare startsAt: Date;
   declare endsAt: Date;
   declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export function initEvent(sequelize: Sequelize): void {
@@ -63,6 +64,11 @@ export function initEvent(sequelize: Sequelize): void {
         allowNull: false,
         defaultValue: DataTypes.NOW,
         field: "created_at",
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "updated_at",
       },
     },
     {

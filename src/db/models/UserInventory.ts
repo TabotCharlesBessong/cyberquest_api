@@ -55,6 +55,7 @@ export function initUserInventory(sequelize: Sequelize): void {
     {
       sequelize,
       tableName: "user_inventory",
+      timestamps: false,
     }
   );
 }

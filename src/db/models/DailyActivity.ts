@@ -19,6 +19,7 @@ export class DailyActivity extends Model<
   declare quizzesPassed: CreationOptional<number>;
   declare lastActionAt: CreationOptional<Date>;
   declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export function initDailyActivity(sequelize: Sequelize): void {
@@ -63,6 +64,11 @@ export function initDailyActivity(sequelize: Sequelize): void {
         allowNull: false,
         defaultValue: DataTypes.NOW,
         field: "created_at",
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "updated_at",
       },
     },
     {

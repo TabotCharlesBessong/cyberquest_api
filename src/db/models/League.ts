@@ -18,6 +18,7 @@ export class League extends Model<
   declare startsAt: Date;
   declare endsAt: Date;
   declare createdAt: CreationOptional<Date>;
+  declare updatedAt: CreationOptional<Date>;
 }
 
 export function initLeague(sequelize: Sequelize): void {
@@ -59,11 +60,16 @@ export function initLeague(sequelize: Sequelize): void {
         defaultValue: DataTypes.NOW,
         field: "created_at",
       },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "updated_at",
+      },
     },
     {
       sequelize,
       tableName: "leagues",
-      indexes: [{ fields: ["seasonId", "tier"] }],
+      indexes: [{ fields: ["season_id", "tier"] }],
     }
   );
 }
