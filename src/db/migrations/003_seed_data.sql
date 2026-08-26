@@ -37,7 +37,14 @@ INSERT INTO quests ("key", title, description, type, target, xp_reward, gems_rew
 VALUES
   ('daily_login', 'Daily Login', 'Log in today', 'daily', 1, 10, 1, true),
   ('complete_lesson', 'Lesson Complete', 'Complete 1 lesson', 'daily', 1, 20, 2, true),
-  ('perfect_quiz', 'Perfect Quiz', 'Get 100% on a quiz', 'daily', 1, 30, 3, true)
+  ('perfect_quiz', 'Perfect Quiz', 'Get 100% on a quiz', 'daily', 1, 30, 3, true),
+  ('complete_1_lesson', 'First Lesson', 'Complete 1 lesson today', 'daily', 1, 15, 5, true),
+  ('complete_3_lessons', 'Lesson Marathon', 'Complete 3 lessons today', 'daily', 3, 45, 15, true),
+  ('win_2_quizzes', 'Quiz Master', 'Pass 2 quizzes today', 'daily', 2, 30, 10, true),
+  ('earn_50_xp', 'XP Grinder', 'Earn 50 XP today', 'daily', 50, 20, 8, true),
+  ('week_complete_3_lessons', 'Weekly Learner', 'Complete 3 lessons this week', 'weekly', 3, 100, 30, true),
+  ('week_earn_200_xp', 'Weekly XP Hunter', 'Earn 200 XP this week', 'weekly', 200, 150, 50, true),
+  ('week_active_7_days', 'Weekly Streak', 'Be active for 7 days this week', 'weekly', 7, 200, 75, true)
 ON CONFLICT ("key") DO NOTHING;
 
 INSERT INTO shop_items ("key", name, description, type, cost, cost_type, effect, icon, rarity, stock, is_active)

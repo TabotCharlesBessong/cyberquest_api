@@ -7,6 +7,8 @@ export interface CurriculumQuestion {
   correctIndex?: number;
   pairs?: { left: string; right: string }[];
   sentenceParts?: string[];
+  sentence?: string;
+  missingWords?: string[];
   correctSentence?: string;
   investigationSteps?: string[];
   correctOrder?: number[];
@@ -104,6 +106,8 @@ function q(
     correctIndex?: number;
     options?: string[];
     pairs?: { left: string; right: string }[];
+    sentence?: string;
+    missingWords?: string[];
     sentenceParts?: string[];
     correctSentence?: string;
     investigationSteps?: string[];
@@ -122,6 +126,8 @@ function q(
     correctIndex?: number;
     options?: string[];
     pairs?: { left: string; right: string }[];
+    sentence?: string;
+    missingWords?: string[];
     sentenceParts?: string[];
     correctSentence?: string;
     investigationSteps?: string[];
@@ -131,6 +137,8 @@ function q(
     correctIndex?: number;
     options?: string[];
     pairs?: { left: string; right: string }[];
+    sentence?: string;
+    missingWords?: string[];
     sentenceParts?: string[];
     correctSentence?: string;
     investigationSteps?: string[];
@@ -149,6 +157,8 @@ function q(
     correctIndex?: number;
     options?: string[];
     pairs?: { left: string; right: string }[];
+    sentence?: string;
+    missingWords?: string[];
     sentenceParts?: string[];
     correctSentence?: string;
     investigationSteps?: string[];
@@ -185,6 +195,8 @@ function q(
     options: payload.options,
     correctIndex: payload.correctIndex,
     pairs: payload.pairs,
+    sentence: payload.sentence,
+    missingWords: payload.missingWords,
     sentenceParts: payload.sentenceParts,
     correctSentence: payload.correctSentence,
     investigationSteps: payload.investigationSteps,
@@ -248,6 +260,8 @@ type QuestionDef = {
   correctIndex?: number;
   pairs?: { left: string; right: string }[];
   sentenceParts?: string[];
+  sentence?: string;
+  missingWords?: string[];
   correctSentence?: string;
   investigationSteps?: string[];
   correctOrder?: number[];
@@ -300,7 +314,7 @@ function buildLesson(unitId: string, ageGroup: "A" | "B", def: LessonDef, order:
         qd.xpReward ?? 10
       );
     }
-    return q(
+     return q(
       lessonId,
       qd.id,
       type,
@@ -309,6 +323,8 @@ function buildLesson(unitId: string, ageGroup: "A" | "B", def: LessonDef, order:
         options: qd.options,
         correctIndex: qd.correctIndex,
         pairs: qd.pairs,
+        sentence: qd.sentence,
+        missingWords: qd.missingWords,
         sentenceParts: qd.sentenceParts,
         correctSentence: qd.correctSentence,
         investigationSteps: qd.investigationSteps,
@@ -399,7 +415,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -407,7 +424,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -415,7 +433,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -469,7 +488,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -477,7 +497,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -563,7 +584,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -628,7 +650,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -639,7 +662,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -647,7 +671,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -701,7 +726,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -781,7 +807,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -789,7 +816,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -864,7 +892,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -872,7 +901,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -939,7 +969,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -1022,7 +1053,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -1033,7 +1065,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -1041,7 +1074,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -1067,7 +1101,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1129,7 +1164,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -1201,7 +1237,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1211,7 +1248,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -1271,7 +1309,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1281,14 +1320,16 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -1336,7 +1377,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1346,21 +1388,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -1401,7 +1446,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1411,21 +1457,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1480,7 +1529,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1490,21 +1540,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1555,7 +1608,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1565,21 +1619,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1630,7 +1687,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -1640,21 +1698,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1712,21 +1773,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1788,14 +1852,16 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -1921,7 +1987,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -1932,7 +1999,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -1940,7 +2008,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -1994,7 +2063,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2002,7 +2072,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2080,7 +2151,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -2091,7 +2163,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -2164,7 +2237,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -2175,7 +2249,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -2232,7 +2307,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -2243,7 +2319,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -2251,7 +2328,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -2305,7 +2383,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2393,7 +2472,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2401,7 +2481,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2471,7 +2552,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -2479,7 +2561,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2487,7 +2570,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -2544,7 +2628,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -2552,7 +2637,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -2560,7 +2646,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -2586,7 +2673,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -2648,7 +2736,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -2720,7 +2809,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -2730,7 +2820,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -2790,7 +2881,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -2800,14 +2892,16 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -2855,7 +2949,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -2865,21 +2960,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -2920,7 +3018,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -2930,21 +3029,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -2999,7 +3101,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -3009,21 +3112,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -3074,7 +3180,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -3084,21 +3191,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -3149,7 +3259,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -3159,21 +3270,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -3231,21 +3345,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -3307,14 +3424,16 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -3464,7 +3583,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -3475,7 +3595,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -3483,7 +3604,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -3491,7 +3613,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -3548,7 +3671,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -3556,7 +3680,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -3564,7 +3689,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -3671,7 +3797,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -3682,7 +3809,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -3690,7 +3818,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -3698,7 +3827,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -3847,7 +3977,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -3904,7 +4035,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -3912,7 +4044,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -3920,7 +4053,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -4016,7 +4150,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -4024,7 +4159,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -4184,7 +4320,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -4195,7 +4332,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -4249,7 +4387,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -4257,7 +4396,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -4361,7 +4501,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -4445,7 +4586,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -4507,7 +4649,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -4517,21 +4660,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -4615,7 +4761,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -4625,21 +4772,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -4723,7 +4873,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -4733,21 +4884,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -4826,7 +4980,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -4836,21 +4991,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -4929,7 +5087,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -4939,21 +5098,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -5041,7 +5203,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -5051,21 +5214,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -5144,7 +5310,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -5154,21 +5321,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -5230,7 +5400,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -5250,7 +5421,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -5260,21 +5432,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -5336,7 +5511,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -5346,7 +5522,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -5366,21 +5543,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -5442,7 +5622,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -5452,14 +5633,16 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -5476,14 +5659,16 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -5545,7 +5730,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -5555,21 +5741,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -5640,7 +5829,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -5648,7 +5838,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -5779,7 +5970,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -5790,7 +5982,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -5798,7 +5991,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -5806,7 +6000,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -5860,7 +6055,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -5991,7 +6187,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6002,7 +6199,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6010,7 +6208,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6018,7 +6217,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6125,7 +6325,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6136,7 +6337,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6144,7 +6346,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6152,7 +6355,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             }
@@ -6217,7 +6421,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6228,7 +6433,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6236,7 +6442,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6244,7 +6451,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6343,7 +6551,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6354,7 +6563,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6362,7 +6572,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6370,7 +6581,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats."
             },
@@ -6498,7 +6710,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6509,7 +6722,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -6611,7 +6825,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             },
@@ -6622,7 +6837,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime."
             }
@@ -6648,7 +6864,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -6710,7 +6927,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -6720,21 +6938,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -6818,7 +7039,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -6828,21 +7050,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -6926,7 +7151,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -6936,21 +7162,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7029,7 +7258,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7039,21 +7269,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7132,7 +7365,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7142,21 +7376,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7244,7 +7481,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7254,21 +7492,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7347,7 +7588,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7357,21 +7599,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7433,7 +7678,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -7453,7 +7699,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7463,21 +7710,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7539,7 +7789,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7549,7 +7800,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -7569,21 +7821,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7645,7 +7900,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7655,14 +7911,16 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -7679,14 +7937,16 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -7748,7 +8008,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -7758,21 +8019,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -8360,7 +8624,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8370,21 +8635,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -8463,7 +8731,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8473,21 +8742,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -8549,7 +8821,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -8569,7 +8842,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8579,21 +8853,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -8655,7 +8932,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8665,7 +8943,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -8685,21 +8964,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -8761,7 +9043,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8771,14 +9054,16 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -8795,14 +9080,16 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -8864,7 +9151,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8874,21 +9162,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -8914,7 +9205,8 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -8976,7 +9268,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -8986,21 +9279,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9084,7 +9380,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9094,21 +9391,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q10",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9192,7 +9492,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9202,21 +9503,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q9",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9295,7 +9599,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9305,21 +9610,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q8",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9398,7 +9706,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9408,21 +9717,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q7",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9510,7 +9822,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9520,21 +9833,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q6",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9613,7 +9929,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9623,21 +9940,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q5",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9699,7 +10019,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -9719,7 +10040,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9729,21 +10051,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q4",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9805,7 +10130,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9815,7 +10141,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             }
@@ -9835,21 +10162,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q3",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -9911,7 +10241,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -9921,14 +10252,16 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
@@ -9945,14 +10278,16 @@ const SECTION_DEFS: SectionDef[] = [
               id: "q1",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q2",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
@@ -10014,7 +10349,8 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
@@ -10024,21 +10360,24 @@ const SECTION_DEFS: SectionDef[] = [
               pairs: [
                 { left: "Phishing", right: "Fake messages that steal information" },
                 { left: "Malware", right: "Software that harms your device" },
-                { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Social Engineering", right: "Tricking people into giving up data" },
+                 { left: "Virus", right: "A type of harmful software" },
               ],
               explanation: "Knowing these terms helps you spot cybercrime.",
             },{
               id: "q11",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             },{
               id: "q12",
               type: "sentence_builder",
               question: "Build the safety rule:",
-              sentenceParts: ["Stop", "think", "verify", "before", "you", "click"],
+              sentence: "Stop ___ think ___ verify ___ before ___ you ___ click",
+              missingWords: ["think", "verify", "before", "you", "click"],
               correctSentence: "Stop think verify before you click",
               explanation: "Following this rule keeps you safer from online threats.",
             }
