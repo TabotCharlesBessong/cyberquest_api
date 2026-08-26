@@ -32,6 +32,9 @@ export class User extends Model<
   declare gems: CreationOptional<number>;
   declare ageGroup: CreationOptional<"A" | "B">;
   declare role: CreationOptional<"user" | "admin">;
+  declare doubleXpActive: CreationOptional<boolean>;
+  declare doubleXpExpiresAt: Date | null;
+  declare doubleXpSource: string | null;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 
@@ -135,6 +138,22 @@ export function initUser(sequelize: Sequelize): void {
         allowNull: false,
         defaultValue: "user",
         field: "role",
+      },
+      doubleXpActive: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+        field: "double_xp_active",
+      },
+      doubleXpExpiresAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        field: "double_xp_expires_at",
+      },
+      doubleXpSource: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        field: "double_xp_source",
       },
       createdAt: {
         type: DataTypes.DATE,

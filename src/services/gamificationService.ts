@@ -126,6 +126,33 @@ export class GamificationService {
     return user.gems;
   }
 
+  static async activateDoubleXp(userId: string, hours: number = 24, source: string = "quest_reward") {
+    const user = await User.findByPk(userId);
+    if (!user) throw new Error("User not found");
+
+    user.doubleXpActive = true;
+    user.doubleXpExpiresAt = new Date(Date.now() + hours * 3600000);
+    user.doubleXpSource = source;
+    await user.save();
+    return user.doubleXpExpiresAt;
+  }
+
+  static async checkDoubleXpStatus(userId: string) {
+    const user = await User.findByPk(userId);
+    if (!user) return;
+
+    if (
+      user.doubleXpActive &&
+      user.doubleXpExpiresAt &&
+      new Date() > new Date(user.doubleXpExpiresAt)
+    ) {
+      user.doubleXpActive = false;
+      user.doubleXpExpiresAt = null;
+      user.doubleXpSource = null;
+      await user.save();
+    }
+  }
+
   static async spendGems(userId: string, amount: number): Promise<boolean> {
     const user = await User.findByPk(userId);
     if (!user || user.gems < amount) return false;
