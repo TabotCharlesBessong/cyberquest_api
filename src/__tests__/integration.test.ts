@@ -42,14 +42,14 @@ describe('API Integration', () => {
         .post('/api/auth/signup')
         .send({
           name: 'Test User',
-          email: 'test@example.com',
+          email: 'tabot.charles@ubuea.cm',
           password: 'password123',
           age: 10,
         });
 
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
-      expect(res.body.data.user.email).toBe('test@example.com');
+      expect(res.body.data.user.email).toBe('tabot.charles@ubuea.cm');
       expect(res.body.data.user.password).toBeUndefined();
     });
 
@@ -58,7 +58,7 @@ describe('API Integration', () => {
         .post('/api/auth/signup')
         .send({
           name: 'Test User',
-          email: 'test@example.com',
+          email: 'tabot.charles@ubuea.cm',
           password: 'password123',
         });
 
@@ -66,7 +66,7 @@ describe('API Integration', () => {
         .post('/api/auth/signup')
         .send({
           name: 'Another User',
-          email: 'test@example.com',
+          email: 'tabot.charles@ubuea.cm',
           password: 'password123',
         });
 
@@ -77,7 +77,7 @@ describe('API Integration', () => {
     test('POST /api/auth/login - logs in with valid credentials', async () => {
       const user = await User.create({
         name: 'Test User',
-        email: 'test@example.com',
+        email: 'tabot.charles@ubuea.cm',
         password: 'password123',
         age: 10,
         ageGroup: 'A',
@@ -88,7 +88,7 @@ describe('API Integration', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'test@example.com',
+          email: 'tabot.charles@ubuea.cm',
           password: 'password123',
         });
 
@@ -102,7 +102,7 @@ describe('API Integration', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'test@example.com',
+          email: 'tabot.charles@ubuea.cm',
           password: 'wrongpassword',
         });
 
@@ -113,7 +113,7 @@ describe('API Integration', () => {
     test('GET /api/auth/me - returns current user with valid token', async () => {
       const user = await User.create({
         name: 'Test User',
-        email: 'test@example.com',
+        email: 'tabot.charles@ubuea.cm',
         password: 'password123',
         age: 10,
         ageGroup: 'A',
@@ -124,7 +124,7 @@ describe('API Integration', () => {
       const loginRes = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'test@example.com',
+          email: 'tabot.charles@ubuea.cm',
           password: 'password123',
         });
 
@@ -137,7 +137,7 @@ describe('API Integration', () => {
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.user.id).toBe(user.id);
-      expect(res.body.data.user.email).toBe('test@example.com');
+      expect(res.body.data.user.email).toBe('tabot.charles@ubuea.cm');
     });
 
     test('GET /api/auth/me - rejects request without token', async () => {
@@ -175,7 +175,7 @@ describe('API Integration', () => {
 
       const user = await User.create({
         name: 'Test User',
-        email: 'test@example.com',
+        email: 'tabot.charles@ubuea.cm',
         password: 'password123',
         age: 10,
         ageGroup: 'A',
@@ -210,7 +210,7 @@ describe('API Integration', () => {
 
       const loginRes = await request(app)
         .post('/api/auth/login')
-        .send({ email: 'test@example.com', password: 'password123' });
+        .send({ email: 'tabot.charles@ubuea.cm', password: 'password123' });
 
       authToken = loginRes.body.data.token;
     });
@@ -292,7 +292,7 @@ describe('API Integration', () => {
 
       const user = await User.create({
         name: 'Test User',
-        email: 'test@example.com',
+        email: 'tabot.charles@ubuea.cm',
         password: 'password123',
         age: 10,
         ageGroup: 'A',
@@ -329,7 +329,7 @@ describe('API Integration', () => {
 
       const loginRes = await request(app)
         .post('/api/auth/login')
-        .send({ email: 'test@example.com', password: 'password123' });
+        .send({ email: 'tabot.charles@ubuea.cm', password: 'password123' });
 
       authToken = loginRes.body.data.token;
     });

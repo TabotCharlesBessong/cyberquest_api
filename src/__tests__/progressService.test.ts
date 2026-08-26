@@ -4,6 +4,10 @@ jest.mock('../services/gamificationService', () => ({
   GamificationService: {
     recordDailyActivity: jest.fn(),
     updateStreak: jest.fn(),
+    addXp: jest.fn().mockResolvedValue({ leveledUp: false }),
+    addGems: jest.fn(),
+    checkDoubleXpStatus: jest.fn(),
+    activateDoubleXp: jest.fn(),
   },
 }));
 

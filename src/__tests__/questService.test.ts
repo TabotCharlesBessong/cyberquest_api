@@ -1,10 +1,18 @@
 import { QuestService } from "../services/questService";
+import { GamificationService } from "../services/gamificationService";
 
 jest.mock("../db", () => ({
   User: { findByPk: jest.fn(), update: jest.fn() },
   Quest: { findAll: jest.fn(), findOne: jest.fn(), findByPk: jest.fn() },
   UserQuest: { findAll: jest.fn(), findOne: jest.fn(), findOrCreate: jest.fn(), update: jest.fn() },
-  DailyActivity: { findOne: jest.fn() },
+  DailyActivity: { findOne: jest.fn(), findAll: jest.fn() },
+}));
+
+jest.mock("../services/gamificationService", () => ({
+  GamificationService: {
+    addXp: jest.fn(),
+    addGems: jest.fn(),
+  },
 }));
 
 import { User, Quest, UserQuest, DailyActivity } from "../db";
@@ -20,13 +28,45 @@ describe("QuestService", () => {
         { id: "q1", key: "complete_1_lesson", title: "First Lesson", description: "Complete 1 lesson", target: 1, xpReward: 15, gemsReward: 5, type: "daily" },
       ] as any);
       jest.mocked(UserQuest.findAll).mockResolvedValue([] as any);
-      jest.mocked(DailyActivity.findOne).mockResolvedValue({ lessonsCompleted: 1, quizzesPassed: 0, xpEarned: 10 } as any);
+      jest.mocked(DailyActivity.findAll).mockResolvedValue([
+        { lessonsCompleted: 1, quizzesPassed: 0, xpEarned: 10 }
+      ] as any);
 
       const result = await QuestService.getDailyQuests("user-1");
       expect(result).toHaveLength(1);
       expect(result[0].title).toBe("First Lesson");
       expect(result[0].progress).toBe(1);
       expect(result[0].isCompleted).toBe(true);
+    });
+  });
+
+  describe("getWeeklyQuests", () => {
+    it("returns weekly quests with zero progress when no activity", async () => {
+      jest.mocked(Quest.findAll).mockResolvedValue([
+        { id: "q1", key: "week_complete_3_lessons", title: "Weekly Learner", description: "Complete 3 lessons", target: 3, xpReward: 100, gemsReward: 30, type: "weekly" },
+      ] as any);
+      jest.mocked(DailyActivity.findAll).mockResolvedValue([] as any);
+
+      const result = await QuestService.getWeeklyQuests("user-1");
+      expect(result).toHaveLength(1);
+      expect(result[0].progress).toBe(0);
+    });
+  });
+
+  describe("getQuests", () => {
+    it("returns both daily and weekly quests", async () => {
+      jest.mocked(Quest.findAll)
+        .mockResolvedValueOnce([
+          { id: "d1", key: "complete_1_lesson", title: "Daily", description: "Daily quest", target: 1, xpReward: 15, gemsReward: 5, type: "daily" },
+        ] as any)
+        .mockResolvedValueOnce([
+          { id: "w1", key: "week_complete_3_lessons", title: "Weekly", description: "Weekly quest", target: 3, xpReward: 100, gemsReward: 30, type: "weekly" },
+        ] as any);
+      jest.mocked(DailyActivity.findAll).mockResolvedValue([] as any);
+
+      const result = await QuestService.getQuests("user-1");
+      expect(result.daily).toHaveLength(1);
+      expect(result.weekly).toHaveLength(1);
     });
   });
 
@@ -49,7 +89,7 @@ describe("QuestService", () => {
 
   describe("updateQuestProgress", () => {
     it("creates and updates user quest progress", async () => {
-      jest.mocked(Quest.findOne).mockResolvedValue({ id: "q1", key: "complete_1_lesson", target: 1, isActive: true } as any);
+      jest.mocked(Quest.findOne).mockResolvedValue({ id: "q1", key: "complete_1_lesson", target: 1, isActive: true, type: "daily", gemsReward: 5 } as any);
       jest.mocked(UserQuest.findOrCreate).mockResolvedValue([
         { questId: "q1", progress: 0, status: "active", save: jest.fn() },
         true,
@@ -58,6 +98,7 @@ describe("QuestService", () => {
       const result = await QuestService.updateQuestProgress("user-1", "complete_1_lesson", 1);
       expect(result?.progress).toBe(1);
       expect((result as any)?.status).toBe("completed");
+      expect(GamificationService.addGems).toHaveBeenCalledWith("user-1", 5);
     });
   });
 });

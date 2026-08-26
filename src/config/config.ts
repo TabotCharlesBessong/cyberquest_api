@@ -34,11 +34,11 @@ const database: DatabaseConfig =
         dialect: "postgres",
       }
     : {
-        host: process.env.DB_HOST || "localhost",
-        port: parseInt(process.env.DB_PORT || "", 10) || 5432,
-        name: process.env.DB_NAME || "cyberquest",
-        user: process.env.DB_USER || "postgres",
-        password: process.env.DB_PASSWORD || "postgres",
+        host: process.env.DB_HOST_TEST || process.env.DB_HOST || "localhost",
+        port: parseInt(process.env.DB_PORT_TEST || process.env.DB_PORT || "", 10) || 5432,
+        name: process.env.DB_NAME_TEST || process.env.DB_NAME || "cyberquest",
+        user: process.env.DB_USER_TEST || process.env.DB_USER || "postgres",
+        password: process.env.DB_PASSWORD_TEST || process.env.DB_PASSWORD || "postgres",
         dialect: "postgres",
       };
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProfile, getBadges, claimQuestReward, recordActivity, consumeHeart, refillHearts } from "../controllers/gamificationController";
+import { getProfile, getBadges, getQuests, claimQuestReward, recordActivity, consumeHeart, refillHearts } from "../controllers/gamificationController";
 import { authMiddleware } from "../middleware/auth";
 
 const router = Router();
@@ -125,6 +125,8 @@ router.get("/profile", getProfile);
  *               $ref: '#/components/schemas/Error'
  */
 router.get("/badges", getBadges);
+
+router.get("/quests", getQuests);
 
 /**
  * @swagger
